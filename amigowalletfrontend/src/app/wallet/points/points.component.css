@@ -1,0 +1,13 @@
+.panel {
+    border: 1px;
+    border-style: solid;
+    border-color: lightgray;
+    padding: 10px;
+    width: fit-content;
+}
+.block {
+  width: fit-content;
+}
+.view-adjust {
+    margin-top: 5%;
+}

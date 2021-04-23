@@ -1,0 +1,61 @@
+<div class="Panel">
+  <!--ngSubmit directive specifies "authenticate()" function to run when the form is submitted-->
+  <form [formGroup]="form" (ngSubmit)="authenticate()">
+
+    <div class="row">
+      <div class="col-10 offset-xs-1 col-sm-5 offset-sm-1 col-md-4 offset-md-1">
+
+        <div class="form-group aw-input-group">
+          <input type="email" formControlName="emailId" class="form-control" name="Email" id="email" autocomplete=""
+            required autofocus [attr.value]="form.controls.emailId.value?form.controls.emailId.value:''" />
+          <label class="placeholder" for="email">{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}</label>
+
+          <div class="error-icon" *ngIf="form.controls.emailId.dirty">
+            <i *ngIf="form.controls.emailId.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+            <i *ngIf="!form.controls.emailId.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+          </div>
+
+          <div class="error-message-bottom">
+            <!--The following line is used to display the error message when emailId is in wrong format.
+            [hidden] attribute becomes false when pattern has an error and message is displayed-->
+            {{'LOGIN.INVALID_EMAIL' | translate }}
+            <i *ngIf="!form.controls.emailId.hasError('pattern') && !form.controls.emailId.hasError('required')"
+              class="fa fa-check faa-burst valid"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-10 offset-xs-1 col-sm-5 offset-sm-1 col-md-4 offset-md-0">
+        <div class="form-group aw-input-group">
+          <input type="password" formControlName="password" class="form-control" name="password" id="loginPassword"
+            autocomplete="" required autofocus
+            [attr.value]="form.controls.password.value?form.controls.password.value:''" />
+          <label class="placeholder" for="loginPassword">{{ 'LOGIN.PASSWORD_PLACEHOLDER' | translate }}</label>
+
+          <div class="error-message-bottom" *ngIf="form.controls.password.hasError('required')">
+            <span class="text-danger pull-right">{{'LOGIN.REQUIRED_FIELD' | translate }}</span>
+          </div>
+
+          <div class="error-icon" *ngIf="form.controls.password.dirty">
+            <i *ngIf="form.controls.password.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+            <i *ngIf="!form.controls.password.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+          </div>
+        </div>
+        <a [routerLink]="['/forgotPassword']" class="pull-right">{{ 'LOGIN.PASSWORD_FORGOT' | translate }}</a>
+      </div>
+
+      <div class="col-10 offset-xs-1 col-md-2 offset-md-0">
+        <!--Login button will be enabled only when the entire form is valid
+       [disabled] attribute is used for disabling the button when form is not valid-->
+        <button class="btn my-btn " [disabled]="!form.valid || submitted" type="submit"><span
+            *ngIf="!submitted">{{ 'LOGIN.LOGIN_BUTTON' | translate }}</span><i *ngIf="submitted"
+            class="fa fa-spinner fa-pulse fa-lg fa-fw"></i></button>
+      </div>
+    </div>
+  </form>
+  <hr class="col-12">
+  <div class="row">
+    <div class="col-12">
+      <div *ngIf="message!=null" class="text-danger center">{{message}}</div><br/>
+    </div>
+  </div>
+</div>

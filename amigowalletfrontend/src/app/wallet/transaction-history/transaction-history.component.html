@@ -1,0 +1,56 @@
+<div class="card border-dark mb-3" [@loadAnimation]="state">
+  <div class="card-header">
+    <div>
+      <div class="h6">
+        Your Transaction History
+      </div>
+      Sort By:
+      <select [(ngModel)]="sortoption">
+          <option value="userTransactionId">Transaction Id</option>
+          <option value="userTransactionIdRev">Transaction Id Desc.</option>
+          <option value="transactionDateTime">Transaction Time</option>
+          <option value="transactionDateTimeRev">Transaction Time Desc.</option>
+      </select>
+      <span class="text-right pull-right">
+        Filter By:
+        <select [(ngModel)]="filteroption">
+          <option value="">Both</option>
+          <option value="C">Credit Transactions Only</option>
+          <option value="D">Debit Transactions Only</option>
+        </select>
+      </span>
+    </div>
+  </div>
+  <div class="card-body text-center">
+    <div class="table-responsive" *ngIf="errorMessage==null">
+      <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th>Transaction Id</th>
+            <th>Transaction Time</th>
+            <th>Info</th>
+            <th>Amount</th>
+            <th>Credit/Debit</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let userTransaction of userTransactions | filter:filteroption | sort:sortoption | paginate: {itemsPerPage: 5, currentPage:page }">
+            <td>{{ userTransaction.userTransactionId }}</td>
+            <td>{{ userTransaction.transactionDateTime }}</td>
+            <td>{{ userTransaction.info }}</td>
+            <td>{{ userTransaction.amount }}</td>
+            <td [ngStyle]="{'color' : userTransaction.paymentType.paymentType == 'D' ? 'red' : 'green'}">{{ userTransaction.paymentType.paymentType }}</td>
+            <td>{{ userTransaction.transactionStatus }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <span class="text-info" *ngIf="errorMessage!=null">{{ errorMessage }}</span>
+  </div>
+  <div class="card-footer text-center">
+    <div class="paginationplace">
+      <pagination-controls class="my-pagination" (pageChange)="onPageChange($event)" responsive="true"></pagination-controls>
+    </div>
+  </div>
+</div>

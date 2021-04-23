@@ -1,0 +1,58 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-4 offset-md-2 col-12">
+      <img src="assets/resources/images/AmigoLogo.png" class="img-responsive" />
+    </div>
+  </div>
+  <br>
+  <br>
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+      <!--ngSubmit directive specifies "validateOtp()" function to run when the form is submitted
+          ngIf directive ensures that it is initiated only if session is not timed out-->
+      <form [formGroup]="form" (ngSubmit)="registerWithSecurity()" *ngIf="!timeout">
+        <div class="form-group aw-input-group" formGroupName="securityQuestion">
+         <!--(change) directive specifies "onclick" function to run when the selected value is changed-->
+          <select class="form-control" name="questionId" id="questionId" formControlName="questionId" [attr.value]="form.controls.securityQuestion.controls.questionId.value?form.controls.securityQuestion.controls.questionId.value:''">
+            <option value="" disabled></option>
+            <option *ngFor="let securityQuestion of securityQuestions"  [value]="securityQuestion.questionId">{{securityQuestion.question}}</option>
+          </select>
+          <label class="placeholder" for="questionId">{{ "SECURITY_QUESTION.SECURITY_QUESTION_PLACEHOLDER" | translate }}</label>
+          <div class="error-icon" *ngIf="form.controls.securityQuestion.controls.questionId.dirty">
+            <i *ngIf="form.controls.securityQuestion.controls.questionId.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+            <i *ngIf="!form.controls.securityQuestion.controls.questionId.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+          </div>
+          <div class="error-message-bottom">
+            {{ 'SECURITY_QUESTION.SECURITY_QUESTION_ERROR' | translate }}
+            <i *ngIf="!form.controls.securityQuestion.controls.questionId.hasError('required')" class="fa fa-check faa-burst valid"></i>
+            <br/>
+          </div>
+        </div>
+        <div class="form-group aw-input-group">
+          <!--(change) directive specifies "onclick" function to run when the selected value is changed-->
+           <input type="text" name="securityAnswer" id="securityAnswer" formControlName="securityAnswer" class="form-control" 
+            required [attr.value]="form.controls.securityAnswer.value?form.controls.securityAnswer.value:''">
+           <label class="placeholder" for="securityAnswer">{{ "SECURITY_QUESTION.SECURITY_ANSWER_PLACEHOLDER" | translate }}</label>
+           <div class="error-icon" *ngIf="form.controls.securityAnswer.dirty">
+             <i *ngIf="form.controls.securityAnswer.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+             <i *ngIf="!form.controls.securityAnswer.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+           </div>
+           <div class="error-message-bottom">
+             {{ 'SECURITY_QUESTION.SECURITY_ANSWER_ERROR' | translate }}
+             <i *ngIf="!form.controls.securityAnswer.hasError('required')" class="fa fa-check faa-burst valid"></i>
+             <br/>
+           </div>
+         </div>
+        <!--ngModel directive binds the value of HTML controls to application data-->
+        <div class="form-group">
+          <button type="submit" [disabled]="!form.valid || submitted" class="btn my-btn "><span *ngIf="!submitted">{{ "SECURITY_QUESTION.SECURITY_QUESTION_BUTTON" | translate }}</span><i *ngIf="submitted" class="fa fa-spinner fa-pulse fa-lg fa-fw"></i></button>
+        </div>
+      </form>
+      <div class="text-success center"  *ngIf="successMessage!=null">{{successMessage}}</div>
+      <div class="text-danger center" *ngIf="timeout || message!=null">{{message}}</div>
+      <div class="center" *ngIf="timeout">
+        <a [routerLink]="['/login']">{{ "SECURITY_QUESTION.TIME_OUT_REDIRECT" | translate }}</a>
+      </div>
+    </div>
+  </div>

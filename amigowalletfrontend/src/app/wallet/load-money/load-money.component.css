@@ -1,0 +1,174 @@
+.panel {
+    border: 1px;
+    border-style: solid;
+    border-color: lightgray;
+    padding: 10px;
+    width: 100%;
+}
+
+.radio {
+  color:#999;
+  font-size:15px;
+  position:relative;
+}
+.radio span {
+  position:relative;
+   padding-left:20px;
+}
+.radio span:after {
+  content:'';
+  width:15px;
+  height:15px;
+  border:3px solid;
+  position:absolute;
+  left:0;
+  top:1px;
+  border-radius:100%;
+  -ms-border-radius:100%;
+  -moz-border-radius:100%;
+  -webkit-border-radius:100%;
+  box-sizing:border-box;
+  -ms-box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+}
+.radio input[type="radio"]{
+   cursor: pointer; 
+  position:absolute;
+  width:100%;
+  height:100%;
+  z-index: 1;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"
+}
+.radio input[type="radio"]:checked + span {
+  color:#0B8;  
+}
+.radio input[type="radio"]:checked + span:before {
+    content:'';
+  width:5px;
+  height:5px;
+  position:absolute;
+  background:#0B8;
+  left:5px;
+  top:6px;
+  border-radius:100%;
+  -ms-border-radius:100%;
+  -moz-border-radius:100%;
+  -webkit-border-radius:100%;
+}
+
+.bank {
+    color:darkgray;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold; 
+    font-size: small;
+}
+
+.block {
+  width: 100%;
+}
+.block-card {
+  display: block;
+  width: 100%;
+  border: 1px;
+  border-color: lightgrey;
+  box-shadow: 1px;
+  z-index: 5;
+}
+.ancor {
+  color: lightsalmon;
+  font-size: small;
+  float: right;
+  text-decoration: underline;
+}
+
+.ancor:hover {
+  cursor: pointer;
+  color: orangered;
+  text-decoration: underline;
+}
+ 
+.cardNumber {
+  cursor: pointer;
+  color: gray;
+  border-bottom: 1px gray dashed;
+  font-size: larger;
+  margin-bottom: 10% !important;
+}
+.cardNumber:hover {
+  border-bottom: 1px black solid;
+}
+
+hr {
+   border-color: gray;
+   width: 90%;
+}
+
+.btn-addCard {
+  background-color: lightgray;
+  color: gray;
+  padding: 1px;
+}
+.expiryDate {
+  font-size: larger;
+}
+
+span[title="Expiry date"] {
+  cursor: pointer;
+}
+.heading {
+  color: #0B8;
+  text-align: center;
+  margin-bottom: 5% !important;
+}
+
+@media only screen and (min-width : 768px) {
+.expandedView {
+  width: 150% !important;
+}
+}
+@media only screen and (max-width : 768px) {
+.expandedView {
+  width: 100% !important;
+}
+}
+.navigationControls {
+  margin-top: 15% !important;
+  font-size: 12px; 
+  text-align: center;
+  width: 100%;
+}
+
+/* .pagination-previous {
+  float: left;
+}
+
+.pagination-next {
+  float: right;
+} */
+
+.cursor-pointer {
+  width: 100% !important;
+}
+
+.pagination-next a {
+  color: grey !important;
+}
+
+.pagination-previous a {
+  color: grey !important;
+}
+
+.pagination-next a:hover {
+  color: #0B8 !important;
+}
+
+.pagination-previous a:hover {
+  color: #0B8 !important;
+}
+
+.margin-bottom-5 {
+  margin-bottom: 5% !important;
+}

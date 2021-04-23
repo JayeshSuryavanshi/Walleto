@@ -1,0 +1,4 @@
+.option label:hover {
+    cursor: pointer;
+    filter: brightness(115%);
+}

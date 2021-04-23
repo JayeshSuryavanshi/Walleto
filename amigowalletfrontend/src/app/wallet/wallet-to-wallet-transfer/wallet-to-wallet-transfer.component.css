@@ -1,0 +1,13 @@
+
+
+.block {
+width: 100%;
+}
+.block-card {
+display: block;
+width: 100%;
+border: 1px;
+border-color: lightgrey;
+box-shadow: 1px;
+z-index: 5;
+}

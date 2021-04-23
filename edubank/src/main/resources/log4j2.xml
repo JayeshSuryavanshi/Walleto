@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+	<Properties>
+		<Property name="LOG_PATTERN">
+			%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName} --- [%15.15t] %-40.40c{1.} : %m%n%ex
+		</Property>
+	</Properties>
+	<Appenders>
+	
+		<!-- File Appender -->
+		<File name="FileAppender" fileName="logs/error.log">
+			<PatternLayout
+				pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n" />
+		</File>
+		
+		<Console name="ConsoleAppender">
+			<PatternLayout
+				pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+
+	</Appenders>
+	
+	<Loggers>
+		<Logger name="com.edubank" level="error" additivity="false">
+			<AppenderRef ref="FileAppender" />
+		</Logger>
+		
+		<Root name="com.edubank" level="trace" additivity="false">
+			<AppenderRef ref="ConsoleAppender" />
+		</Root>
+
+	</Loggers>
+</Configuration>

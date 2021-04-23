@@ -1,0 +1,13 @@
+.centerBlock {
+    display: block;
+    text-align: center;
+}
+.centerBlock a {
+    font-size: 10pt;
+    color: coral;
+    text-decoration: underline;
+}
+.centerBlock a:hover {
+    font-size: 10pt;
+    color: orangered;
+}

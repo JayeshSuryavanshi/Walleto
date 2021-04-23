@@ -1,0 +1,438 @@
+/* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    font-size: 14px !important;
+    background-color: #eeeeee;
+}
+
+.blue {
+    color:#0d7646;
+}
+
+@media only screen and (min-width : 768px) {
+.background {
+    z-index: -1 !important;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 30% !important;
+    height: 15% !important; 
+}
+}
+@media only screen and (max-width : 768px) {
+.background {
+    z-index: -1 !important;
+    position: absolute;
+
+    top: 0%;
+    left: 0%;
+    width: 50% !important;
+    height: 50% !important; 
+}
+}
+
+.foreground {
+    z-index: 0 !important;
+    position: absolute;
+
+    top: 10%;
+    left: 0%;
+    width: 100%;
+
+}
+
+a:link {
+ color:#0d7646;
+ text-decoration:underline;
+ font-size:11px;
+
+}
+a:visited {
+    color: #0d7646;
+    text-decoration: underline;
+}
+a:hover {
+    color: #045e35;
+}
+body {  
+    padding: 50px 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    overflow-y: scroll;
+}
+
+.PrimaryText {
+    font-family: 'Franklin Gothic Book';
+    font-size: 18px;
+    font-weight: 500;
+    color: #808080
+}
+.my-btn {
+    display: block;
+    margin: 0px auto;
+    background-color: #0d7646;
+    color: white;
+}
+.Panel {
+    z-index: 1;
+    position: relative;
+    background: #FFF;
+    border-radius: 6px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+    overflow: hidden;
+    margin-bottom: 30px;
+    padding-top: 10px;
+    padding-bottom:5px;
+}
+
+.body {
+    
+    padding-top: 20px;
+    z-index: 1;
+    position: relative;
+    background: #FFF;
+    width: 800px;
+    height: 300px;
+    border-radius: 6px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+hr {
+   border-width:2px;
+    border-color: #f15925;
+}
+
+
+
+.logos {
+    max-height: 40px;
+    max-width: 40px;
+   
+}
+.pad 
+{
+    font-size-adjust: unset;
+    height:10%;
+    width:10%;
+    vertical-align:middle;
+}
+
+
+.logo {
+    margin: 0px auto;
+    display: block;
+}
+
+.SecondaryText {
+    font-family: 'Franklin Gothic Book';
+    font-size: 10px;
+    font-weight: 500;
+    color: #808080
+}
+
+.TertiaryText {
+    font-family: 'Franklin Gothic Book';
+    font-size: 8px;
+    font-weight: 500;
+    color: #808080
+}
+
+
+textarea:focus, input:focus {
+    outline: none;
+}
+
+input, textarea {
+    border: 0px !important;
+    border-bottom: 1px solid #808080 !important; 
+}
+
+input[type=text], input[type=email], textarea {
+    border: 0px;
+    border-bottom: 3px solid #999;  
+}
+
+.Sliding {
+    color: orangered;
+    border-bottom: 3px solid orangered;
+    transition:  0.5s ease-in-out;
+}
+
+.feature-button:hover {
+    color: orangered;
+}
+
+label
+{
+  color:grey;
+  font-family:'Franklin Gothic Book';
+}
+.blur {
+    -webkit-filter: grayscale(10%);
+    filter: grayscale(60%);
+}
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: grey;
+    font-family:'Franklin Gothic Book';
+    font-size:15px;
+}
+
+.aw-input-group {
+    position: relative !important;
+    width: 100% !important;
+    margin-bottom: 10px !important;
+    margin-top: 10px !important;
+}
+
+.aw-input-group .error-icon {
+    position: absolute !important;
+    top: 15%;
+    right: 5%;
+    z-index: 10;
+}
+
+.aw-input-group .error-message-bottom {
+    visibility: hidden;
+    background-color: #FFF8DC;
+    text-align: justify;
+    border-radius: 6px;
+    padding: 5px 5px;
+    font-size: 10px;
+
+    /* Position the tooltip */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    z-index: 10;
+
+    width: 100%;
+    top: 110%;
+    left: 50%; 
+    margin-left: -50%;
+}
+
+.aw-input-group input:focus ~ .error-message-bottom {
+     visibility: visible;
+}
+
+.aw-input-group input:focus ~ .error-message-bottom::after {
+    content: " ";
+    position: absolute;
+    bottom: 100%;  /* At the top of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #FAF0E6 transparent;
+}
+
+.aw-input-group .error-message-top {
+    visibility: hidden;
+    background-color: #FFF8DC;
+    text-align: justify;
+    border-radius: 6px;
+    padding: 5px 5px;
+    font-size: 10px;
+
+    /* Position the tooltip */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    z-index: 10;
+
+    width: 100%;
+    bottom: 110%;
+    left: 50%; 
+    margin-left: -50%;
+}
+
+.aw-input-group input:focus ~ .error-message-top {
+     visibility: visible;
+}
+
+.aw-input-group input:focus ~ .error-message-top::after {
+    content: " ";
+    position: absolute;
+    bottom: 100%;  /* At the top of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #FAF0E6 transparent;
+}
+
+
+.aw-input-group .error-message-right {
+    visibility: hidden;
+    background-color: #FFF8DC;
+    text-align: justify;
+    padding: 5px 5px;
+    border-radius: 6px;
+    font-size: 10px;
+ 
+    /* Position the tooltip text - see examples below! */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    z-index: 10;
+
+    width: max-content;
+    top: -5px;
+    left: 100%;
+}
+
+
+.aw-input-group input:focus ~ .error-message-right {
+     visibility: visible;
+}
+
+.aw-input-group input:focus ~ .error-message-right::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    right: 100%; /* To the left of the tooltip */
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #FAF0E6 transparent transparent;
+}
+
+.aw-input-group .error-message-left {
+    visibility: hidden;
+    background-color: #FFF8DC;
+    text-align: justify;
+    padding: 5px 5px;
+    border-radius: 6px;
+    font-size: 10px;
+ 
+    /* Position the tooltip text - see examples below! */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    z-index: 10;
+
+    width: max-content;
+    top: -5px;
+    right: 105%;
+}
+
+.aw-input-group input:focus ~ .error-message-left {
+     visibility: visible;
+}
+
+.aw-input-group input:focus ~ .error-message-left::after {
+   content: " ";
+    position: absolute;
+    top: 50%;
+    left: 100%; /* To the right of the tooltip */
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent transparent #FAF0E6;
+}
+
+.aw-input-group .placeholder {
+    position: absolute;
+    top: 25%;
+    left: 5%;
+    color: darkgrey;
+    z-index: 5;
+    overflow: hidden;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-transition: top .35s ease-in-out, color .35s ease-in-out, font-size .35s ease-in-out;
+    transition: top .35s ease-in-out, color .35s ease-in-out, font-size .35s ease-in-out;
+    font-weight: normal !important;
+    font-size: medium;
+}
+
+.aw-input-group input:focus ~ .placeholder {
+    position: absolute;
+    top: -50%;
+    color: #0d7646;
+    font-size: smaller;
+}
+
+.aw-input-group input:not([value=""]) ~ .placeholder {
+    position: absolute;
+    top: -50%;
+    color: #0d7646;
+    font-size: smaller;
+}
+
+.aw-input-group select ~ .placeholder {
+    position: absolute;
+    top: 25%;
+    left: 5%;
+    color: darkgrey;
+    z-index: 5;
+    overflow: hidden;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-transition: top .35s ease-in-out, color .35s ease-in-out, font-size .35s ease-in-out;
+    transition: top .35s ease-in-out, color .35s ease-in-out, font-size .35s ease-in-out;
+    font-weight: normal !important;
+    font-size: medium;
+
+}
+
+.aw-input-group select:focus ~ .placeholder {
+    position: absolute;
+    top: -50%;
+    color: #0d7646;
+    font-size: smaller;
+}
+
+.aw-input-group select:not([value=""]) ~ .placeholder {
+    position: absolute;
+    top: -50%;
+    color: #0d7646;
+    font-size: smaller;
+}
+
+.valid {
+ color:green;
+}
+
+.invalid {
+ color:red;
+}
+
+i.fa-spinner {
+    color : white;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.center {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.center-message {
+    display: block;
+    margin: 0px auto;
+    text-align: center;
+    width: 90%;
+}
+
+.absolute-position {
+    position: absolute;
+}
+
+.modal-backdrop {
+    /* bug fix - no overlay */    
+    display: none;    
+}
+
+.noBorderLink:focus {
+    outline: 0;
+}
+
+.accordian-collapse {
+    transition: height 10s;
+}

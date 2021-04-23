@@ -1,0 +1,28 @@
+<div class="Panel">
+    <div class="row">
+        <div class="col-10 offset-xs-1 col-md-4 offset-md-1">
+            <span class="PrimaryText"><i class="fa fa-user blue"></i> {{name}}</span>
+        </div>
+        <div class="col-10 offset-xs-1 col-md-4 offset-md-0">
+            <span class="blue cursor-pointer" (click)="changePassword()"><i class="fa fa-lock"></i>{{ "PROFILE_SERVICE.CHANGE_PASSWORD" | translate }}</span>
+        </div>
+        <div class="col-10 offset-xs-1 col-md-2 offset-md-0">
+            <span class="blue cursor-pointer" (click)="logOut()"><i class="fa fa-sign-out"></i>{{ "PROFILE_SERVICE.LOGOUT_BUTTON" | translate }}</span>
+        </div>
+    </div>
+    <hr class="row col-12" />
+    <div class="row">
+        <div class="col-10 offset-xs-1 col-md-5 offset-md-1">
+            <!--<img src="IMAGES/WALLET.PNG" class="logos" />-->
+            <img src="assets/resources/images/WalletBlack.PNG" class="logos" />
+            <span class="PrimaryText black">{{profileService.getBalance() | currency:'USD':'symbol':'1.2-2'}}</span>
+            <span class="SecondaryText">{{ "PROFILE_SERVICE.BALANCE" | translate }}</span>
+        </div>
+        <div class="col-10 offset-xs-1 col-md-4 offset-md-1">
+            <!--<img src="IMAGES/Reward.PNG" class="logos"  />-->
+            <img src="assets/resources/images/RewardGreen.PNG" class="logos" />
+            <span class="PrimaryText black">{{profileService.getPoints()}}</span>
+            <span class="SecondaryText">{{ "PROFILE_SERVICE.REWARDS" | translate }}</span>
+        </div>
+    </div>
+</div>

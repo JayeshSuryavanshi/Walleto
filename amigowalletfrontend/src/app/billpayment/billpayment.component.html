@@ -1,0 +1,59 @@
+<div class="card">
+    <div class="card-body">
+
+
+        <div class="block">
+
+            <form [formGroup]="form1" (ngSubmit)="payBill()">
+                <div class="row-fluid aw-input-group">
+
+                    <select class="form-control" name="servicetype" id="servicetype" formControlName="servicetype"
+                        #servicetype (change)="displayName(form1.controls.servicetype.value)"
+                        [attr.value]="form1.controls.servicetype.value?form1.controls.servicetype.value:''">
+                        <option value="" disabled></option>
+                        <option *ngFor="let type of services" [value]="type">{{type}}</option>
+                    </select>
+                    <label class="placeholder"
+                        for="servicetype">{{ "PAY_BILL.MERCHANT_PLACEHOLDER" | translate }}</label>
+                </div>
+
+
+                <br>
+
+
+                <div class="row-fluid aw-input-group" *ngIf="num1==1">
+
+                    <select class="form-control" name="merchantname" id="merchantname" formControlName="merchantname"
+                        #merchantname (change)="showBill(form1.controls.merchantname.value)"
+                        [attr.value]="form1.controls.merchantname.value?form1.controls.merchantname.value:''">
+                        <option value="" disabled></option>
+                        <option *ngFor="let mer of merchants" [value]="mer">{{mer}}</option>
+                    </select>
+                    <label class="placeholder"
+                        for="merchantname">{{ "PAY_BILL.SERVICE_PLACEHOLDER" | translate }}</label>
+                </div>
+
+
+
+
+                <br>
+                <div class="alert alert-info" *ngIf="amount!=0">
+                    <!-- <span class="amount" *ngIf="amount!=null">{{amount | currency:USD:true:'1.2-2'}}</span> -->
+                    <span class="amount" *ngIf="amount!=null">Your bill amount is : {{ amount | currency }}</span>
+                </div>
+                <br>
+                <div class="row-fluid">
+                    <button type="submit" [disabled]="!form1.valid || submitted" class="btn my-btn "><span
+                            *ngIf="!submitted">{{ 'PAY_BILL.PAY_BILL_BUTTON' | translate }}</span><i *ngIf="submitted"
+                            class="fa fa-spinner fa-pulse fa-lg fa-fw"> </i></button>
+                </div>
+            </form>
+
+            <div class="row center-message" *ngIf="(successMessage || message) ">
+                <div class="text-success " *ngIf="successMessage">{{successMessage}}</div> <br>
+                <div class="text-danger" *ngIf="message">{{message}}</div>
+            </div>
+        </div>
+    </div>
+	
+</div>

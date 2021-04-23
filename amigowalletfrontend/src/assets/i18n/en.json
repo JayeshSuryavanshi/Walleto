@@ -1,0 +1,201 @@
+{
+    "LOGIN": {
+        "LOGIN_BUTTON": "Lets Go In",
+        "EMAIL_PLACEHOLDER": "Enter email Id *",
+        "PASSWORD_PLACEHOLDER": "Enter password *",
+        "PASSWORD_FORGOT": "Did you forget your password?",
+        "INVALID_EMAIL": "Email should be in the pattern abc@pqr.xyz",
+        "REQUIRED_FIELD": "Cannot be empty"
+    },
+    "REGISTER": {
+        "REGISTER_NAME": "Enter your full name here *",
+        "REGISTER_EMAIL": "Enter your active email Id *",
+        "REGISTER_MOBILENO": "Enter your mobile number *",
+        "REGISTER_PASSWORD": "Think and give a strong password *",
+        "REGISTER_CONFIRMPASSWORD": "Re-type again the password entered *",
+        "REGISTER_BUTTON": "Register me",
+        "NAME_FORMATT_ERROR": "Name can contain only alphabets and space and cannot be empty",
+        "EMAIL_FORMATT_ERROR": "Email should start with some characters followed by '@' then some charecters then '.' and finaly with some charecters",
+        "MOBILE_NUMBER_FORMATT_ERROR": "Should be a 10 digit number",
+        "PASSWORD": {
+            "MIN_LENGTH_ERROR": "Length should be minimum 8",
+            "UPPERCASE_ERROR": "Should contain one uppercase",
+            "LOWERCASE_ERROR": "Should contain one lowercase",
+            "NUMBER_ERROR": "Should contain one number",
+            "SPECIAL_CHARECTER_ERROR": "Should contain one of !#$%^&*()"
+        },
+        "CONFIRM_PASSWORD_ERROR": "Should be same as above password",
+        "NOT_A_ROBOT" : "Whats in image*",
+        "REQUIRED_FIELD" : "This field is required"
+    },
+    "SECURITY_QUESTION": {
+        "SECURITY_QUESTION_PLACEHOLDER" : "Select one of the security question",
+        "SECURITY_QUESTION_ERROR" : "Select one of the question",
+        "SECURITY_ANSWER_PLACEHOLDER" : "Answer the security question selected",
+        "SECURITY_ANSWER_ERROR" : "This field is required",
+        "SECURITY_QUESTION_BUTTON": "Register",
+        "TIME_OUT_REDIRECT": "Redirect to login"
+    },
+
+    "LOAD_MONEY": {
+        "LOAD_BY_CARD": "Load money by card",
+        "LOAD_BY_NET_BANKING": "Load by Net banking",
+        "REMOVE_CARD": "remove",
+        "NAME_ON_CARD": "Name on card *",
+        "SELECT_BANK": "--Select the bank--",
+        "CARD_NUMBER": "Give me card number *",
+        "EXPIRY_MONTH": "Valid till month *",
+        "EXPIRY_YEAR": "Valid till year *",
+        "CARD_CVV": "CVV *",
+        "CARD_PIN": "Pin *",
+        "LOAD_AMOUNT": "How much to load? *",
+        "SAVE_LOAD_BUTTON": "Save and Load money",
+        "LOAD_BY_NEW_BUTTON": "Load with new Card",
+        "PROCEED_TO_GATEWAY": "Proceed to Gateway",
+        "CVV_FORMATT_ERROR": "Should be 3 digits",
+        "PIN_FORMATT_ERROR": "Should be 4 digits",
+        "AMOUNT": {
+            "DECIMAL_PLACE_INVALID": "can have maximum 2 decimal points",
+            "VALUE_ERROR": "should be greater than 0"
+        },
+        "LOAD_MONEY_BUTTON": "Load Money",
+        "NEW_CARD_DETAILS": "New card details",
+        "INVALID_NAME_FORMAT": "Name can contain only alphabets and spaces",
+        "INVALID_CARD_NUMBER_FORMAT": "should be 16 digits",
+        "REQUIRED_FIELD": "Cannot be empty",
+        "SELECT_BANK_PLACEHOLDER": "Select the bank *"
+    },
+    "RESET_PASSWORD": {
+        "PASSWORD": {
+            "MIN_LENGTH_ERROR": "Length should be minimum 8",
+            "UPPERCASE_ERROR": "Should contain one uppercase",
+            "LOWERCASE_ERROR": "Should contain one lowercase",
+            "NUMBER_ERROR": "Should contain one number",
+            "SPECIAL_CHARECTER_ERROR": "Should contain one of !#$%^&amp;*()"
+        },
+        "CONFIRM_PASSWORD_ERROR": "Should be same as above password",
+        "RESET_PASSWORD_BUTTON": "Update password",
+        "NEW_PASSWORD_PLACEHOLDER": "Enter new strong and rememberable password *",
+        "CONFIRM_NEW_PASSWORD_PLACEHOLDER": "Remember and enter the new password *"
+    },
+    "FORGOT_PASSWORD": {
+        "EMAIL_PLACEHOLDER": "Enter the registered email id *",
+        "INVALID_EMAIL": "Email should be in the pattern abc@pqr.xyz",
+        "FORGOT_PASSWORD_BUTTON": "Help me",
+        "BACK_TO_LOGIN": "Back to Login",
+        "SECURITY_ANSWER_PLACEHOLDER": "Answer the security question",
+        "REQUIRED_FIELD" : "Cannot be empty",
+        "SECURITY_ANSWER_BUTTON" : "Check my answer"
+    },
+    "CHANGE_PASSWORD": {
+        "CURRENT_PASSWORD_PLACEHOLDER": "Enter the password by which you just logged in *",
+        "REQUIRED_FIELD": "Cannot be empty",
+        "NEW_PASSWORD_PLACEHOLDER": "Enter new more powerfull password *",
+        "PASSWORD": {
+            "MIN_LENGTH_ERROR": "Length should be minimum 8",
+            "UPPERCASE_ERROR": "Should contain one uppercase",
+            "LOWERCASE_ERROR": "Should contain one lowercase",
+            "NUMBER_ERROR": "Should contain one number",
+            "SPECIAL_CHARECTER_ERROR": "Should contain one of !#$%^&amp;*()"
+        },
+        "CONFIRM_PASSWORD_PLACEHOLDER": "Remember and enter the new password *",
+        "CONFIRM_PASSWORD_ERROR": "Should be same as above password",
+        "CHANGE_PASSWORD_BUTTON": "Change the password",
+        "CANCEL": "Cancel"
+    },
+    "HOME": {
+        "ADD_MONEY_TO_WALLET": "   Add money to wallet",
+        "WALLET_TRANSFER": "   Transfer to wallet",
+        "PAY_BILL": "   Pay your bills",
+        "TRANSFER_TO_BANK": "   Transfer to bank",
+        "VIEW_TRANSACTIONS": "   View Transactions",
+        "TRACK_EXPENSES": "Track your expenses",
+        "REDEEM_POINTS": "   Redeem points"
+    },
+    "WELCOME": {
+        "FEATURE_1": "  Make instant payments",
+        "FEATURE_2": "  Redeem Points with every transfer",
+        "FEATURE_3": "  Easy and hassle free transfer"
+    },
+    "PAY_BILL": {
+        "MERCHANT_SELECT_OPTION_DEFAULT": "--Select a merchant--",
+        "MERCHANT_PLACEHOLDER": "Select the Merchant *",
+        "SERVICE_SELECT_OPTION_DEFAULT": "--Select the service--",
+        "SERVICE_PLACEHOLDER": "Select the Merchant Service *",
+        "PAY_BILL_BUTTON": "Pay Bill"
+    },
+    "REDEEM_POINTS": {
+        "REDEEM_POINTS_BUTTON": "Redeem Points"
+    },
+    "PROFILE_SERVICE": {
+        "CHANGE_PASSWORD": " change password",
+        "LOGOUT_BUTTON": "logout",
+        "BALANCE": "Balance",
+        "REWARDS": "Rewards"
+    },
+    "VIEW_TRANSACTIONS": {
+        "TRANSACTION_ID": "Transaction Id",
+        "TRANSACTION_TIME": "Transaction time",
+        "STATUS": "Status",
+        "INFO": "Info",
+        "AMOUNT": "Amount ($)",
+        "TRANSACTION_TYPE": "Credit/Debit"
+    },
+    "TRANSFER_TO_BANK": {
+        "ACCOUNT_NUMBER_PLACEHOLDER": "Enter Account Number *",
+        "INVALID_ACCOUNT_NUMBER": "Should be 15 digit number",
+        "IFSC_PLACEHOLDER": "Enter IFSC code *",
+        "INVALID_IFSC": "IFSC should start with 4 alphabets followed by 7 digits",
+        "ACCOUNT_HOLDER_NAME_PLACEHOLDER": "Account holder name *",
+        "INVALID_ACCOUNT_HOLDER_NAME": "Name can contain only alphabets and space",
+        "AMOUNT_PLACEHOLDER": "How much to transfer? *",
+        "AMOUNT": {
+            "DECIMAL_PLACE_INVALID": "can have maximum 2 decimal points",
+            "VALUE_ERROR": "should be greater than 0"
+        },
+        "TRANSFER_BUTTON": "Transfer"
+    },
+    "WALLET_TRANSFER": {
+        "EMAIL_ID_PLACEHOLDER": "Enter email Id*",
+        "INVALID_EMAIL": "Email should be in the pattern abc@pqr.xyz",
+        "AMOUNT": {
+            "DECIMAL_PLACE_INVALID": "can have maximum 2 decimal points",
+            "VALUE_ERROR": "should be greater than 0"
+        },
+        "TRANSFER_BUTTON": "Transfer"
+    },
+    "NET_BANKING_SUCCESS" : {
+        "LOADING" : "Loading please wait....",
+        "BACK_TO_HOME" : "Go back to Home"
+    },
+
+    "ERROR_MESSAGES" : {
+        "INVALID_CREDENTIALS": "Invalid Credentials!!!",
+        "SERVER_DOWN" : "Server Down",
+        "TRANSACTION_CANCELED" : "Transaction Canceled",
+        "NO_TRANSACTION" : "No transactions Found",
+        "TRANSFER_BANK_LOW_BALANCE" : "Your wallet balance Rs. {{ value }} is less than the amount entered",
+        "TRANSFER_BANK_INVALID_DETAILS" : "Invalid Bank Account Details",
+        "SELF_WALLET_TRANSFER_ERROR" : "You cannot send money to your self",
+        "BANKS_FETCH_FAILED" : "Failed to fetch the banks",
+        "CAPTCHA_NOT_MATCHED": "Captcha not matched",
+        "SECURITY_QUESTIONS_FETCH_FAILED": "Failed to fetch the security questions"
+    },
+
+    "SUCCESS_MESSAGES" : {
+        "ADD_MONEY_SUCCESS" : "Money loaded successfully",
+        "LOAD_CARD_SUCCESS" : "Card added and money loaded successfully",
+        "NET_BANKING_SUCCESS" : "Transaction success with transaction Id : ",
+        "CARD_DELETE_SUCCESS" : "Card deleted successfuly",
+        "TRANSFER_TO_BANK_SUCCESS" : "Money was sucessfully trasferred to bank account. Transaction id : "
+    },
+
+    "OTHER" : {
+        "REDIRECT1" : ", Redirecting to Login page ...",
+        "REDIRECT2" : "Redirecting to Login page ...",
+        "REDIRECT_CHANGE_PASSWORD" : "You are being forcefully logged out. Redirecting to Login page ...",
+        "REMOVE_CONFIRM_MESSAGE" : "Do you want to remove card",
+        "REDIRECT_NET_BANKING" : "Will be redirected to home page..."
+    }
+
+}

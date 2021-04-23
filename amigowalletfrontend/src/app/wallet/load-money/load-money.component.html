@@ -1,0 +1,446 @@
+<div>
+    <div class="card">
+        <div class="card-body">
+
+
+
+        <div class="form-inline">
+            <!--(click) directive specifies the changeType() function to run when the
+        corresponding radio button is clicked-->
+            <label class="radio form-group">
+                <input type="radio" name="paymentType" class="form-control" value="debit" (click)="changeType('debit')"
+                    checked>
+                <span>{{ "LOAD_MONEY.LOAD_BY_CARD" | translate }}</span>
+            </label>
+            <label class="radio form-group">
+                <input type="radio" name="paymentType" class="form-control" value="net" (click)="changeType('net')">
+                <span>{{ "LOAD_MONEY.LOAD_BY_NET_BANKING" | translate }}</span>
+            </label>
+        </div>
+
+        <div *ngIf="paymentType == 'debit'">
+            <div class="block-card"
+                *ngFor="let card of cards | paginate: {itemsPerPage: 1, currentPage:page, id: '1' }">
+                <!--ngSubmit directive specifies "addMoney()" function to run when the form is submitted-->
+                <form [formGroup]="form" (ngSubmit)="addMoney(card)">
+                    <div class="row">
+                        <div class="col-4 col-md-4">
+                            <span class="bank">{{card.bank.bankName}}</span>
+                        </div>
+                        <div class="col-2 col-md-2">
+                            <span class="cardType"><img src="assets/resources/images/visaLogo.png"></span>
+                        </div>
+                        <div class="col-2 offset-xs-4 col-md-2 offset-md-4">
+                            <span class="ancor" data-toggle="modal"
+                                data-target="#myModal">{{ "LOAD_MONEY.REMOVE_CARD" | translate }}</span>
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            Are you sure you need to delete the card {{card.cardNumber.substring(0,4)}}
+                                            XXXX
+                                            XXXX {{card.cardNumber.substring(12)}}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn" (click)="removeCard(card.cardId)"
+                                                data-dismiss="modal">Confirm</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row margin-bottom-5" (click)="savedCardClick(card.cardNumber)">
+                        <div class="col-12 col-md-12">
+                            <span class="cardNumber">{{card.cardNumber.substring(0,4)}} XXXX XXXX
+                                {{card.cardNumber.substring(12)}}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input type="hidden" formControlName="debitCardNumber" [ngModel]="card.cardNumber">
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="!addCardFlag && card.cardNumber==selectedCard">
+                        <div class="col-6 col-md-6">
+                            <br>
+                            <span class="expiryDate" title="Expiry date">{{card.expiryDate | date: 'MM/yyyy'}}</span>
+                            <input type="hidden" formControlName="validThru" [ngModel]="card.expiryDate">
+                        </div>
+                        <div class="col-6 col-md-6 ">
+                            <div class="form-group aw-input-group">
+                                <input type="password" class="form-control" name="cvv" id="scvv" required
+                                    formControlName="cvv" maxlength="3" minlength="3"
+                                    [attr.value]="form.controls.cvv.value?form.controls.cvv.value:''">
+                                <label class="placeholder" for="scvv">{{ "LOAD_MONEY.CARD_CVV" | translate }}</label>
+                                <div class="error-icon" *ngIf="form.controls.cvv.dirty">
+                                    <i *ngIf="form.controls.cvv.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                                    <i *ngIf="!form.controls.cvv.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                                </div>
+                                <div class="error-message-bottom">
+                                    <!--The following line is used to display the error message when cvv is in wrong format.
+                                    [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                                    {{ 'LOAD_MONEY.CVV_FORMATT_ERROR' | translate }}
+                                    <i *ngIf="!form.controls.cvv.hasError('pattern') && !form.controls.cvv.hasError('required')"
+                                        class="fa fa-check faa-burst valid"></i>
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="!addCardFlag && card.cardNumber==selectedCard">
+                        <div class="col-12 col-md-12">
+                            <div class="form-group aw-input-group">
+                                <input type="password" name="pin" id="pin" required formControlName="pin"
+                                    class="form-control" maxlength="4" minlength="4"
+                                    [attr.value]="form.controls.pin.value?form.controls.pin.value:''">
+                                <label class="placeholder" for="pin">{{ "LOAD_MONEY.CARD_PIN" | translate }}</label>
+                                <div class="error-icon" *ngIf="form.controls.pin.dirty">
+                                    <i *ngIf="form.controls.pin.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                                    <i *ngIf="!form.controls.pin.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                                </div>
+                                <div class="error-message-bottom">
+                                    <!--The following line is used to display the error message when pin is in wrong format.
+                                    [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                                    {{ 'LOAD_MONEY.PIN_FORMATT_ERROR' | translate }}
+                                    <i *ngIf="!form.controls.pin.hasError('pattern') && !form.controls.pin.hasError('required')"
+                                        class="fa fa-check faa-burst valid"></i>
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="!addCardFlag && card.cardNumber==selectedCard">
+                        <div class="col-12 col-md-12">
+                            <div class="form-group aw-input-group">
+                                <input type="number" step="0.01" min="0" required formControlName="amount" name="amount"
+                                    id="amount" class="form-control"
+                                    [attr.value]="form.controls.amount.value?form.controls.amount.value:''">
+                                <label class="placeholder"
+                                    for="amount">{{ "LOAD_MONEY.LOAD_AMOUNT" | translate }}</label>
+                                <div class="error-icon" *ngIf="form.controls.amount.dirty">
+                                    <i *ngIf="form.controls.amount.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                                    <i *ngIf="!form.controls.amount.valid"
+                                        class="fa fa-times fa-lg faa-burst invalid"></i>
+                                </div>
+                                <div class="error-message-bottom">
+
+                                    <!--The following line ensures that amount cannot be less than or equal to 0
+                                    [hidden] attribute becomes false when it is left blank and message is displayed-->
+                                    {{ "LOAD_MONEY.AMOUNT.VALUE_ERROR" | translate }}
+                                    <i *ngIf="!form.controls.amount.hasError('min') && !form.controls.amount.hasError('required')"
+                                        class="fa fa-check faa-burst valid"></i>
+                                    <br>
+
+                                    <!--The following line is used to display the error message when amount is in wrong format.
+                                    [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                                    {{ "LOAD_MONEY.AMOUNT.DECIMAL_PLACE_INVALID" | translate }}
+                                    <i *ngIf="!form.controls.amount.hasError('pattern') && !form.controls.amount.hasError('required')"
+                                        class="fa fa-check faa-burst valid"></i>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-fluid" *ngIf="!addCardFlag && card.cardNumber==selectedCard">
+                        <br><button type="submit" [disabled]="!form.valid || submitted" class="btn my-btn "><span
+                                *ngIf="!submitted">{{ "LOAD_MONEY.LOAD_MONEY_BUTTON" | translate }}</span><i
+                                *ngIf="submitted" class="fa fa-spinner fa-pulse fa-lg fa-fw"> </i></button>
+                    </div>
+                    <div class="row center-message"
+                        *ngIf="(!addCardFlag && card.cardNumber==selectedCard) && (successMessage!=null || message!=null) ">
+                        <div class="text-success ">{{successMessage}}</div> <br>
+                        <div class="text-danger">{{message}}</div>
+                    </div>
+                </form>
+            </div>
+            <div class="row center-message" *ngIf="(removeFlag) && (successMessage!=null || message!=null) ">
+                <div class="text-success ">{{successMessage}}</div> <br>
+                <div class="text-danger">{{message}}</div>
+            </div>
+            <div *ngIf="cards !=null && cards.length !=0">
+                <pagination-template class="navigationControls" #pagination="paginationApi" (pageChange)="page = $event"
+                    id="1" maxSize="10">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <span class="pagination-previous cursor-pointer">
+                                <a *ngIf="!pagination.isFirstPage()" (click)="pagination.previous(); pageChange();">
+                                    &lt;&lt;Previous card </a>
+                            </span>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="pagination-next cursor-pointer">
+                                <a *ngIf="!pagination.isLastPage()" (click)="pagination.next(); pageChange();"> Next
+                                    card&gt;&gt; </a>
+                            </span>
+                        </div>
+                    </div>
+                </pagination-template>
+                <hr>
+            </div>
+
+            <div class="block" *ngIf="addCardFlag">
+                <form [formGroup]="newCardForm" (ngSubmit)="loadMoneyByNewCard()">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 heading">{{ 'LOAD_MONEY.NEW_CARD_DETAILS' | translate }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-12">
+                            <div class="form-group aw-input-group">
+                                <select class="form-control"
+                                    [attr.value]="newCardForm.controls.bank.value?newCardForm.controls.bank.value:''"
+                                    formControlName="bank" id="bank" required>
+                                    <option value="" disabled></option>
+                                    <option *ngFor="let ibank of banks" [value]="ibank.bankId">{{ ibank.bankName }}
+                                    </option>
+                                </select>
+                                <label class="placeholder"
+                                    for="bank">{{ 'LOAD_MONEY.SELECT_BANK_PLACEHOLDER' | translate }}</label>
+                                <!-- <div class="error-icon" *ngIf="newCardForm.controls.bank.dirty">
+                                <i *ngIf="newCardForm.controls.bank.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                                <i *ngIf="!newCardForm.controls.bank.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                            </div> -->
+                                <div class="error-message-top" *ngIf="newCardForm.controls.bank.hasError('required')">
+                                    <span
+                                        class="text-danger pull-right">{{ 'LOAD_MONEY.REQUIRED_FIELD' | translate }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-12">
+                            <div class="form-group aw-input-group">
+                                <input type="text" formControlName="cardHolderName" required name="cardHolderName"
+                                    id="cardHolderName"
+                                    [attr.value]="newCardForm.controls.cardHolderName.value?newCardForm.controls.cardHolderName.value:''"
+                                    class="form-control">
+                                <label class="placeholder"
+                                    for="cardHolderName">{{ 'LOAD_MONEY.NAME_ON_CARD' | translate }}</label>
+                                <div class="error-icon" *ngIf="newCardForm.controls.cardHolderName.dirty">
+                                    <i *ngIf="newCardForm.controls.cardHolderName.valid"
+                                        class="fa fa-check fa-lg faa-burst valid"></i>
+                                    <i *ngIf="!newCardForm.controls.cardHolderName.valid"
+                                        class="fa fa-times fa-lg faa-burst invalid"></i>
+                                </div>
+                                <div class="error-message-bottom">
+                                    {{'LOAD_MONEY.INVALID_NAME_FORMAT' | translate }}
+                                    <i *ngIf="!newCardForm.controls.cardHolderName.hasError('pattern') && !newCardForm.controls.cardHolderName.hasError('required')"
+                                        class="fa fa-check faa-burst valid"></i>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-12">
+                            <div class="form-group aw-input-group">
+                                <input type="text" formControlName="debitCardNumber" required name="cardNumber"
+                                    id="cardNumber" class="form-control" minlength="16" maxlength="16"
+                                    [attr.value]="newCardForm.controls.debitCardNumber.value?newCardForm.controls.debitCardNumber.value:''">
+                                <label class="placeholder"
+                                    for="cardNumber">{{ 'LOAD_MONEY.CARD_NUMBER' | translate }}</label>
+                                <div class="error-icon" *ngIf="newCardForm.controls.debitCardNumber.dirty">
+                                    <i *ngIf="newCardForm.controls.debitCardNumber.valid"
+                                        class="fa fa-check fa-lg faa-burst valid"></i>
+                                    <i *ngIf="!newCardForm.controls.debitCardNumber.valid"
+                                        class="fa fa-times fa-lg faa-burst invalid"></i>
+                                </div>
+                                <div class="error-message-bottom">
+                                    {{ 'LOAD_MONEY.INVALID_CARD_NUMBER_FORMAT' | translate }}
+                                    <i *ngIf="!newCardForm.controls.debitCardNumber.hasError('pattern') && !newCardForm.controls.debitCardNumber.hasError('required')"
+                                        class="fa fa-check faa-burst valid"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-6">
+                            <div class="form-group aw-input-group">
+                                <select class="form-control"
+                                    [attr.value]="newCardForm.controls.validMonth.value?newCardForm.controls.validMonth.value:''"
+                                    formControlName="validMonth" id="validMonth" required name="cardExpiry">
+                                    <option value="" disabled></option>
+                                    <option *ngFor="let i of month" [value]="i">{{i}}</option>
+                                </select>
+                                <label class="placeholder"
+                                    for="validMonth">{{ 'LOAD_MONEY.EXPIRY_MONTH' | translate }}</label>
+                                <!-- <div class="error-icon" *ngIf="newCardForm.controls.validMonth.dirty">
+                                <i *ngIf="newCardForm.controls.validMonth.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                                <i *ngIf="!newCardForm.controls.validMonth.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                            </div> -->
+                                <div class="error-message-top"
+                                    *ngIf="newCardForm.controls.validMonth.hasError('required')">
+                                    <span
+                                        class="text-danger pull-right">{{ 'LOAD_MONEY.REQUIRED_FIELD' | translate }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6">
+                            <div class="form-group aw-input-group">
+                                <select class="form-control" formControlName="validYear" id="validYear" required
+                                    name="cardExpiry"
+                                    [attr.value]="newCardForm.controls.validYear.value?newCardForm.controls.validYear.value:''">
+                                    <option value="" disabled></option>
+                                    <option *ngFor="let i of year" [value]="i">{{i}}</option>
+                                </select>
+                                <label class="placeholder"
+                                    for="validYear">{{ 'LOAD_MONEY.EXPIRY_YEAR' | translate }}</label>
+                                <!-- <div class="error-icon" *ngIf="newCardForm.controls.validYear.dirty">
+                                <i *ngIf="newCardForm.controls.validYear.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                                <i *ngIf="!newCardForm.controls.validYear.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                            </div> -->
+                                <div class="error-message-top" *ngIf="!newCardForm.controls.validYear.valid">
+                                    <span
+                                        class="text-danger pull-right">{{ 'LOAD_MONEY.REQUIRED_FIELD' | translate }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-6">
+                            <div class="form-group aw-input-group">
+                                <input type="password" formControlName="cvv" class="form-control" required name="cvv"
+                                    name="ncvv" minlength="3" maxlength="3"
+                                    [attr.value]="newCardForm.controls.cvv.value?newCardForm.controls.cvv.value:''">
+                                <label class="placeholder" for="ncvv">{{ 'LOAD_MONEY.CARD_CVV' | translate }}</label>
+                                <div class="error-icon" *ngIf="newCardForm.controls.cvv.dirty">
+                                    <i *ngIf="newCardForm.controls.cvv.valid"
+                                        class="fa fa-check fa-lg faa-burst valid"></i>
+                                    <i *ngIf="!newCardForm.controls.cvv.valid"
+                                        class="fa fa-times fa-lg faa-burst invalid"></i>
+                                </div>
+                                <div class="error-message-bottom">
+                                    <!--The following line is used to display the error message when cvv is in wrong format.
+                                    [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                                    {{ 'LOAD_MONEY.CVV_FORMATT_ERROR' | translate }}
+                                    <i *ngIf="!newCardForm.controls.cvv.hasError('pattern') && !newCardForm.controls.cvv.hasError('required')"
+                                        class="fa fa-check faa-burst valid"></i>
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-6">
+                            <div class="form-group aw-input-group">
+                                <input type="password" formControlName="pin" required name="pin" name="npin"
+                                    class="form-control" maxlength="4" minlength="4"
+                                    [attr.value]="newCardForm.controls.pin.value?newCardForm.controls.pin.value:''">
+                                <label class="placeholder" for="ncvv">{{ 'LOAD_MONEY.CARD_PIN' | translate }}</label>
+                                <div class="error-icon" *ngIf="newCardForm.controls.pin.dirty">
+                                    <i *ngIf="newCardForm.controls.pin.valid"
+                                        class="fa fa-check fa-lg faa-burst valid"></i>
+                                    <i *ngIf="!newCardForm.controls.pin.valid"
+                                        class="fa fa-times fa-lg faa-burst invalid"></i>
+                                </div>
+                                <div class="error-message-bottom">
+                                    <!--The following line is used to display the error message when pin is in wrong format.
+                                    [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                                    {{ 'LOAD_MONEY.PIN_FORMATT_ERROR' | translate }}
+                                    <i *ngIf="!newCardForm.controls.pin.hasError('pattern') && !newCardForm.controls.pin.hasError('required')"
+                                        class="fa fa-check faa-burst valid"></i>
+                                    <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 col-md-12">
+                            <div class="form-group aw-input-group">
+                                <input type="number" formControlName="amount" step="0.01" min="0" required name="amount"
+                                    id="namount" class="form-control"
+                                    [attr.value]="newCardForm.controls.amount.value?newCardForm.controls.amount.value:''" />
+                                <label class="placeholder"
+                                    for="namount">{{ 'LOAD_MONEY.LOAD_AMOUNT' | translate }}</label>
+                                <div class="error-icon" *ngIf="newCardForm.controls.amount.dirty">
+                                    <i *ngIf="newCardForm.controls.amount.valid"
+                                        class="fa fa-check fa-lg faa-burst valid"></i>
+                                    <i *ngIf="!newCardForm.controls.amount.valid"
+                                        class="fa fa-times fa-lg faa-burst invalid"></i>
+                                </div>
+                                <div class="error-message-bottom">
+                                    <!--The following line ensures that amount cannot be less than or equal to 0
+                                    [hidden] attribute becomes false when it is left blank and message is displayed-->
+                                    {{ "LOAD_MONEY.AMOUNT.VALUE_ERROR" | translate }}
+                                    <i *ngIf="!newCardForm.controls.amount.hasError('min') && !newCardForm.controls.amount.hasError('required')"
+                                        class="fa fa-check faa-burst valid"></i>
+                                    <br>
+
+                                    <!--The following line is used to display the error message when amount is in wrong format.
+                                    [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                                    {{ "LOAD_MONEY.AMOUNT.DECIMAL_PLACE_INVALID" | translate }}
+                                    <i *ngIf="!newCardForm.controls.amount.hasError('pattern') && !newCardForm.controls.amount.hasError('required')"
+                                        class="fa fa-check faa-burst valid"></i>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div><br>
+                    <div class="row-fluid">
+                        <button type="submit" [disabled]="!newCardForm.valid || submitted"
+                            class="btn my-btn btn-gateway"><span
+                                *ngIf="!submitted">{{ 'LOAD_MONEY.SAVE_LOAD_BUTTON' | translate }}</span><i
+                                *ngIf="submitted" class="fa fa-spinner fa-pulse fa-lg fa-fw"> </i></button>
+                    </div>
+                    <div class="row center-message" *ngIf="(successMessage!=null || message!=null) ">
+                        <div class="text-success ">{{successMessage}}</div> <br>
+                        <div class="text-danger">{{message}}</div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="block" *ngIf="!addCardFlag">
+                <div class="row">
+                    <div class="col-md-10 offset-md-1">
+                        <button class="btn my-btn "
+                            (click)="addNewCardClick()">{{ 'LOAD_MONEY.LOAD_BY_NEW_BUTTON' | translate }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="paymentType == 'net'">
+            <!--ngSubmit directive specifies "netBanking()" function to run when the form is submitted-->
+            <form [formGroup]="netForm" (ngSubmit)="netBanking()">
+                <div class="row">
+                    <div class="col-12 col-md-12">
+                        <div class="form-group aw-input-group">
+                            <input type="number" step="0.01" min="0" formControlName="amount" id="netAmount" required
+                                name="amount" class="form-control"
+                                [attr.value]="netForm.controls.amount.value?netForm.controls.amount.value:''">
+                            <label class="placeholder"
+                                for="netAmount">{{ 'LOAD_MONEY.LOAD_AMOUNT' | translate }}</label>
+                            <div class="error-icon" *ngIf="netForm.controls.amount.dirty">
+                                <i *ngIf="netForm.controls.amount.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                                <i *ngIf="!netForm.controls.amount.valid"
+                                    class="fa fa-times fa-lg faa-burst invalid"></i>
+                            </div>
+                            <div class="error-message-right">
+                                <!--The following line ensures that amount cannot be less than or equal to 0
+                                    [hidden] attribute becomes false when it is left blank and message is displayed-->
+                                {{ "LOAD_MONEY.AMOUNT.VALUE_ERROR" | translate }}
+                                <i *ngIf="!netForm.controls.amount.hasError('min') && !netForm.controls.amount.hasError('required')"
+                                    class="fa fa-check faa-burst valid"></i>
+                                <br>
+
+                                <!--The following line is used to display the error message when amount is in wrong format.
+                                    [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                                {{ "LOAD_MONEY.AMOUNT.DECIMAL_PLACE_INVALID" | translate }}
+                                <i *ngIf="!netForm.controls.amount.hasError('pattern') && !netForm.controls.amount.hasError('required')"
+                                    class="fa fa-check faa-burst valid"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row-fluid">
+                        <div class="col-12">
+                            <button type="submit" [disabled]="!netForm.valid"
+                                class="btn my-btn center">{{ 'LOAD_MONEY.PROCEED_TO_GATEWAY' | translate }}</button>
+                        </div>
+                    </div>
+                    <div class="row center-message" *ngIf="(successMessage!=null || message!=null) ">
+                        <div class="text-success ">{{successMessage}}</div> <br>
+                        <div class="text-danger">{{message}}</div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>

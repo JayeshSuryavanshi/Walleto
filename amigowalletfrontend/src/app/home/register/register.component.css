@@ -1,0 +1,30 @@
+.recaptcha > img {
+    border: 1px solid black; 
+}
+.recaptcha {
+    text-align: left;
+    margin-top: 10%; 
+}
+
+.recaptcha > .recaptcha-refresh {
+    width: 2%;
+    cursor: pointer;
+}
+
+.disabled {
+    cursor: no-drop !important;
+}
+
+@media only screen and (min-width : 768px) {
+    .recaptcha {
+        margin-left: -10%;
+    }
+}
+
+@media only screen and (max-width : 768px) {
+    .recaptcha {
+        display: block;
+        width: fit-content;
+        margin: auto; 
+    }
+}

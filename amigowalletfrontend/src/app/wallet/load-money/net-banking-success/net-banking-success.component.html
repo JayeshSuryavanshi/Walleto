@@ -1,0 +1,31 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-4">
+      <img src="assets/resources/images/AmigoLogo.png" class="img-responsive" />
+    </div>
+    <div class="col-sm-5">
+    </div>
+  </div>
+  <br>
+  <br>
+
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6" *ngIf="!loading">
+      <div class="valid" *ngIf="successMessage != null">
+        <h3>{{successMessage}}</h3><br>
+        <h3>{{redirectMessage}}</h3>
+      </div>
+      <div class="invalid" *ngIf="errorMessage != null">
+        <h3>{{errorMessage}}</h3>
+      </div>
+    </div>
+    <div class="col-md-6 center" *ngIf="loading">
+      {{ "NET_BANKING_SUCCESS.LOADING" | translate }}
+    </div>
+  </div>
+  <div class="row centerBlock" *ngIf="errorMessage != null">
+    <a [routerLink]="['/home']">{{ "NET_BANKING_SUCCESS.BACK_TO_HOME" | translate }}</a>
+  </div>
+</div>

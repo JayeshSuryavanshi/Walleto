@@ -1,0 +1,148 @@
+<div class="card col-md-12">
+    <div class="card-body">
+
+          <h1 class="card-title">
+            Please enter the required details
+          </h1>
+
+          <form [formGroup]="bankAccountForm" (submit)="onSubmit()">
+
+            <div class="row">
+              <div class="form-group aw-input-group">
+                <input 
+                  class="form-control" 
+                  type="text" 
+                  id="ifsc" 
+                  name="ifsc" 
+                  [attr.value]="bankAccountForm.controls.ifsc.value?bankAccountForm.controls.ifsc.value:''"
+                  formControlName="ifsc">
+                <label class="placeholder" for="ifsc">
+                  {{ "TRANSFER_TO_BANK.IFSC_PLACEHOLDER" | translate }}
+                </label>
+
+                <div class="error-icon" *ngIf="bankAccountForm.controls.ifsc.dirty">
+                    <i *ngIf="bankAccountForm.controls.ifsc.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                    <i *ngIf="!bankAccountForm.controls.ifsc.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                </div>
+                <div class="error-message-bottom">
+                    <!--The following line is used to display the error message when ifsc is in wrong format.
+                            [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                    {{ 'TRANSFER_TO_BANK.INVALID_IFSC' | translate }}
+                    <i *ngIf="!bankAccountForm.controls.ifsc.hasError('pattern') && !bankAccountForm.controls.ifsc.hasError('required')"
+                        class="fa fa-check faa-burst valid"></i>
+                    <br />
+                </div>
+
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="form-group aw-input-group">
+                <input 
+                  class="form-control" 
+                  type="number" 
+                  id="accountNumber" 
+                  name="accountNumber" 
+                  [attr.value]="bankAccountForm.controls.accountNumber.value?bankAccountForm.controls.accountNumber.value:''"
+                  formControlName="accountNumber">
+                <label class="placeholder" for="accountNumber">
+                  {{ "TRANSFER_TO_BANK.ACCOUNT_NUMBER_PLACEHOLDER" | translate }}
+                </label>
+
+                <div class="error-icon" *ngIf="bankAccountForm.controls.accountNumber.dirty">
+                    <i *ngIf="bankAccountForm.controls.accountNumber.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                    <i *ngIf="!bankAccountForm.controls.accountNumber.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                </div>
+                <div class="error-message-bottom">
+                    <!--The following line is used to display the error message when accountNumber is in wrong format.
+                            [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                    {{ 'TRANSFER_TO_BANK.INVALID_ACCOUNT_NUMBER' | translate }}
+                    <i *ngIf="!bankAccountForm.controls.accountNumber.hasError('pattern') && !bankAccountForm.controls.accountNumber.hasError('required')"
+                        class="fa fa-check faa-burst valid"></i>
+                    <br />
+                </div>
+
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="form-group aw-input-group">
+                <input 
+                  class="form-control" 
+                  type="text" 
+                  id="accountHolderName" 
+                  name="accountHolderName" 
+                  [attr.value]="bankAccountForm.controls.accountHolderName.value?bankAccountForm.controls.accountHolderName.value:''"
+                  formControlName="accountHolderName">
+                <label class="placeholder" for="accountHolderName">
+                  {{ "TRANSFER_TO_BANK.ACCOUNT_HOLDER_NAME_PLACEHOLDER" | translate }}
+                </label>
+
+                <div class="error-icon" *ngIf="bankAccountForm.controls.accountHolderName.dirty">
+                    <i *ngIf="bankAccountForm.controls.accountHolderName.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                    <i *ngIf="!bankAccountForm.controls.accountHolderName.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                </div>
+                <div class="error-message-bottom">
+                    <!--The following line is used to display the error message when accountHolderName is in wrong format.
+                            [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                    {{ 'TRANSFER_TO_BANK.INVALID_ACCOUNT_HOLDER_NAME' | translate }}
+                    <i *ngIf="!bankAccountForm.controls.accountHolderName.hasError('pattern') && !bankAccountForm.controls.accountHolderName.hasError('required')"
+                        class="fa fa-check faa-burst valid"></i>
+                    <br />
+                </div>
+
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="form-group aw-input-group">
+                <input 
+                  class="form-control" 
+                  type="text" 
+                  id="amount" 
+                  name="amount" 
+                  [attr.value]="bankAccountForm.controls.amount.value?bankAccountForm.controls.amount.value:''"
+                  formControlName="amount">
+                <label class="placeholder" for="amount">
+                  {{ "TRANSFER_TO_BANK.AMOUNT_PLACEHOLDER" | translate }}
+                </label>
+
+                <div class="error-icon" *ngIf="bankAccountForm.controls.amount.dirty">
+                    <i *ngIf="bankAccountForm.controls.amount.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                    <i *ngIf="!bankAccountForm.controls.amount.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                </div>
+                <div class="error-message-bottom">
+                    <!--The following line is used to display the error message when amount is in wrong format.
+                            [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                    Amount {{ 'TRANSFER_TO_BANK.AMOUNT.VALUE_ERROR' | translate }}
+                    <span *ngIf="bankAccountForm.controls.amount.errors && bankAccountForm.controls.amount.errors.pattern ">
+                      and {{ 'TRANSFER_TO_BANK.AMOUNT.DECIMAL_PLACE_INVALID' | translate }}
+                    </span>
+                    <i *ngIf="!bankAccountForm.controls.amount.hasError('pattern') && !bankAccountForm.controls.amount.hasError('required')"
+                        class="fa fa-check faa-burst valid"></i>
+                    <br />
+                </div>
+
+              </div>
+            </div>
+
+            <div class="row">
+              <button class="btn my-btn"
+                [disabled]="this.bankAccountForm.invalid">
+                {{ "TRANSFER_TO_BANK.TRANSFER_BUTTON" | translate }}
+              </button>
+            </div>
+          </form>
+
+          <p class="alert alert-danger" *ngIf="errorMessage">
+            {{ errorMessage | translate:{'value': profileService.getBalance() | currency:'USD' } }}
+          </p>
+          <p class="alert alert-success" *ngIf="successMessage">
+            {{ successMessage | translate }} {{ transactionId }}
+          </p>
+
+    </div>
+</div>

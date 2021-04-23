@@ -1,0 +1,21 @@
+<div class="card col-md-12">
+  <div class="card-body">
+    <div *ngIf="!errorMessage">
+      <p>
+        You have spent 
+        <b>
+          {{ moneySpentThisMonth | currency }}
+        </b> this month
+      </p>
+      <p>
+        Projected expenditure for this month : <b>{{ projectedMonthlyExpenditure | currency}}</b>
+      </p>
+      <p>
+        Your average monthly spending : <b>{{ avgMonthlySpending  | currency }}</b>
+      </p>
+    </div>
+  </div>
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+</div>

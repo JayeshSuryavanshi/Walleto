@@ -1,0 +1,70 @@
+
+<div class="card">
+    <div class="card-body">
+
+
+      <form [formGroup]="tranfertowallet" (ngSubmit)="transfer()">
+          <div class="row">
+              <div class="col-12 col-md-12">
+                  <div class="form-group aw-input-group">
+                      <input type="email" step="0.01" min="0" formControlName="emailid" id="mail" required
+                          name="emailid" class="form-control"
+                          [attr.value]="tranfertowallet.controls.emailid.value?tranfertowallet.controls.emailid.value:''">
+                      <label class="placeholder" for="mail">{{ 'WALLET_TRANSFER.EMAIL_ID_PLACEHOLDER' | translate }}</label>
+                      <div class="error-icon" *ngIf="tranfertowallet.controls.emailid.dirty">
+                          <i *ngIf="tranfertowallet.controls.emailid.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                          <i *ngIf="!tranfertowallet.controls.emailid.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                      </div>
+                      <div class="error-message-right">
+
+                          
+                          {{ "WALLET_TRANSFER.INVALID_EMAIL" | translate }}
+                          <i *ngIf="!tranfertowallet.controls.emailid.valid && !tranfertowallet.controls.emailid.hasError('required')"
+                              class="fa fa-check faa-burst valid"></i>
+                          <br>
+                      </div>
+                  </div>
+                </div></div>
+                <div class="row">
+                    <div class="col-12 col-md-12">
+                        <div class="form-group aw-input-group">
+                            <input type="number" formControlName="transferamount" step="0.01" min="0" required name="transferamount"
+                                id="amount" class="form-control" 
+                                [attr.value]="tranfertowallet.controls.transferamount.value?tranfertowallet.controls.transferamount.value:''" />
+                            <label class="placeholder" for="amount">{{ 'TRANSFER_TO_BANK.AMOUNT_PLACEHOLDER' | translate }}</label>
+                            <div class="error-icon" *ngIf="tranfertowallet.controls.transferamount.dirty">
+                                <i *ngIf="tranfertowallet.controls.transferamount.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                                <i *ngIf="!tranfertowallet.controls.transferamount.valid"
+                                    class="fa fa-times fa-lg faa-burst invalid"></i>
+                            </div>
+                            <div class="error-message-right">
+                                <!--The following line ensures that amount cannot be less than or equal to 0
+                                        [hidden] attribute becomes false when it is left blank and message is displayed-->
+                            {{ "WALLET_TRANSFER.AMOUNT.VALUE_ERROR" | translate }}
+                            <i *ngIf="!tranfertowallet.controls.transferamount.hasError('min') && !tranfertowallet.controls.transferamount.hasError('required')"
+                                class="fa fa-check faa-burst valid"></i>
+                            <br>
+
+                            <!--The following line is used to display the error message when amount is in wrong format.
+                                        [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                            {{ "WALLET_TRANSFER.AMOUNT.DECIMAL_PLACE_INVALID" | translate }}
+                            <i *ngIf="!tranfertowallet.controls.transferamount.hasError('pattern') && !tranfertowallet.controls.transferamount.hasError('required')"
+                                class="fa fa-check faa-burst valid"></i>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <button type="submit" [disabled]="!tranfertowallet.valid || tranfertowallet.pristine"
+                    class="btn my-btn btn-gateway"><span
+                        *ngIf="!submitted">{{ 'WALLET_TRANSFER.TRANSFER_BUTTON' | translate }}</span><i
+                        *ngIf="submitted" class="fa fa-spinner fa-pulse fa-lg fa-fw"> </i></button>
+            </div>
+            <div class="row center-message" *ngIf="(successMessage!=null || errorMessage!=null) ">
+                <div class="text-success ">{{successMessage}}</div> <br>
+                <div class="text-danger">{{errorMessage}}</div>
+            </div>
+        </form>
+    </div>
+</div>

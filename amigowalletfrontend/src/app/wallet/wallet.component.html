@@ -1,0 +1,43 @@
+<div class="row">
+  <div class="col-md-4 offset-md-2 col-12">
+    <img src="assets/resources/images/AmigoLogo.png" class="img-responsive" />
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6 offset-md-3 col-sm-12">
+    <!-- selecter of user defined component -->
+    <aw-profile></aw-profile>
+  </div>
+</div>
+
+<!-- <div class="row">
+  <div class="col-md-6 offset-md-3 col-sm-12" *ngIf="selectedOption">
+    <router-outlet></router-outlet>
+  </div>
+</div> -->
+
+<div *ngFor="let feature of featureButtons; let i = index">
+  <div class="row">
+    <div  class="col-md-6 offset-md-3 col-sm-12 noBorderLink feature-button" (click)="selectedOption=i" routerLink="{{ feature.routerLink }}">
+      <div class="card">
+        <div class="row no-gutters">
+          <div class="col-1 col-md-2">
+            <img [src]="feature.logoURL" class="card-img align-middle" alt="...">
+          </div>
+          <div class="col-11 col-md-10">
+            <div class="card-body">
+              <h3 class="card-header align-top" [class.Sliding]="selectedOption==i">
+                {{ feature.featureName | translate }}
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div [@expandCollapse]="true" class="row" *ngIf="i == selectedOption">
+    <div class="col-md-6 offset-md-3 col-sm-12">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div> 

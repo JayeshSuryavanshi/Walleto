@@ -1,0 +1,187 @@
+<!--ngSubmit directive specifies "register()" function to run when the form is submitted-->
+<form [formGroup]="form1" class="form form-horizontal" (ngSubmit)="register()">
+    <div class="card">
+        <div class="card-body">
+
+    <div class="row">
+        <div class="col-12 col-sm-12 offset-sm-0 col-md-12">
+            <div class="form-group aw-input-group">
+                <input type="text" class="form-control" formControlName="name" name="name" id="name" autocomplete=""
+                    [attr.value]="form1.controls.name.value?form1.controls.name.value:''" required autofocus />
+                <label class="placeholder" for="name">{{ 'REGISTER.REGISTER_NAME' | translate }}</label>
+
+                <div class="error-message-bottom">
+                    <!--The following line is used to display the error message when name is in wrong format.
+                        [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                    {{ 'REGISTER.NAME_FORMATT_ERROR' | translate }}
+                    <i *ngIf="!form1.controls.name.hasError('pattern') && !form1.controls.name.hasError('required')"
+                        class="fa fa-check faa-burst valid"></i>
+                    <br />
+                </div>
+
+                <div class="error-icon" *ngIf="form1.controls.name.dirty">
+                    <i *ngIf="form1.controls.name.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                    <i *ngIf="!form1.controls.name.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-12  col-sm-12 offset-sm-0 col-md-12">
+            <div class="form-group aw-input-group">
+                <input type="email" class="form-control" formControlName="emailId" name="emailId"
+                    [attr.value]="form1.controls.emailId.value?form1.controls.emailId.value:''" id="emailId"
+                    autocomplete="" required autofocus />
+
+                <label class="placeholder" for="emailId">{{ 'REGISTER.REGISTER_EMAIL' | translate }}</label>
+
+                <div class="error-message-bottom">
+                    <!--The following line is used to display the error message when emailId is in wrong format.
+                            [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                    {{ 'REGISTER.EMAIL_FORMATT_ERROR' | translate }}
+                    <i *ngIf="!form1.controls.emailId.hasError('pattern') && !form1.controls.emailId.hasError('required')"
+                        class="fa fa-check faa-burst valid"></i>
+                    <br>
+                </div>
+
+                <div class="error-icon" *ngIf="form1.controls.emailId.dirty">
+                    <i *ngIf="form1.controls.emailId.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                    <i *ngIf="!form1.controls.emailId.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-12 col-sm-12 offset-sm-0 col-md-12">
+            <div class="form-group aw-input-group">
+                <input type="tel" class="form-control" formControlName="mobileNumber" name="mobileNumber"
+                    [attr.value]="form1.controls.mobileNumber.value?form1.controls.mobileNumber.value:''"
+                    id="mobileNumber" autocomplete="" required autofocus />
+
+                <label class="placeholder" for="mobileNumber">{{ 'REGISTER.REGISTER_MOBILENO' | translate }}</label>
+
+                <div class="error-message-bottom">
+                    <!--The following line is used to display the error message when mobileNumber is in wrong format.
+                    [hidden] attribute becomes false when pattern has an error and message is displayed-->
+                    {{ 'REGISTER.MOBILE_NUMBER_FORMATT_ERROR' | translate }}
+                    <i *ngIf="!form1.controls.mobileNumber.hasError('pattern') && !form1.controls.mobileNumber.hasError('required')"
+                        class="fa fa-check faa-burst valid"></i>
+                    <br />
+                </div>
+
+                <div class="error-icon" *ngIf="form1.controls.mobileNumber.dirty">
+                    <i *ngIf="form1.controls.mobileNumber.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                    <i *ngIf="!form1.controls.mobileNumber.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-12 col-sm-12 offset-sm-0 col-md-12">
+            <div class="aw-input-group form-group">
+                <input type="password" class="form-control" formControlName="password" name="password" id="password"
+                    [attr.value]="form1.controls.password.value?form1.controls.password.value:''" autocomplete=""
+                    required autofocus />
+
+                <label class="placeholder" for="password">{{ 'REGISTER.REGISTER_PASSWORD' | translate }}</label>
+
+                <div class="error-message-bottom">
+                    {{ "REGISTER.PASSWORD.MIN_LENGTH_ERROR" | translate }}
+                    <i *ngIf="!form1.controls.password.hasError('minlength')" class="fa fa-check faa-burst valid"></i>
+                    <br> {{ "REGISTER.PASSWORD.UPPERCASE_ERROR" | translate }}
+                    <i *ngIf="!form1.controls.password.hasError('uppercase')" class="fa fa-check faa-burst valid"></i>
+                    <br> {{ "REGISTER.PASSWORD.LOWERCASE_ERROR" | translate }}
+                    <i *ngIf="!form1.controls.password.hasError('lowercase')" class="fa fa-check faa-burst valid"></i>
+                    <br> {{ "REGISTER.PASSWORD.NUMBER_ERROR" | translate }}
+                    <i *ngIf="!form1.controls.password.hasError('number')" class="fa fa-check faa-burst valid"></i>
+                    <br> {{ "REGISTER.PASSWORD.SPECIAL_CHARECTER_ERROR" | translate }}
+                    <i *ngIf="!form1.controls.password.hasError('special')" class="fa fa-check faa-burst valid"></i>
+                    <br>
+                </div>
+
+                <div class="error-icon" *ngIf="form1.controls.password.dirty">
+                    <i *ngIf="form1.controls.password.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                    <i *ngIf="!form1.controls.password.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-12 offset-sm-0 col-md-12">
+            <div class="form-group aw-input-group">
+                <input type="password" class="form-control" formControlName="confirmPassword" name="confirmPassword"
+                    [attr.value]="form1.controls.confirmPassword.value?form1.controls.confirmPassword.value:''"
+                    id="confirmPassword" autocomplete="" required autofocus />
+
+                <label class="placeholder"
+                    for="confirmPassword">{{ 'REGISTER.REGISTER_CONFIRMPASSWORD' | translate }}</label>
+
+                <div class="error-icon" *ngIf="form1.controls.confirmPassword.dirty">
+                    <i *ngIf="form1.controls.confirmPassword.value == form1.controls.password.value"
+                        class="fa fa-check fa-lg valid"></i>
+                    <i *ngIf="form1.controls.confirmPassword.value != form1.controls.password.value"
+                        class="fa fa-times fa-lg invalid"></i>
+                </div>
+
+                <div class="error-message-bottom">
+                    <!--The following line checks whether password and confirmPassword are same-->
+                    {{ 'REGISTER.CONFIRM_PASSWORD_ERROR' | translate }}
+                    <i *ngIf="form1.controls.confirmPassword.value == form1.controls.password.value"
+                        class="fa fa-check faa-burst valid"></i>
+                    <br />
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="col-12 col-sm-12 offset-sm-0 col-md-12">
+            <div class="row">
+                <div class="col-12 col-sm-7">
+                    <div class="form-group aw-input-group">
+                        <input type="text" class="form-control" formControlName="notARobot" name="notARobot"
+                            [attr.value]="form1.controls.notARobot.value?form1.controls.notARobot.value:''"
+                            id="notARobot" autocomplete="" required />
+                        <label class="placeholder" for="notARobot">{{ 'REGISTER.NOT_A_ROBOT' | translate }}</label>
+                        <div class="error-icon" *ngIf="form1.controls.notARobot.dirty">
+                            <i *ngIf="form1.controls.notARobot.valid" class="fa fa-check fa-lg faa-burst valid"></i>
+                            <i *ngIf="!form1.controls.notARobot.valid" class="fa fa-times fa-lg faa-burst invalid"></i>
+                        </div>
+
+                        <div class="error-message-bottom" *ngIf="form1.controls.notARobot.dirty">
+                            {{ 'REGISTER.REQUIRED_FIELD' | translate }}
+                            <i *ngIf="form1.controls.notARobot.valid" class="fa fa-check faa-burst valid"></i>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-5">
+                    <div class="recaptcha"><img [src]="captchaService.getSelectedCaptchaImagePath()"> <span
+                            class="recaptcha-refresh" *ngIf="!submitted"
+                            (click)="captchaService.selectCaptchaRandom()"><i class="fa fa-refresh fa-lg"></i></span>
+                        <span class="recaptcha-refresh disabled" *ngIf="submitted"><i
+                                class="fa fa-refresh fa-lg"></i></span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-6">
+            <!--SignUp button will be enabled only when the entire form is valid
+                [disabled] attribute is used for disabling the button when form is not valid-->
+            <button class="btn  my-btn"
+                [disabled]="!form1.valid || form1.controls.password.value != form1.controls.confirmPassword.value || submitted"
+                type="submit">
+                <div *ngIf="!submitted">{{ 'REGISTER.REGISTER_BUTTON' | translate }}</div><i *ngIf="submitted"
+                    class="fa fa-spinner fa-pulse fa-lg fa-fw"></i>
+            </button>
+        </div>
+    </div>
+    </div>
+</div>
+
+</form>
+<div class="row center-message">
+    <div class="text-success">{{successMessage}}</div>
+    <div class="text-danger">{{message}}</div>
+    <br>
+    <br>
+</div>

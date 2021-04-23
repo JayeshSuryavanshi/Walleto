@@ -1,0 +1,18 @@
+<div class="card text-center align-middle">
+    <div class="card-body">
+        <div class="view-adjust" [@loadAnimation]="state">
+            <div class="block">
+                <!--ngSubmit directive specifies "redeem()" function to run when the form is submitted-->
+                <form [formGroup]="form" (ngSubmit)="redeem()">
+                    <!--ngModel directive binds the value of HTML controls to application data-->
+                    <input type="hidden" class="form-control" formControlName="userId" name="userId">
+                    <button type="submit" [disabled]="!form.valid || submitted" class="btn my-btn "><span
+                            *ngIf="!submitted">{{ "REDEEM_POINTS.REDEEM_POINTS_BUTTON" | translate }}</span><i
+                            *ngIf="submitted" class="fa fa-spinner fa-pulse fa-lg fa-fw"> </i></button>
+                </form>
+                <div class="text-success">{{successMessage}}</div>
+                <div class="text-danger">{{errorMessage}}</div>
+            </div>
+        </div>
+    </div>
+</div>
