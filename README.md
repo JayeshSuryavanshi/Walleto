@@ -1,5 +1,5 @@
-## Amigowallet
-Amigo wallet is an e-wallet application linked to a bank account that allows a user to make transactions, pay bills and receive cashbacks. The application uses Angular in Frontend and SpringBoot in backend.
+## Walleto
+Walleto is an e-wallet application linked to a bank account that allows a user to make transactions, pay bills and receive cashbacks. The application uses Angular in Frontend and SpringBoot in backend.
 
 • Capstone Project developed as a part of Infosys Foundation Program.
 
