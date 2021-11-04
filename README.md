@@ -3,7 +3,7 @@ Walleto is an e-wallet application linked to a bank account that allows a user t
 
 • Capstone Project developed as a part of Infosys Foundation Program.
 
-• Description:- Amigo wallet is an e-wallet application linked to a bank account that allows a user to make transactions, pay bills and receive cashbacks. The application uses Angular in Frontend and Springboot in backend.
+• Description:- Walleto is an e-wallet application linked to a bank account that allows a user to make transactions, pay bills and receive cashbacks. The application uses Angular in Frontend and Springboot in backend.
 
 • Responsibilities:
 Production Deployment using Jenkins.
