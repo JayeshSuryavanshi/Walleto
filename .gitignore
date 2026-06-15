@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Java / Maven
+target/
+*.class
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+
+# IDE
+.idea/
+*.iml
