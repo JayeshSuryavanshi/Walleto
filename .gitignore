@@ -13,3 +13,9 @@ dist/
 # IDE
 .idea/
 *.iml
+
+# Build / logs / IDE artifacts
+target/
+logs/
+test-output/
+*.log
