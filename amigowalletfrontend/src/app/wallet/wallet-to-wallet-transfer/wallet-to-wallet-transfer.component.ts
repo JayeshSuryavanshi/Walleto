@@ -1,92 +1,76 @@
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-
-
-
-
+import { AuthService } from '../../shared/auth.service';
 import { AmountValidator } from '../../shared/amount.validator';
-
-
-
+import { LoggerService } from '../../shared/logger.service';
+import { extractApiError, formatUsd, friendlyMoneyResult } from '../../shared/money-format';
 import { WalletToWalletTransferService } from './wallet-to-wallet-transfer.service';
-import { ProfileService } from 'src/app/shared/profile.service';
-
-import { User } from 'src/app/shared/model/user';
-
-import { TranslateService } from '@ngx-translate/core';
-import { LoggerService } from 'src/app/shared/logger.service';
-
-
-
 
 @Component({
   selector: 'app-wallet-to-wallet-transfer',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './wallet-to-wallet-transfer.component.html',
-  styleUrls: ['./wallet-to-wallet-transfer.component.css']
-  
-  
+  styleUrls: ['./wallet-to-wallet-transfer.component.css'],
 })
-  
-
 export class WalletToWalletTransferComponent implements OnInit {
-  tranfertowallet:FormGroup;
-  emailid:string;
-  transferamount:number;
-  successMessage:string;
-  errorMessage:string;
-  balance:number;
-  amountToTransfer:number;
+  private readonly fb = inject(FormBuilder);
+  private readonly service = inject(WalletToWalletTransferService);
+  private readonly logger = inject(LoggerService);
+  private readonly auth = inject(AuthService);
+  private readonly translate = inject(TranslateService);
 
-  constructor(private fb:FormBuilder,private service:WalletToWalletTransferService,private logger: LoggerService,
-    public serviceProfile:ProfileService,private translateService: TranslateService) { }
+  tranfertowallet!: FormGroup;
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
+  submitted = false;
 
-  ngOnInit() {
-    this.tranfertowallet=this.fb.group({
-      emailid:['',[Validators.required,Validators.pattern("[^@]+[@][^@]+[.][^@]+")]],
-      transferamount:['',[Validators.required,AmountValidator.min,Validators.pattern('^(\\d)*(.[\\d]{1,2})?$')]]
+  ngOnInit(): void {
+    this.tranfertowallet = this.fb.group({
+      emailid: ['', [Validators.required, Validators.pattern('[^@]+[@][^@]+[.][^@]+')]],
+      transferamount: ['', [Validators.required, AmountValidator.min, Validators.pattern('^(\\d)*(.[\\d]{1,2})?$')]],
     });
   }
 
-  transfer(){
-    this.successMessage=null;
-    this.errorMessage=null;
-    
-    
-    let user: User = JSON.parse(sessionStorage.getItem('user'));
-    if(user.emailId==this.tranfertowallet.get('emailid').value)
-    
-      this.translateService.get("ERROR_MESSAGES.SELF_WALLET_TRANSFER_ERROR").subscribe(value => this.errorMessage = value);
-    else{
-    this.serviceProfile.getBalanceFromDB(user).subscribe(
-      responseData=>{let userFromBackEnd:User=responseData;
-      this.balance=userFromBackEnd.balance
-      
-      this.serviceProfile.setPoints(userFromBackEnd.rewardPoints);
-    
-    if(this.balance<this.tranfertowallet.get('transferamount').value){
-    
-    let num=(Math.round(this.balance*100)/100).toFixed(2);
-    this.translateService.get("ERROR_MESSAGES.TRANSFER_BANK_LOW_BALANCE",{value:num}).subscribe(value => this.errorMessage = value);
-      }else{
+  transfer(): void {
+    this.successMessage = null;
+    this.errorMessage = null;
 
-    let userId=user.userId
-    let amountToTransfer:number=this.tranfertowallet.get('transferamount').value
-    let emailIdToTransfer=this.tranfertowallet.get('emailid').value
-    let data:any[]=[userId,amountToTransfer,emailIdToTransfer]
-    
-    
-    this.service.servicetransfer(data).subscribe(
-      (response)=>{this.successMessage=response; this.logger.info("Transaction success")
-      this.tranfertowallet.reset();},
-      (error)=>{error.error=JSON.parse(error.error);console.log(error.error);this.errorMessage=error.error.message;console.log(this.errorMessage)}
-    )
-    
+    const recipientEmailId: string = this.tranfertowallet.get('emailid')?.value ?? '';
+    const amount = Number(this.tranfertowallet.get('transferamount')?.value);
+
+    if (this.auth.user()?.emailId === recipientEmailId) {
+      this.translate
+        .get('ERROR_MESSAGES.SELF_WALLET_TRANSFER_ERROR')
+        .subscribe((value) => (this.errorMessage = value));
+      return;
+    }
+
+    if (this.auth.balance() < amount) {
+      const num = formatUsd(this.auth.balance());
+      this.translate
+        .get('ERROR_MESSAGES.TRANSFER_BANK_LOW_BALANCE', { value: num })
+        .subscribe((value) => (this.errorMessage = value));
+      return;
+    }
+
+    this.submitted = true;
+    this.service.transfer(recipientEmailId, amount).subscribe({
+      next: (response) => {
+        this.successMessage = friendlyMoneyResult(response, { title: 'Transfer successful', verb: 'sent' });
+        this.submitted = false;
+        this.logger.info('Transaction success');
+        this.tranfertowallet.reset();
+        this.auth.applyMoneyResult(response);
+      },
+      error: (error) => {
+        this.submitted = false;
+        this.errorMessage = extractApiError(error, 'Transfer failed. Please try again.');
+        this.logger.error(this.errorMessage ?? 'Transfer failed', error);
+      },
+    });
   }
-})
 }
-
-
-
-
-  }}

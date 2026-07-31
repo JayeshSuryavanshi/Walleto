@@ -1,24 +1,22 @@
-import { Injectable } from '@angular/core';
-import { SecurityQuestion } from '../../shared/model/security-question';
-import { UriService } from '../../shared/uri.service';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
 
-@Injectable()
+import { environment } from '../../../environments/environment';
+import { RegisterRequest } from '../../shared/model/api';
+import { SecurityQuestion } from '../../shared/model/security-question';
+
+/** Security-question lookup + final (step 2) registration (public endpoints). */
+@Injectable({ providedIn: 'root' })
 export class SecurityQuestionService {
-  
-  amigoWalletUrl: string;
+  private readonly http = inject(HttpClient);
+  private readonly api = environment.apiBaseUrl;
 
-  constructor(private http:HttpClient, private uriService:UriService) {
-    this.amigoWalletUrl = this.uriService.buildAmigoWalletUri();
-   }
-
-  getAllQuestions():Observable<SecurityQuestion[]>{
-    return this.http.get<SecurityQuestion[]>(this.amigoWalletUrl + "/RegistrationAPI/getAllQuestions")
+  getAllQuestions(): Observable<SecurityQuestion[]> {
+    return this.http.get<SecurityQuestion[]>(`${this.api}/RegistrationAPI/getAllQuestions`);
   }
 
-  register(data: any): Observable<string> {
-    return this.http.post(this.amigoWalletUrl + "/RegistrationAPI/register",data, {responseType: "text"})
+  register(data: RegisterRequest): Observable<{ userId?: number; message?: string }> {
+    return this.http.post<{ userId?: number; message?: string }>(`${this.api}/RegistrationAPI/register`, data);
   }
-
 }

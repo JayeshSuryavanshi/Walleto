@@ -1,6 +1,7 @@
-.aw-input-group {
-    margin-top: 3% !important
+.sq-title {
+  margin-top: var(--s-6);
 }
-.center {
-    text-align: center
+
+.sq-msg {
+  margin-top: var(--s-4);
 }

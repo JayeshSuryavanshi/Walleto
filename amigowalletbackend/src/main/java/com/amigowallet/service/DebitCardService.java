@@ -6,41 +6,31 @@ import com.amigowallet.model.Bank;
 import com.amigowallet.model.Card;
 
 /**
- * This is a service interface contains methods for business
- * logics related to debit Card.
- * 
+ * Business logic for debit cards saved in the wallet.
+ *
  * @author ETA_JAVA
- * 
  */
 public interface DebitCardService {
-	
-	/**
-	 * This method is used for deleting a saved  card<br>
-	 * A Card bean is passed as the argument
-	 * 
-	 * @param card
-	 */
-	public void deleteCard(Card card);
-	
-	/**
-	 * This method is for adding/activating the card. This method takes card and userId
-	 * as arguments and retrieves all the cards for that user.
-	 * 
-	 * @param 
-	 * 
-	 * @return Card
-
-	 * @throws Exception 
-	 * 
-	 */
-	public Card addCard(Card card,Integer userId) throws Exception;
 
 	/**
-	 * This method returns us the list of banks having banks details, this calls
-	 * fetchAllBankDetails method of debitCardDao to fetch the bank details
-	 * 
-	 * @return list of banks
-	 * 
+	 * Deactivates a saved card, but only after verifying that the card belongs to
+	 * the authenticated user (closes the IDOR where any caller could delete any
+	 * card).
+	 *
+	 * @throws com.amigowallet.exception.ApiException 404 if the card does not exist
+	 *                                                or is not owned by the user.
 	 */
-	public List<Bank> fetchAllBankDetails();
+	void deleteCard(Integer cardId, Integer userId);
+
+	/**
+	 * Adds/activates a card for the authenticated user.
+	 *
+	 * @throws com.amigowallet.exception.ApiException 409 if the card already exists.
+	 */
+	Card addCard(Card card, Integer userId);
+
+	/**
+	 * @return the list of banks (for the card / account forms).
+	 */
+	List<Bank> fetchAllBankDetails();
 }

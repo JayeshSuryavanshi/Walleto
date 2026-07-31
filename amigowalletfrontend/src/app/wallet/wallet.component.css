@@ -1,4 +1,180 @@
-.option label:hover {
-    cursor: pointer;
-    filter: brightness(115%);
+/* ----------------------------------------------------------------------------
+   Dashboard — the signature screen. Boldness lives here; the rest stays quiet.
+   ---------------------------------------------------------------------------- */
+
+.dashboard {
+  padding-top: var(--s-6);
+}
+
+/* Balance hero -------------------------------------------------------------- */
+.balance {
+  padding: var(--s-4) 0 var(--s-8);
+}
+
+.greeting {
+  font-size: .9375rem;
+  margin-bottom: var(--s-4);
+}
+
+.balance .eyebrow {
+  margin-bottom: var(--s-2);
+}
+
+.balance-figure {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.balance-cur {
+  font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+  font-weight: 500;
+  color: var(--muted);
+  margin-top: .35em;
+}
+
+.balance-amount {
+  font-size: clamp(2.5rem, 8vw, 3.5rem);
+  font-weight: 700;
+}
+
+.points-pill {
+  margin-top: var(--s-4);
+}
+
+/* Quick actions ------------------------------------------------------------- */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-3);
+  margin-bottom: var(--s-8);
+}
+
+.qa {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-3) var(--s-2);
+  border: 1px solid var(--accent);
+  border-radius: var(--r);
+  color: var(--accent);
+  text-decoration: none;
+  min-height: 44px;
+  transition: background-color .18s ease, transform .06s ease;
+}
+
+.qa:hover {
+  background: var(--accent-weak);
+  text-decoration: none;
+}
+
+.qa:active {
+  transform: translateY(1px);
+}
+
+.qa-icon {
+  display: inline-flex;
+}
+
+.qa-label {
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* Recent transactions ------------------------------------------------------- */
+.recent-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--s-2);
+}
+
+.txn-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.txn {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.txn:last-child {
+  border-bottom: 0;
+}
+
+.txn-glyph {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+}
+
+.txn-glyph.credit {
+  color: var(--credit);
+  background: var(--accent-weak);
+}
+
+.txn-glyph.debit {
+  color: var(--debit);
+  background: color-mix(in srgb, var(--debit) 12%, var(--surface));
+}
+
+.txn-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.txn-label {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.txn-amt {
+  flex: none;
+  font-weight: 600;
+  font-size: 1.0625rem;
+}
+
+.txn-amt.credit {
+  color: var(--credit);
+}
+
+.txn-amt.debit {
+  color: var(--debit);
+}
+
+.recent-empty {
+  padding: var(--s-6) 0;
+  text-align: center;
+  font-size: .9375rem;
+}
+
+.more-links {
+  display: flex;
+  gap: var(--s-6);
+  padding-top: var(--s-4);
+  margin-top: var(--s-2);
+  border-top: 1px solid var(--line);
+}
+
+/* Child feature screens (reskinned in a follow-up pass). -------------------- */
+.child-outlet {
+  padding-top: var(--s-2);
 }

@@ -1,74 +1,58 @@
 package com.amigowallet.api;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.amigowallet.dto.BillPaymentRequest;
+import com.amigowallet.dto.MoneyTransactionResponse;
+import com.amigowallet.security.AuthUtil;
 import com.amigowallet.service.BillPaymentService;
 
-@CrossOrigin
+import jakarta.validation.Valid;
+
+/**
+ * Wallet-to-merchant (bill payment) endpoints. The payer is the authenticated
+ * principal (the {@code {amount}/{userId}} path variables have been removed; the
+ * amount is now a validated body field and the userId comes from the JWT).
+ */
 @RestController
 @RequestMapping("WalletToMerchantTransferAPI")
 public class WalletToMerchantTransferAPI {
-	@Autowired
-	private Environment environment;
 
-	@Autowired
-	BillPaymentService billPaymentService;
+	private static final Logger logger = LoggerFactory.getLogger(WalletToMerchantTransferAPI.class);
 
-	static Logger logger = LogManager.getLogger(WalletToMerchantTransferAPI.class.getName());
+	private final BillPaymentService billPaymentService;
 
-	@RequestMapping(value = "serviceType", method = RequestMethod.GET)
-	public ResponseEntity<List<String>> displayServiceType() {
-		ResponseEntity<List<String>> responseEntity = null;
-		List<String> list = new ArrayList<String>();
-		list = billPaymentService.displayServiceType();
-		responseEntity = new ResponseEntity<List<String>>(list, HttpStatus.OK);
-		return responseEntity;
-
+	public WalletToMerchantTransferAPI(BillPaymentService billPaymentService) {
+		this.billPaymentService = billPaymentService;
 	}
 
-	@RequestMapping(value = "merchantType", method = RequestMethod.POST)
-	public ResponseEntity<List<String>> displayMerchantName(@RequestBody String name) {
-		ResponseEntity<List<String>> responseEntity = null;
-		List<String> list = new ArrayList<String>();
-		list = billPaymentService.displayMerchantName(name);
-		responseEntity = new ResponseEntity<List<String>>(list, HttpStatus.OK);
-		return responseEntity;
+	@GetMapping("serviceType")
+	public List<String> displayServiceType() {
+		return billPaymentService.displayServiceType();
 	}
 
-	@RequestMapping(value = "payBill/{amount:.+}/{userId}", method = RequestMethod.POST)
-	public ResponseEntity<String> payBill(@PathVariable Integer userId, @PathVariable Double amount,
-			@RequestBody String name) {
-		try {
-			ResponseEntity<String> responseEntity = null;
-			Integer reward = billPaymentService.payBill(userId, amount, name);
-
-			logger.info("USER TRYING TO MAKE PAYMENT TO MERCHANT, USER ID : " + userId + ", MERCHANT : " + name);
-			logger.info("PAYMENT DONE TO MERCHANT, USER ID : " + userId + ", MERCHANT : " + name);
-			String message = environment.getProperty("WalletToMerchantTransferAPI.SUCCESSFUL_TRANSACTION1") + " "
-					+ reward + " " + environment.getProperty("WalletToMerchantTransferAPI.SUCCESSFUL_TRANSACTION2");
-
-			responseEntity = new ResponseEntity<String>(message, HttpStatus.OK);
-			return responseEntity;
-
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, environment.getProperty(e.getMessage()));
-
-		}
+	@PostMapping("merchantType")
+	public List<String> displayMerchantName(@RequestBody String name) {
+		return billPaymentService.displayMerchantName(name);
 	}
 
+	@PostMapping("payBill")
+	public MoneyTransactionResponse payBill(@Valid @RequestBody BillPaymentRequest request) {
+		Integer userId = AuthUtil.currentUserId();
+		logger.info("Bill payment requested by userId {} to merchant {}", userId, request.merchantName());
+
+		MoneyTransactionResponse response =
+				billPaymentService.payBill(userId, request.amount(), request.merchantName());
+
+		logger.info("Bill payment completed for userId {}", userId);
+		return response;
+	}
 }

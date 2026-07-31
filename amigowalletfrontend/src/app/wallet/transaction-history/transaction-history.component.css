@@ -1,8 +1,116 @@
-.my-pagination /deep/ .ngx-pagination .current {
-    background: #212529;
+/* Filter / sort controls -------------------------------------------------- */
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
 }
 
-.paginationplace {
-    margin-left: -80px;
-    margin-bottom: -10px;
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.control .field-label {
+  margin: 0;
+}
+
+/* Ledger list — mirrors the dashboard recent-transactions treatment. ------- */
+.txn-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.txn {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.txn:last-child {
+  border-bottom: 0;
+}
+
+.txn-glyph {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+}
+
+.txn-glyph.credit {
+  color: var(--credit);
+  background: var(--accent-weak);
+}
+
+.txn-glyph.debit {
+  color: var(--debit);
+  background: color-mix(in srgb, var(--debit) 12%, var(--surface));
+}
+
+.txn-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.txn-label {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.txn-amt {
+  flex: none;
+  font-weight: 600;
+  font-size: 1.0625rem;
+}
+
+.txn-amt.credit {
+  color: var(--credit);
+}
+
+.txn-amt.debit {
+  color: var(--debit);
+}
+
+.empty {
+  padding: var(--s-8) 0;
+  text-align: center;
+  font-size: .9375rem;
+}
+
+/* Pager ------------------------------------------------------------------- */
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-4);
+  margin-top: var(--s-6);
+}
+
+.pager-btn {
+  min-height: 40px;
+  width: 44px;
+  padding: 0;
+}
+
+.pager-next app-icon {
+  display: inline-flex;
+  transform: rotate(180deg);
+}
+
+.pager-status {
+  min-width: 3.5ch;
+  text-align: center;
 }

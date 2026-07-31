@@ -1,15 +1,16 @@
 package com.amigowallet.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -23,7 +24,7 @@ public class MerchantTransactionEntity {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer merchantTransactionId;
 	@Column(name="AMOUNT")
-	private Double amount;
+	private BigDecimal amount;
 	@CreationTimestamp
 	@Column(name="TRANSACTION_DATE_TIME")
 	private LocalDateTime transactionDateTime;
@@ -36,7 +37,7 @@ public class MerchantTransactionEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "TRANSACTION_STATUS")
 	private TransactionStatus transactionStatus;
-	@Column(name="MERCHANT_ID ")
+	@Column(name="MERCHANT_ID")
 	private Integer merchantId;
 	public Integer getMerchantTransactionId() {
 		return merchantTransactionId;
@@ -44,10 +45,10 @@ public class MerchantTransactionEntity {
 	public void setMerchantTransactionId(Integer merchantTransactionId) {
 		this.merchantTransactionId = merchantTransactionId;
 	}
-	public Double getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
-	public void setAmount(Double amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 	public LocalDateTime getTransactionDateTime() {

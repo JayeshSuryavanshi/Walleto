@@ -1,18 +1,25 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UriService } from '../../shared/uri.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+import { environment } from '../../../environments/environment';
+import { MoneyTransactionResponse } from '../../shared/model/money-transaction-response';
+
+/**
+ * Wallet-to-wallet transfer. Sender identity is derived from the JWT server-side;
+ * the body carries only the recipient email and amount (no positional array,
+ * no userId).
+ *   POST /WalletToWalletAPI/transfertowallet  body { recipientEmailId, amount }
+ */
+@Injectable({ providedIn: 'root' })
 export class WalletToWalletTransferService {
-  amigoWalletUrl: string;
+  private readonly http = inject(HttpClient);
+  private readonly api = environment.apiBaseUrl;
 
-  constructor(private http:HttpClient, private uriService: UriService) {}
-
-  servicetransfer(data: any) : Observable<any> {
-    return this.http.post(this.uriService.buildAmigoWalletUri()+"/WalletToWalletAPI/transfertowallet",data, {responseType: 'text'});
+  transfer(recipientEmailId: string, amount: number): Observable<MoneyTransactionResponse> {
+    return this.http.post<MoneyTransactionResponse>(
+      `${this.api}/WalletToWalletAPI/transfertowallet`,
+      { recipientEmailId, amount },
+    );
   }
-
 }

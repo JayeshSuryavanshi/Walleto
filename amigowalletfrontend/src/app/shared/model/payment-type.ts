@@ -1,9 +1,7 @@
-/**
- * This is a model class which has the attributes to keep PaymentType properties
- */
-export class PaymentType {
-    public paymentTypeId: number;
-    public paymentFrom: string;
-    public paymenTo: string;
-    public paymentType: string;
+/** Routing dimension of a transaction. `paymentType` is 'C' (credit) or 'D' (debit). */
+export interface PaymentType {
+  paymentTypeId?: number;
+  paymentFrom?: string;
+  paymentTo?: string;
+  paymentType: string;
 }

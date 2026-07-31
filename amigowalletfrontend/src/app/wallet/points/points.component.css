@@ -1,13 +1,16 @@
-.panel {
-    border: 1px;
-    border-style: solid;
-    border-color: lightgray;
-    padding: 10px;
-    width: fit-content;
+.points-hero {
+  text-align: center;
 }
-.block {
-  width: fit-content;
+
+.points-figure {
+  margin-top: var(--s-2);
+  font-size: clamp(2.5rem, 8vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent);
 }
-.view-adjust {
-    margin-top: 5%;
+
+.points-note {
+  margin-top: var(--s-3);
+  text-align: center;
 }

@@ -1,18 +1,19 @@
 package com.amigowallet.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -27,7 +28,7 @@ public class UserTransactionEntity {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long userTransactionId;
 	@Column(name = "AMOUNT")
-	private Double amount;
+	private BigDecimal amount;
 	@CreationTimestamp
 	@Column(name="TRANSACTION_DATE_TIME")
 	private LocalDateTime transactionDateTime;
@@ -56,11 +57,11 @@ public class UserTransactionEntity {
 		this.userTransactionId = userTransactionId;
 	}
 
-	public Double getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 

@@ -1,29 +1,33 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { UriService } from '../shared/uri.service';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../environments/environment';
+import { MoneyTransactionResponse } from '../shared/model/money-transaction-response';
 
-@Injectable({
-  providedIn: 'root'
-})
+/**
+ * Wallet -> merchant bill payment. Payer identity comes from the JWT.
+ *   GET  /WalletToMerchantTransferAPI/serviceType
+ *   POST /WalletToMerchantTransferAPI/merchantType  body { serviceType }
+ *   POST /WalletToMerchantTransferAPI/payBill       body { amount, merchantName }
+ */
+@Injectable({ providedIn: 'root' })
 export class BillpaymentserviceService {
-  amigoWalletUrl: string;
-  constructor(private http: HttpClient, private uriService: UriService) { 
-    this.amigoWalletUrl=this.uriService.buildAmigoWalletUri();
+  private readonly http = inject(HttpClient);
+  private readonly api = environment.apiBaseUrl;
+
+  displayServiceType(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.api}/WalletToMerchantTransferAPI/serviceType`);
   }
 
-  displayServiceType():Observable<String[]> {
-    return this.http.get<String[]>(this.amigoWalletUrl + '/WalletToMerchantTransferAPI/serviceType')
-
+  displayMerchantName(serviceType: string): Observable<string[]> {
+    return this.http.post<string[]>(`${this.api}/WalletToMerchantTransferAPI/merchantType`, { serviceType });
   }
 
-  displayMerchantName(data:String): Observable<String[]>{
-    return this.http.post<String[]>(this.amigoWalletUrl + '/WalletToMerchantTransferAPI/merchantType',data)
+  payBill(amount: number, merchantName: string): Observable<MoneyTransactionResponse> {
+    return this.http.post<MoneyTransactionResponse>(`${this.api}/WalletToMerchantTransferAPI/payBill`, {
+      amount,
+      merchantName,
+    });
   }
-
-  payBill(userId:number,amount:number,data:any) {
-    return this.http.post(this.amigoWalletUrl + '/WalletToMerchantTransferAPI/payBill/'+amount+ '/' + userId,data, {responseType:'text'})
-  } 
-
 }

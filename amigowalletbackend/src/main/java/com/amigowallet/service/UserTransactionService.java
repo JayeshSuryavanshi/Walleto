@@ -1,49 +1,34 @@
 package com.amigowallet.service;
 
-import com.amigowallet.model.UserTransaction;
+import com.amigowallet.dto.BankTransferRequest;
+import com.amigowallet.dto.LoadMoneyCardRequest;
+import com.amigowallet.dto.LoadMoneyNetBankingRequest;
+import com.amigowallet.dto.MoneyTransactionResponse;
 
 /**
- * This is a service interface which includes methods for performing different transactions 
- * like loadMoneyFromDebitCard, loadMoneyFromNetBanking
- * 
- * @author ETA_JAVA
- *
+ * Money movement between the wallet and the bank. All bank interaction is
+ * server-to-server (via {@code BankClient}); the browser never contacts the bank.
+ * Each method returns only after the bank leg is confirmed, and either commits
+ * the wallet side atomically or compensates.
  */
 public interface UserTransactionService {
 
 	/**
-	 * This method id used to do load money i.e. credit money to the amigo wallet which is called after 
-	 * debiting the money from bank account through debit card banking
-	 *
-	 * @param amount
-	 * @param userId
-	 * @param remarks
-	 * 
-	 * @return userTransaction
+	 * Load money via debit card (bank -&gt; wallet): debit the card at the bank
+	 * FIRST, then credit the wallet; compensate the bank on wallet-credit failure.
 	 */
-	UserTransaction loadMoneyFromDebitCard(Double amount, Integer userId, String remarks);
+	MoneyTransactionResponse loadMoneyFromDebitCard(Integer userId, LoadMoneyCardRequest request);
 
 	/**
-	 * This method id used to do load money i.e. credit money to the amigo wallet which is called after 
-	 * debiting the money from bank account through net banking
-	 * 
-	 * @param amount
-	 * @param userId
-	 * @param remarks
-	 * 
-	 * @return userTransaction
+	 * Load money via net banking (bank -&gt; wallet): debit at the bank FIRST, then
+	 * credit the wallet; compensate the bank on wallet-credit failure.
 	 */
-	UserTransaction loadMoneyFromNetBanking(Double amount, Integer userId, String remarks);
-	
+	MoneyTransactionResponse loadMoneyFromNetBanking(Integer userId, LoadMoneyNetBankingRequest request);
+
 	/**
-	 * This method id used to send money i.e. debit money from the amigo wallet which is called before
-	 * crediting the money to bank account.
-	 * 
-	 * @param amount
-	 * @param userId
-	 * @param remarks
-	 * 
-	 * @return userTransaction
+	 * Transfer to bank / withdraw (wallet -&gt; bank): verify the destination, then
+	 * in one transaction lock + funds-check + debit the wallet FIRST and credit the
+	 * bank; if the bank call fails, the wallet debit rolls back (nothing leaves).
 	 */
-	UserTransaction sendMoneyToBankAccount(Double amount, Integer userId, String remarks);
+	MoneyTransactionResponse sendMoneyToBankAccount(Integer userId, BankTransferRequest request);
 }

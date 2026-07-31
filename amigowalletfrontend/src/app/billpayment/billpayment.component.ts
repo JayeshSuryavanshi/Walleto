@@ -1,161 +1,116 @@
-import { Component, OnInit } from '@angular/core';
-import { BillpaymentserviceService } from './billpaymentservice.service';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { trigger, transition, keyframes, style, animate } from '@angular/animations';
-import { FormBuilder, Validators } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+
+import { AuthService } from '../shared/auth.service';
 import { LoggerService } from '../shared/logger.service';
-import { ProfileService } from '../shared/profile.service';
-import { TranslateService } from '@ngx-translate/core';
-import { error } from 'util';
-import { User } from '../shared/model/user';
+import { extractApiError, friendlyMoneyResult } from '../shared/money-format';
+import { BillpaymentserviceService } from './billpaymentservice.service';
 
 @Component({
   selector: 'app-billpayment',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './billpayment.component.html',
   styleUrls: ['./billpayment.component.css'],
-  providers:[BillpaymentserviceService],
   animations: [
-    /** trigger the animation when loadAnimation (an attribute in div tag of Html)
-    * value has a transition from void to some value(*) ( void when the component is not at loaded,
-    * once the component is loaded it will be initialized to active)
-    */
     trigger('loadAnimation', [
       transition('void => *', [
-        animate("1000ms ease-out", keyframes([  // key frame specifies the set of styles which should be applied based on timeline
-          style({ opacity: 0, offset: 0 }),     // at 0th (offset * time) milisecond opacity is 0
-          style({ opacity: 1, offset: 1 }),     // at 1000th (offset * time) milisecond opacity is 1
-        ]))
-      ])
-    ])
-  ]
-
+        animate(
+          '1000ms ease-out',
+          keyframes([style({ opacity: 0, offset: 0 }), style({ opacity: 1, offset: 1 })]),
+        ),
+      ]),
+    ]),
+  ],
 })
 export class BillpaymentComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly payBillService = inject(BillpaymentserviceService);
+  private readonly auth = inject(AuthService);
+  private readonly logger = inject(LoggerService);
 
-  state = "active";
-  successMessage: any;
-  message: any;
-  error: any;
-  amount: number=0;
-  num1: number;
-  selectedMerchant: String;
-  merchants: String[];
-  services: String[];
+  successMessage: string | null = null;
+  message: string | null = null;
+  amount = 0;
+  num1 = 0;
+  selectedMerchant = '';
+  selectedMerchantType = '';
+  merchants: string[] = [];
+  services: string[] = [];
   submitted = false;
-  selectedMerchantType:String;
-
-
-  constructor(public fb: FormBuilder, private payBillService: BillpaymentserviceService,
-    private profileService: ProfileService, private logger: LoggerService,
-    private translateService: TranslateService
-) { }
-
-  ngOnInit() {
-    this.amount=0;
-    this.num1=0;
-    this.payBillService.displayServiceType().subscribe(
-      (responseData: any) => {
-        this.services=responseData;
-        this.logger.info("Loading merchants success");
-
-      },
-     
-      error=>{ this.message = error.errorMessage;
-        this.logger.error("Loading merchants error: " + this.message, error);
-
-      }
-    )
-  }
 
   form1 = this.fb.group({
-    servicetype: ["", Validators.required],
-    merchantname: ["", Validators.required],
+    servicetype: ['', Validators.required],
+    merchantname: ['', Validators.required],
   });
 
+  ngOnInit(): void {
+    this.amount = 0;
+    this.num1 = 0;
+    this.payBillService.displayServiceType().subscribe({
+      next: (services) => {
+        this.services = services;
+        this.logger.info('Loading services success');
+      },
+      error: (error) => {
+        this.message = error?.error?.message ?? null;
+        this.logger.error('Loading services error', error);
+      },
+    });
+  }
 
-
-
-  displayName(type:String)
-
-  { this.num1=1;
-    this.amount=0;
+  displayName(type: string | null): void {
+    const serviceType = type ?? '';
+    this.num1 = 1;
+    this.amount = 0;
     this.submitted = false;
     this.message = null;
     this.successMessage = null;
-   
-    this.selectedMerchantType=type;
-    this.payBillService.displayMerchantName(this.selectedMerchantType).subscribe(
-      (responseData: any)=>{
-        this.merchants=responseData;
-        this.logger.info("Loading merchants success");
-
+    this.selectedMerchantType = serviceType;
+    this.payBillService.displayMerchantName(serviceType).subscribe({
+      next: (merchants) => {
+        this.merchants = merchants;
+        this.logger.info('Loading merchants success');
       },
-      error=>{ this.message = error.errorMessage;
-        console.log(error);
-        
-        this.logger.error("Loading merchants error: " + this.message, error);
-        
-      }
-    )
- }
+      error: (error) => {
+        this.message = error?.error?.message ?? null;
+        this.logger.error('Loading merchants error', error);
+      },
+    });
+  }
 
- showBill(name:String){
-  this.num1=1;
-  this.submitted = false;
-  this.message = null;
-  this.successMessage = null;
-  this.amount=Math.floor(Math.random()*50+150);
-  this.selectedMerchant=name;
-
-
- }
-
- payBill(){
-  this.submitted = true;
-  this.message = null;
-  this.successMessage = null;
-  let user: User = JSON.parse(sessionStorage.getItem("user"));
-  this.payBillService.payBill(user.userId,this.amount,this.selectedMerchant).subscribe((responseData: any) => {
-
-    
-  console.log(responseData)
-  this.successMessage = responseData;
-  this.profileService.subMoney(this.amount);
-  this.profileService.addPoints(Math.floor(Math.round(this.amount) / 10));
-
-  this.form1.controls['servicetype'].setValue("");
-  this.form1.controls['merchantname'].setValue("");
-  this.amount = null;
-  this.submitted = false;
-  this.logger.info("Successfull payment");
-},
-  error => {
-    // // error.error = JSON.parse(error.error);
-    // if (error.error.message != null) {
-    //   this.message = error.error.message;
-    // } else {
-    //   this.translateService.get("ERROR_MESSAGES.SERVER_DOWN").subscribe(value => this.message = value)
-    //     ;
-    // }
-    // this.submitted = false;
-    // this.logger.error(this.message, error);    
-    console.log(error);
-    console.log(typeof(error.error))
+  showBill(name: string | null): void {
+    this.num1 = 1;
     this.submitted = false;
-    try{
-      const errorObj = JSON.parse(error.error);
-      this.message = errorObj.message;
-      return;
-    }
-    catch(e){
-    this.message = error.error;
-    }
-    this.logger.error("Loading merchants error: " + this.message, error);
-  });
+    this.message = null;
+    this.successMessage = null;
+    this.amount = Math.floor(Math.random() * 50 + 150);
+    this.selectedMerchant = name ?? '';
+  }
 
- }
-
-
-
- 
-
+  payBill(): void {
+    this.submitted = true;
+    this.message = null;
+    this.successMessage = null;
+    this.payBillService.payBill(this.amount, this.selectedMerchant).subscribe({
+      next: (response) => {
+        this.successMessage = friendlyMoneyResult(response, { title: 'Bill paid', verb: 'paid' });
+        this.auth.applyMoneyResult(response);
+        this.form1.controls.servicetype.setValue('');
+        this.form1.controls.merchantname.setValue('');
+        this.num1 = 0;
+        this.amount = 0;
+        this.submitted = false;
+        this.logger.info('Successful payment');
+      },
+      error: (error) => {
+        this.submitted = false;
+        this.message = extractApiError(error, 'Payment failed. Please try again.');
+        this.logger.error('Bill payment error', error);
+      },
+    });
+  }
 }

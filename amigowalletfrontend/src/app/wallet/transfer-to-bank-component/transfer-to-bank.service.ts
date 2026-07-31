@@ -1,56 +1,30 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { UriService } from 'src/app/shared/uri.service';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+import { environment } from '../../../environments/environment';
+import { MoneyTransactionResponse } from '../../shared/model/money-transaction-response';
+
+export interface BankTransferRequest {
+  amount: number;
+  accountNumber: string;
+  ifsc: string;
+  accountHolderName: string;
+}
+
+/**
+ * Withdraw wallet -> external bank account. The browser no longer calls the
+ * bank directly (accountVerification + creditMoney are gone); the wallet-api
+ * performs verify + credit + debit atomically server-side.
+ *   POST /BankTrasnferAPI/sendMoneyBankAccount  body { amount, accountNumber, ifsc, accountHolderName }
+ *   NOTE: mapping historically misspelled "BankTrasnfer" - confirm at reconciliation.
+ */
+@Injectable({ providedIn: 'root' })
 export class TransferToBankService {
+  private readonly http = inject(HttpClient);
+  private readonly api = environment.apiBaseUrl;
 
-  /** required url */
-  amigoWalletUrl: string;
-  eduBankUrl: string;
-
-  /** constructor will be executed on creation of object creation
-   *
-   * the objects specified as parameters will be injected while execution
-   * and these are used as instance variables
-   *
-   * urls are initialized
-   */
-  constructor(private http: HttpClient, private uriService: UriService) {
-    this.amigoWalletUrl = this.uriService.buildAmigoWalletUri();
-    this.eduBankUrl = this.uriService.buildEduBankUri();
-  }
-
-  /**
-   * This method calls the accountVerification method
-   * in AccountAPI of PaymentServices
-   * using an http post request
-   * which returns a ResponseEntity<String>
-   */
-  accountVerification(data: any): Observable<any> {
-    return this.http.post(this.eduBankUrl + '/AccountAPI/accountVerification', data, { responseType: 'text' })
-  }
-
-  /**
-   * This method calls the creditMoney method
-   * in AccountAPI of PaymentServices
-   * using an http post request
-   * which returns a ResponseEntity<String>
-   */
-  creditMoney(amount: number, data: any): Observable<any> {
-    return this.http.post(this.eduBankUrl + '/AccountAPI/creditMoney/' + amount, data, { responseType: 'text' })
-  }
-
-  /**
-   * This method calls the payToBank method
-   * in PayToBankAPI of eWallet
-   * using an http post request 
-   * which returns a ResponseEntity<String>
-   */
-  sendToBank(data: any, amount: any): Observable<any> {
-    return this.http.post(this.amigoWalletUrl + '/BankTrasnferAPI/sendMoneyBankAccount/' + amount, data, { responseType: 'text' })
+  sendMoneyBankAccount(request: BankTransferRequest): Observable<MoneyTransactionResponse> {
+    return this.http.post<MoneyTransactionResponse>(`${this.api}/BankTrasnferAPI/sendMoneyBankAccount`, request);
   }
 }

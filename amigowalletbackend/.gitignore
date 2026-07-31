@@ -1,55 +1,32 @@
-<<<<<<< HEAD
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 
-### STS ###
+### IDE / editor ###
+.idea/
+*.iws
+*.iml
+*.ipr
+.settings/
+.classpath
+.project
+.pmd
 .apt_generated
 .factorypath
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
+### build output ###
 /build/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### Log Files ###
-logger.log
-logger.log.*.*.gz
-=======
-/target/
-!.mvn/wrapper/maven-wrapper.jar
-
-### STS ###
-.apt_generated
-.factorypath
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/build/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### logger
-logger.log
-logger.log.*.*.gz
 /bin/
+/dist/
+
+### logs ###
+*.log
+logger.log*
+logs/
+test-output/
+
+### OS ###
+.DS_Store
+._*
+*.tmp

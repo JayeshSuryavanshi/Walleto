@@ -1,9 +1,8 @@
-hr {
-   border-width:1px;
-    border-color: lightgrey;
+.login-msg {
+  margin-top: var(--s-4);
 }
 
-.btn {
-    margin-bottom: 10px !important;
-    margin-top: 10px !important;
+.login-forgot {
+  margin-top: var(--s-4);
+  text-align: center;
 }

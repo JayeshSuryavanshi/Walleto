@@ -2,70 +2,48 @@ package com.amigowallet.api;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
-import com.amigowallet.model.User;
+import com.amigowallet.exception.ApiException;
 import com.amigowallet.model.UserTransaction;
+import com.amigowallet.security.AuthUtil;
 import com.amigowallet.service.TransactionHistoryService;
 
+import org.springframework.http.HttpStatus;
+
 /**
- * This class has methods to handle requests related to transaction history.
- * 
- *  @author KARAN RAJ SINGH
- * 
+ * Transaction history. The user is resolved from the JWT (no body userId), so a
+ * caller can only read their own history.
+ *
+ * @author KARAN RAJ SINGH
  */
 @RestController
-@CrossOrigin
 @RequestMapping("TransactionHistoryAPI")
 public class TransactionHistoryAPI {
 
-	/**
-	 * This attribute is used for getting property values from
-	 * <b>configuration.properties</b> file
-	 */
-	@Autowired
-	private Environment environment;
-	
-	@Autowired
-	TransactionHistoryService transactionHistoryService;
-	
-	static Logger logger = LogManager.getLogger(TransactionHistoryAPI.class.getName());
-	
-	/**
-	 * This method receives the user model in POST request and calls
-	 * TransactionHistoryService method to fetch transaction history. <br>
-	 * 
-	 * @param user
-	 * 
-	 * @return ResponseEntity<List<UserTransaction>>
-	 */
-	@RequestMapping(value = "getAllTransactions", method = RequestMethod.POST)
-	public ResponseEntity<List<UserTransaction>> getAllTransactions(@RequestBody User user){
-		Integer userId=user.getUserId();
-		ResponseEntity<List<UserTransaction>> responseEntity = null;
-		try {
-			logger.info("USER TRYING TO FETCH TRANSACTION HISTORY, USER ID : "+user.getUserId());
-			
-			List<UserTransaction> userTransactions = transactionHistoryService.getAllTransactionByUserId(userId);
-			
-			logger.info("FETCHING OF TRANSACTION HISTORY SUCCESSFULLY, USER ID : "+user.getUserId());
-			
-			responseEntity = new ResponseEntity<List<UserTransaction>>(userTransactions, HttpStatus.OK);
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, environment.getProperty(e.getMessage()));
-		}
-		return responseEntity;
+	private static final Logger logger = LoggerFactory.getLogger(TransactionHistoryAPI.class);
+
+	private final TransactionHistoryService transactionHistoryService;
+
+	public TransactionHistoryAPI(TransactionHistoryService transactionHistoryService) {
+		this.transactionHistoryService = transactionHistoryService;
 	}
-	
+
+	@PostMapping("getAllTransactions")
+	public List<UserTransaction> getAllTransactions() {
+		Integer userId = AuthUtil.currentUserId();
+		logger.info("Transaction history requested by userId {}", userId);
+
+		try {
+			return transactionHistoryService.getAllTransactionByUserId(userId);
+		} catch (ApiException ae) {
+			throw ae;
+		} catch (Exception e) {
+			throw new ApiException(HttpStatus.NOT_FOUND, "TransactionHistoryService.NO_TRANSACTIONS_FOUND");
+		}
+	}
 }

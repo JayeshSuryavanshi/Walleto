@@ -4,6 +4,11 @@
 /dist
 /tmp
 /out-tsc
+/bazel-out
+
+# Angular CLI cache
+/.angular/cache
+.angular/
 
 # dependencies
 /node_modules
@@ -37,4 +42,3 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-package-lock.json

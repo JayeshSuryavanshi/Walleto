@@ -1,5 +1,11 @@
-# macOS
+# macOS / editor
 .DS_Store
+._*
+*.swp
+
+# Secrets / local env
+.env
+*.env.local
 
 # Java / Maven
 target/
@@ -13,9 +19,13 @@ dist/
 # IDE
 .idea/
 *.iml
+.settings/
+.classpath
+.project
+.pmd
+.vscode/
 
-# Build / logs / IDE artifacts
-target/
+# Logs / build artifacts
 logs/
 test-output/
 *.log

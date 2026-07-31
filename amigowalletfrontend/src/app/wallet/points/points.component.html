@@ -1,18 +1,35 @@
-<div class="card text-center align-middle">
-    <div class="card-body">
-        <div class="view-adjust" [@loadAnimation]="state">
-            <div class="block">
-                <!--ngSubmit directive specifies "redeem()" function to run when the form is submitted-->
-                <form [formGroup]="form" (ngSubmit)="redeem()">
-                    <!--ngModel directive binds the value of HTML controls to application data-->
-                    <input type="hidden" class="form-control" formControlName="userId" name="userId">
-                    <button type="submit" [disabled]="!form.valid || submitted" class="btn my-btn "><span
-                            *ngIf="!submitted">{{ "REDEEM_POINTS.REDEEM_POINTS_BUTTON" | translate }}</span><i
-                            *ngIf="submitted" class="fa fa-spinner fa-pulse fa-lg fa-fw"> </i></button>
-                </form>
-                <div class="text-success">{{successMessage}}</div>
-                <div class="text-danger">{{errorMessage}}</div>
-            </div>
-        </div>
+<section class="screen">
+  <header class="screen-head">
+    <h1 class="h1">{{ 'REDEEM_POINTS.TITLE' | translate }}</h1>
+    <span class="caption">{{ 'REDEEM_POINTS.SUBTITLE' | translate }}</span>
+  </header>
+
+  <div class="card card-pad points-hero" [@loadAnimation]="state">
+    <p class="eyebrow">{{ 'REDEEM_POINTS.POINTS_LABEL' | translate }}</p>
+    <p class="points-figure tabular">{{ auth.points() }}</p>
+  </div>
+
+  <div class="form-actions">
+    <button type="button" class="btn btn-primary btn-block" [disabled]="submitted || auth.points() <= 0" (click)="redeem()">
+      @if (submitted) {
+        <span class="spinner" aria-hidden="true"></span>
+      } @else {
+        {{ 'REDEEM_POINTS.REDEEM_POINTS_BUTTON' | translate }}
+      }
+    </button>
+    @if (auth.points() <= 0 && !successMessage) {
+      <p class="caption points-note">{{ 'REDEEM_POINTS.NO_POINTS' | translate }}</p>
+    }
+  </div>
+
+  @if (successMessage || errorMessage) {
+    <div class="messages">
+      @if (successMessage) {
+        <p class="alert alert-success" role="status">{{ successMessage }}</p>
+      }
+      @if (errorMessage) {
+        <p class="alert alert-error" role="alert">{{ errorMessage }}</p>
+      }
     </div>
-</div>
+  }
+</section>

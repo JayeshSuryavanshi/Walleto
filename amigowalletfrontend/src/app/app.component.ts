@@ -1,19 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
+import { ThemeService } from './shared/theme.service';
+
 @Component({
-  selector: 'aw-root',
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
+  // Instantiate the theme service app-wide so the resolved theme stays in sync.
+  private readonly theme = inject(ThemeService);
 
-  constructor(translate: TranslateService) {
-    // this language will be used as a fallback when a translation isn't found in the current language
-    translate.setDefaultLang('en');
-
-    // the lang to use, if the lang isn't available, it will use the current loader to get them
-    translate.use('en');
+  constructor() {
+    // Fallback + active language are declared in appConfig (provideTranslateService).
+    // Activate English explicitly using the API-stable `use()`.
+    inject(TranslateService).use('en');
   }
-
 }

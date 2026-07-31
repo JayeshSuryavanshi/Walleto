@@ -1,30 +1,18 @@
-.recaptcha > img {
-    border: 1px solid black; 
-}
-.recaptcha {
-    text-align: left;
-    margin-top: 10%; 
-}
-
-.recaptcha > .recaptcha-refresh {
-    width: 2%;
-    cursor: pointer;
+.captcha {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-bottom: var(--s-2);
 }
 
-.disabled {
-    cursor: no-drop !important;
+.captcha-img {
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--surface-2);
+  padding: 4px 8px;
 }
 
-@media only screen and (min-width : 768px) {
-    .recaptcha {
-        margin-left: -10%;
-    }
-}
-
-@media only screen and (max-width : 768px) {
-    .recaptcha {
-        display: block;
-        width: fit-content;
-        margin: auto; 
-    }
+.reg-msg {
+  margin-top: var(--s-4);
 }

@@ -1,43 +1,22 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { User } from '../../shared/model/user';
-import { UriService } from '../../shared/uri.service';
 
-
+import { environment } from '../../../environments/environment';
+import { MoneyTransactionResponse } from '../../shared/model/money-transaction-response';
 
 /**
- * This is a service class used from Point component
- * 
- * this communicats with the server side application and does requied work
- *
- * @Injectable makes it as a service class and it can be injected where ever required
+ * Redeem all reward points to wallet money. Identity derived from the JWT; body
+ * is empty. `amount` is the money credited and `newBalance` the resulting wallet
+ * balance.
+ *   POST /RewardPointsAPI/redeemRewardPoints  body {}
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PointsService {
+  private readonly http = inject(HttpClient);
+  private readonly api = environment.apiBaseUrl;
 
-  /** required url */
-  amigoWalletUrl: string;
-
-  /** constructor will be executed on creation of object creation 
-   * 
-   * the objects specified as parameters will be injected while execution 
-   * and these are used as instance variables 
-   *
-   * urls are initialized
-   */
-  constructor(private http: HttpClient, private uriService: UriService) {
-    this.amigoWalletUrl = this.uriService.buildAmigoWalletUri();
-  }
-  
-  /**
-   * This method calls the redeemRewardPoints method
-   * in RewardPointsAPI of eWallet
-   * using an http post request 
-   * which returns a ResponseEntity<User>
-   */
-  redeem(data: any): Observable<any> {
-
-    return this.http.post<User>(this.amigoWalletUrl + '/RewardPointsAPI/redeemRewardPoints', data)
+  redeem(): Observable<MoneyTransactionResponse> {
+    return this.http.post<MoneyTransactionResponse>(`${this.api}/RewardPointsAPI/redeemRewardPoints`, {});
   }
 }

@@ -1,28 +1,36 @@
 package com.amigowallet.service;
 
-import com.amigowallet.model.User;
+import com.amigowallet.dto.SecurityQuestionResponse;
 
 /**
- * This is a service interface having methods which contain business logic related to Forgot password and 
- * Reset password.
- * 
- * @author ETA_JAVA
+ * Business logic for the password-recovery chain.
  *
+ * <p>Hardened contract (Phase 3): no full-User disclosure, identity is always
+ * derived server-side, and the actual password reset is gated by a short-lived
+ * single-purpose token (minted only after the security answer is verified).
+ *
+ * @author ETA_JAVA
  */
-public interface ForgotPasswordService
-{
+public interface ForgotPasswordService {
+
 	/**
-	 * This method receives email id as argument and verifies it by making a call to DAO class method. <br>
-	 * If verification fails then it throws exception {@link Exception}
-	 *  
-	 * @param emailId
-	 * @return 
-	 * 
-	 * @throws Exception
+	 * Returns the security question to present for a recovery attempt. Uses a
+	 * non-enumerating strategy: an unknown email yields a plausible decoy question
+	 * drawn from the same question set, so the response is indistinguishable from
+	 * that of a real account.
 	 */
-	public User authenticateEmailId(String emailId) throws Exception;
+	SecurityQuestionResponse getSecurityQuestion(String emailId) throws Exception;
 
-	public void validateSecurityAnswer(User user) throws Exception;
+	/**
+	 * Verifies the security answer for the account identified by {@code emailId}
+	 * (userId is resolved server-side, never trusted from the client). On success
+	 * returns a short-lived password-reset token; on failure throws.
+	 */
+	String verifyAnswerAndCreateResetToken(String emailId, String securityAnswer) throws Exception;
 
-	public void resetPassword(User user) throws Exception;
+	/**
+	 * Resets the password for {@code userId} (derived from the reset token, never
+	 * from the request body).
+	 */
+	void resetPassword(Integer userId, String newPassword) throws Exception;
 }

@@ -1,5 +1,6 @@
 package com.amigowallet.model;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class User {
@@ -10,7 +11,7 @@ public class User {
 	private String name;
 	private String password;
 	private UserStatus userStatus;
-	private Double balance;
+	private BigDecimal balance;
 	private String successMessage;
 	private String errorMessage;
 	private Integer rewardPoints;
@@ -29,7 +30,7 @@ public class User {
 		this.securityAnswer = securityAnswer;
 	}
 
-	public Double getBalance() {
+	public BigDecimal getBalance() {
 		return balance;
 	}
 
@@ -85,7 +86,7 @@ public class User {
 		return userTransactions;
 	}
 
-	public void setBalance(Double balance) {
+	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
 	}
 

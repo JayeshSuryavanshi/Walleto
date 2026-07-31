@@ -1,153 +1,110 @@
 package com.amigowallet.api;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.amigowallet.dto.MessageResponse;
+import com.amigowallet.dto.RegisterRequest;
+import com.amigowallet.dto.RegisterResponse;
+import com.amigowallet.dto.SecurityQuestionResponse;
+import com.amigowallet.exception.ApiException;
 import com.amigowallet.model.SecurityQuestion;
 import com.amigowallet.model.User;
 import com.amigowallet.service.RegistrationService;
 
+import jakarta.validation.Valid;
+
 /**
- * This class has methods to handle registration requests.
- * 
- *  @author ETA_JAVA
- * 
+ * Public registration endpoints (validate, list security questions, register).
+ *
+ * @author ETA_JAVA
  */
-@CrossOrigin
 @RestController
 @RequestMapping("RegistrationAPI")
 public class RegistrationAPI {
-	
-	/**
-	 * This attribute is used for getting property values from
-	 * <b>configuration.properties</b> file
-	 */
-	@Autowired
-	private Environment environment;
-	
-	@Autowired
-	RegistrationService registrationService;
-	
-	static Logger logger = LogManager.getLogger(RegistrationAPI.class.getName());
-	
-	/**
-	 * This method receives the user model in POST request and calls
-	 * RegistrationService method to verify the user details. <br>
-	 * If verification is success then it sends OTP in an email
-	 * to the email id of the user received in POST request. 
-	 * Then it sends success message to the client.<br>
-	 * If verification fails then it sends failure message to the client.
-	 * 
-	 * @param user
-	 * 
-	 * @return ResponseEntity<User> populated with 
-	 * 					successMessage,
-	 * 								if successfully deleted
-	 * 					errorMessage,
-	 * 								if any error occurs
-	 */
-	@RequestMapping(value = "validateForRegistration", method = RequestMethod.POST)
-	public ResponseEntity<User> validateForRegistration(@RequestBody User user) {
-		ResponseEntity<User> responseEntity=null;
-		try{
-			logger.info("USER TRYING TO REGISTER, VALIDATING DETAILS. USER NAME : "+
-						user.getName()+", EMAIL ID : "+user.getEmailId());
-			
-			registrationService.validateUser(user);	
-			
-			/*
-			 * The following code populates a user model with a success message
-			 */
-			user.setSuccessMessage(environment.getProperty("RegistrationAPI.SUCCESSFULLY_VALIDATED"));
-			responseEntity=new ResponseEntity<User>(user, HttpStatus.ACCEPTED);
-		} catch (Exception e) {
-			
-			if(e.getMessage().contains("Validator")){
-				throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, environment.getProperty(e.getMessage()));
-			}
-			throw new ResponseStatusException(HttpStatus.CONFLICT, environment.getProperty(e.getMessage()));
-		}
-		return responseEntity;
-	}
-	
-	@RequestMapping(value="getAllQuestions",method=RequestMethod.GET)
-	public ResponseEntity<List<SecurityQuestion>> getAllQuestions(){
-		ResponseEntity<List<SecurityQuestion>> responseEntity=null;
-		ArrayList<SecurityQuestion> securityQuestions = new ArrayList<>();
-			logger.info("Getting all the security questions");
 
-			/*
-			 * The following code again validates the user details
-			 */
-			securityQuestions = registrationService.getAllSecurityQuestions();
-			
-			responseEntity = new ResponseEntity<List<SecurityQuestion>>(securityQuestions, HttpStatus.OK);
-			
-		return responseEntity;
+	private static final Logger logger = LoggerFactory.getLogger(RegistrationAPI.class);
+
+	private final Environment environment;
+	private final RegistrationService registrationService;
+
+	public RegistrationAPI(Environment environment, RegistrationService registrationService) {
+		this.environment = environment;
+		this.registrationService = registrationService;
 	}
-	
-	
-	/**
-	 * This method receives the user model in POST request and calls
-	 * RegistrationService method to validate the user details. <br>
-	 * It also verifies the OTP<br>
-	 * If verification is success then it calls the registerUser method which
-	 * adds the user details into the database 
-	 * Then it sends success message along with the
-	 * registrationId to the client.<br>
-	 * If verification fails then it sends failure message to the client.
-	 * 
-	 * @param user
-	 * 
-	 * @return success or failure message as a ResponseEntity along with HTTP
-	 *         Status code
-	 */
-	@RequestMapping(value = "register", method = RequestMethod.POST)
-	public ResponseEntity<String> userRegistration(@RequestBody User user)
-	{
-		ResponseEntity<String> responseEntity=null;
-		String message=null;
+
+	@PostMapping("validateForRegistration")
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	public MessageResponse validateForRegistration(@Valid @RequestBody RegisterRequest request) {
+		logger.info("Validating registration details");
 		try {
-
-			/*
-			 * The following code again validates the user details
-			 */
-			registrationService.validateUser(user);
-
-			/*
-			 * registrationId is generated by saving the user to the database
-			 */
-			Integer registrationId = registrationService.registerUser(user);
-
-			logger.info("USER REGISTERED SUCCESSFULLY, USER EMAIL : "+user.getEmailId());
-
-			/*
-			 * The following code populates a string with a success message
-			 */
-			message = environment.getProperty("RegistrationAPI.SUCCESSFUL_REGISTRATION")+ registrationId;
-			
-			responseEntity=new ResponseEntity<String>(message, HttpStatus.CREATED);
-		} 
-		catch (Exception e){
-			if(e.getMessage().contains("Validator")){
-				throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, environment.getProperty(e.getMessage()));
-			}
-			throw new ResponseStatusException(HttpStatus.CONFLICT, environment.getProperty(e.getMessage()));
+			registrationService.validateUser(toUser(request));
+		} catch (Exception e) {
+			throw mapRegistrationException(e);
 		}
-		
-		return responseEntity;
+		return new MessageResponse(environment.getProperty("RegistrationAPI.SUCCESSFULLY_VALIDATED"));
+	}
+
+	@GetMapping("getAllQuestions")
+	public List<SecurityQuestionResponse> getAllQuestions() {
+		logger.info("Fetching all security questions");
+		return registrationService.getAllSecurityQuestions().stream()
+				.map(q -> new SecurityQuestionResponse(q.getQuestionId(), q.getQuestion()))
+				.toList();
+	}
+
+	@PostMapping("register")
+	@ResponseStatus(HttpStatus.CREATED)
+	public RegisterResponse register(@Valid @RequestBody RegisterRequest request) {
+		try {
+			User user = toUser(request);
+			registrationService.validateUser(user);
+			Integer registrationId = registrationService.registerUser(user);
+			logger.info("User registered successfully with id {}", registrationId);
+			return new RegisterResponse(registrationId,
+					environment.getProperty("RegistrationAPI.SUCCESSFUL_REGISTRATION") + registrationId);
+		} catch (ApiException ae) {
+			throw ae;
+		} catch (Exception e) {
+			throw mapRegistrationException(e);
+		}
+	}
+
+	private User toUser(RegisterRequest request) {
+		User user = new User();
+		user.setName(request.name());
+		user.setEmailId(request.emailId());
+		user.setMobileNumber(request.mobileNumber());
+		user.setPassword(request.password());
+		user.setSecurityAnswer(request.securityAnswer());
+
+		SecurityQuestion securityQuestion = new SecurityQuestion();
+		securityQuestion.setQuestionId(request.securityQuestion().questionId());
+		user.setSecurityQuestion(securityQuestion);
+
+		return user;
+	}
+
+	/**
+	 * Preserves the original status semantics: validator failures -> 406
+	 * NOT_ACCEPTABLE, everything else (e.g. email/mobile already present) -> 409
+	 * CONFLICT.
+	 */
+	private ApiException mapRegistrationException(Exception e) {
+		String key = e.getMessage();
+		if (key != null && key.contains("Validator")) {
+			return new ApiException(HttpStatus.NOT_ACCEPTABLE, key);
+		}
+		return new ApiException(HttpStatus.CONFLICT, key);
 	}
 }

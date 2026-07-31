@@ -1,0 +1,13 @@
+/* Bill amount summary — label left, figure right in tabular numerals. */
+.bill-amount {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.bill-figure {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--ink);
+}

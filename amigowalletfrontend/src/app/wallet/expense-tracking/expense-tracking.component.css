@@ -1,0 +1,24 @@
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.stat-figure {
+  font-weight: 700;
+  font-size: 1.375rem;
+  color: var(--ink);
+}
+
+.empty {
+  padding: var(--s-8) 0;
+  text-align: center;
+  font-size: .9375rem;
+}

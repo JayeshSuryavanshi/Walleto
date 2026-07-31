@@ -1,118 +1,67 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Bank } from "../../shared/model/bank";
-import { Card } from '../../shared/model/card';
-import { UserTransaction } from '../../shared/model/user-transaction';
-import { UriService } from '../../shared/uri.service';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-
+import { environment } from '../../../environments/environment';
+import { Bank } from '../../shared/model/bank';
+import { CardInfo } from '../../shared/model/card';
+import { MoneyTransactionResponse } from '../../shared/model/money-transaction-response';
 
 /**
- * This is a service class used from LoadMoney component
- *  
- * this communicats with the server side application and does requied work
+ * Load-money service. Talks ONLY to the wallet-api - the browser no longer
+ * calls the bank (/EDUBank) directly; the wallet-api performs the bank leg
+ * server-to-server inside a transactional boundary.
  *
- * @Injectable A marker metadata which specifies any class which can be 
- * injected can be injected to this class
+ * ---- MONEY ENDPOINTS (isolated here for easy reconciliation w/ Phase-4 backend) ----
+ *   POST /DebitCardAPI/loadMoneyDebitCard   body { amount, cardNumber, pin, expiry, cardHolderName? }
+ *   POST /DebitCardAPI/addCard              body { cardNumber, expiryDate, pin, bank }
+ *   POST /DebitCardAPI/deleteCard           body { cardId }
+ *   GET  /DebitCardAPI/fetchBankDetails
+ *   POST /NetBankingAPI/loadMoneyNetBanking body { amount, loginName, password }
  */
-@Injectable()
+export interface LoadMoneyDebitCardRequest {
+  amount: number;
+  cardNumber: string;
+  pin: string;
+  expiry: string;
+  cardHolderName?: string;
+}
+
+export interface AddCardRequest {
+  cardNumber: string;
+  expiryDate: string;
+  pin: string;
+  bank: number;
+}
+
+export interface NetBankingRequest {
+  amount: number;
+  loginName: string;
+  password: string;
+}
+
+@Injectable({ providedIn: 'root' })
 export class LoadMoneyService {
+  private readonly http = inject(HttpClient);
+  private readonly api = environment.apiBaseUrl;
 
-  /** required url */
-  amigoWalletUrl: string;
-  eduBankUrl: string;
-
-  /** constructor will be executed on creation of object creation 
-   * 
-   * the objects specified as parameters will be injected while execution 
-   * and these are used as instance variables 
-   *
-   * urls are initialized
-   */
-  constructor(private http: HttpClient, private uriService: UriService) {
-    this.amigoWalletUrl = this.uriService.buildAmigoWalletUri();
-    this.eduBankUrl = this.uriService.buildEduBankUri();
+  loadMoneyDebitCard(request: LoadMoneyDebitCardRequest): Observable<MoneyTransactionResponse> {
+    return this.http.post<MoneyTransactionResponse>(`${this.api}/DebitCardAPI/loadMoneyDebitCard`, request);
   }
 
-/**
- * This method calls the cardPayment method
- * in DebitCardAPI of PaymentServices
- * using an http post request
- * which returns a ResponseEntity<String>
- */
-  cardPayment(amount: number, data: any): Observable<any> {
-
-    return this.http.post(this.eduBankUrl + '/DebitCardAPI/cardPayment/' + amount, data, {responseType: "text"})
-  }
-  
-  /**
-   * This method calls the loadMoneyDebitCard method
-   * in DebitCardAPI of eWallet
-   * using an http post request 
-   * which returns a ResponseEntity<UserTransaction>
-   */
-  loadMoneyDebitCard(amount: number, data: any): Observable<any> {
-
-    return this.http.post<UserTransaction>(this.amigoWalletUrl + '/DebitCardAPI/loadMoneyDebitCard/' + amount, data)
-  }
-  
-  /**
-   * This method calls the deleteCard method
-   * in DebitCardAPI of eWallet
-   * using an http post request 
-   * which returns a ResponseEntity<Card>
-   */
-  deleteCard(data: any): Observable<any> {
-
-    return this.http.post<Card>(this.amigoWalletUrl + '/DebitCardAPI/deleteCard', data)
+  addCard(request: AddCardRequest): Observable<CardInfo> {
+    return this.http.post<CardInfo>(`${this.api}/DebitCardAPI/addCard`, request);
   }
 
-  /**
-   * This method calls the addCard method
-   * in DebitCardAPI of eWallet
-   * using an http post request 
-   * which returns a ResponseEntity<Card>
-   */
-  addCard(userId: number, data: any): Observable<any> {
-
-    return this.http.post<Card>(this.amigoWalletUrl + '/DebitCardAPI/addCard/' + userId, data)
-
+  deleteCard(cardId: number): Observable<CardInfo> {
+    return this.http.post<CardInfo>(`${this.api}/DebitCardAPI/deleteCard`, { cardId });
   }
 
-  /**
-   * This method calls the cardVerification method
-   * in DebitCardAPI of PaymentServices
-   * using an http post request 
-   * which returns a ResponseEntity<String>
-   */
-  cardVerification(data: any): Observable<any> {
-
-    return this.http.post(this.eduBankUrl + '/DebitCardAPI/cardVerification', data, {responseType: "text"})
-     
+  getAllBanks(): Observable<Bank[]> {
+    return this.http.get<Bank[]>(`${this.api}/DebitCardAPI/fetchBankDetails`);
   }
 
-  /**
-   * This method calls the loadMoneyNetBanking method
-   * in NetBankingAPI of eWallet
-   * using an http post request 
-   * which returns a ResponseEntity<UserTransaction>
-   */
-  netBanking(data: any): Observable<any> {
-
-    return this.http.post<UserTransaction>(this.amigoWalletUrl + '/NetBankingAPI/loadMoneyNetBanking', data)
-  
-  }
-
-  /**
-   * This method calls the fetch all banks method 
-   * in DebitCardAPI of PaymentServices
-   * using an http get request 
-   * which returns a ResponseEntity<Bank[]>
-   */
-  getAllBanks(): Observable<any> {
-
-    return this.http.get<Bank[]>(this.amigoWalletUrl + '/DebitCardAPI/fetchBankDetails')
-  
+  loadMoneyNetBanking(request: NetBankingRequest): Observable<MoneyTransactionResponse> {
+    return this.http.post<MoneyTransactionResponse>(`${this.api}/NetBankingAPI/loadMoneyNetBanking`, request);
   }
 }
