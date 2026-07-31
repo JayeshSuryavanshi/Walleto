@@ -1,246 +1,122 @@
 package com.amigowallet.dao;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
-import java.util.Random;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Repository;
+
+import com.amigowallet.dto.MoneyTransactionResponse;
+import com.amigowallet.entity.UserEntity;
+import com.amigowallet.exception.ApiException;
+import com.amigowallet.utility.AmigoWalletConstants;
+import com.amigowallet.utility.MoneyUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
-
-
-
-
-
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import com.amigowallet.entity.PaymentTypeEntity;
-import com.amigowallet.entity.UserEntity;
-import com.amigowallet.entity.UserTransactionEntity;
-import com.amigowallet.model.PaymentType;
-import com.amigowallet.model.TransactionStatus;
-import com.amigowallet.model.User;
-import com.amigowallet.model.UserTransaction;
-import com.amigowallet.utility.AmigoWalletConstants;
 
 @Repository("WalletToWalletDAO")
-public class WalletToWalletDAOImpl implements WalletToWalletDAO{
-	
-	@Autowired
-	UserLoginDAO userLoginDAO;
+public class WalletToWalletDAOImpl implements WalletToWalletDAO {
 
-	
+	/** Cashback rate (2%) and cap for genuine transfers of >= CASHBACK_MIN. */
+	private static final BigDecimal CASHBACK_RATE = new BigDecimal("0.02");
+	private static final BigDecimal CASHBACK_MIN = new BigDecimal("200");
+	private static final BigDecimal CASHBACK_CAP = new BigDecimal("100.00");
+	/** 1 reward point per this many currency units (floored, deterministic). */
+	private static final BigDecimal POINTS_PER_UNIT = new BigDecimal("100");
+
 	@PersistenceContext
-	EntityManager entityManager;
-	
+	private EntityManager entityManager;
+
+	@Autowired
+	private WalletLedgerDAO walletLedger;
+
 	@Override
-	public Integer transferToWallet(Integer userId, Double amountToTransfer, String emailIdToTransfer) throws Exception{
-		
-		// TODO Auto-generated method stub
-		
-		User receiver=userLoginDAO.getUserByEmailId(emailIdToTransfer);
-		User sender=userLoginDAO.getUserByUserId(userId);
-		Double number=0.0;
-		if(sender==receiver) {
-			throw new Exception("WalletService.PAYING_HIMSELF");
-		}
-		
-		if(sender==null){
-			return 0;
-		}
-		
-		if(receiver==null){
-			throw new Exception("WalletToWalletService.INVALID_EMAIL");
-		}
-		
-		if(amountToTransfer>=200){
-			number=amountToTransfer*0.02;
-		}
-		
-		Random random=new Random();
+	public MoneyTransactionResponse transferToWallet(Integer senderUserId, BigDecimal amount, String recipientEmailId) {
+		BigDecimal safeAmount = MoneyUtil.requirePositive(amount);
 
-		Integer rewardpoint=random.nextInt(5);
+		/*
+		 * Resolve the recipient's identity via a SCALAR projection. This deliberately
+		 * does NOT load the recipient UserEntity into the persistence context, so the
+		 * subsequent locked find (lockUser) is the FIRST managed load of that row — a
+		 * PESSIMISTIC_WRITE from the outset, not a lock upgrade of an already-loaded
+		 * entity (which, under concurrency, raced the @Version check and produced a
+		 * StaleObjectStateException).
+		 */
+		String normalizedEmail = recipientEmailId == null ? null : recipientEmailId.toLowerCase();
+		List<Object[]> matches = entityManager.createQuery(
+				"select u.userId, u.emailId from UserEntity u where u.emailId = :email", Object[].class)
+				.setParameter("email", normalizedEmail)
+				.getResultList();
+		if (matches.isEmpty()) {
+			throw new ApiException(HttpStatus.NOT_FOUND, "WalletToWalletService.INVALID_EMAIL");
+		}
+		Integer receiverUserId = (Integer) matches.get(0)[0];
 
-		UserTransaction userTransactionSender = new UserTransaction();
-		
 		/*
-		 * A new userTransaction is created here and all the properties are populated
+		 * Fixed self-transfer guard: compare identities (the original reference
+		 * comparison of two separately-constructed objects was always false, which
+		 * combined with the missing funds check to print money).
 		 */
-		userTransactionSender.setAmount(amountToTransfer);
-		userTransactionSender.setInfo(AmigoWalletConstants.TRANSACTION_INFO_MONEY_WALLET_TO_WALLET_DEBIT+" "+emailIdToTransfer);
-		userTransactionSender.setPointsEarned(rewardpoint);
-		userTransactionSender.setIsRedeemed(AmigoWalletConstants.REWARD_POINTS_REDEEMED_NO.charAt(0));
-		userTransactionSender.setRemarks("D");
-		
-		
-		UserTransaction userTransactionReceiver = new UserTransaction();
-		userTransactionReceiver.setAmount(amountToTransfer);
-		userTransactionReceiver.setInfo(AmigoWalletConstants.TRANSACTION_INFO_MONEY_WALLET_TO_WALLET_CREDIT+" "+sender.getEmailId());
-		userTransactionReceiver.setPointsEarned(0);
-		userTransactionReceiver.setIsRedeemed(AmigoWalletConstants.REWARD_POINTS_REDEEMED_NO.charAt(0));
-		userTransactionReceiver.setRemarks("C");
-		
-		if(walletDebit(userTransactionSender, userId)==0 || walletCredit(userTransactionReceiver, receiver.getUserId())==0){
-			return 0;
+		if (senderUserId.equals(receiverUserId)) {
+			throw new ApiException(HttpStatus.BAD_REQUEST, "WalletService.PAYING_HIMSELF");
 		}
-		
-		if(number!=0.0){
-		UserTransaction userTransactionSender1 = new UserTransaction();
-		
+
 		/*
-		 * A new userTransaction is created here for cashback and all the properties are populated
+		 * Lock BOTH users up front in ascending userId order (deadlock avoidance),
+		 * before any balance mutation. These locked finds are the first managed loads
+		 * of each row. Subsequent ledger debit/credit re-find the same locked entities.
 		 */
-		userTransactionSender1.setAmount(number);
-		userTransactionSender1.setInfo(AmigoWalletConstants.TRANSACTION_INFO_MONEY_CASHBACK_TO_WALLET_CREDIT+" "+number);
-		userTransactionSender1.setPointsEarned(0);
-		userTransactionSender1.setIsRedeemed(AmigoWalletConstants.REWARD_POINTS_REDEEMED_NO.charAt(0));
-		userTransactionSender1.setRemarks("C");
-		
-		walletCredit(userTransactionSender1, userId);
+		Integer first = Math.min(senderUserId, receiverUserId);
+		Integer second = Math.max(senderUserId, receiverUserId);
+		UserEntity firstEntity = walletLedger.lockUser(first);
+		UserEntity secondEntity = walletLedger.lockUser(second);
+		UserEntity senderEntity = senderUserId.equals(first) ? firstEntity : secondEntity;
+		String senderEmail = senderEntity.getEmailId();
+
+		/* Deterministic reward points: floor(amount / 100), earned by the sender. */
+		int points = safeAmount.divide(POINTS_PER_UNIT, 0, RoundingMode.DOWN).intValue();
+
+		/* Sender debit (funds-checked inside the ledger) + receiver credit — one posting. */
+		WalletLedgerDAO.LedgerEntry senderDebit = walletLedger.debit(
+				senderUserId, safeAmount,
+				AmigoWalletConstants.PAYMENT_FROM_WALLET.charAt(0),
+				AmigoWalletConstants.PAYMENT_TO_WALLET.charAt(0),
+				AmigoWalletConstants.TRANSACTION_INFO_MONEY_WALLET_TO_WALLET_DEBIT + recipientEmailId,
+				points);
+
+		walletLedger.credit(
+				receiverUserId, safeAmount,
+				AmigoWalletConstants.PAYMENT_FROM_WALLET.charAt(0),
+				AmigoWalletConstants.PAYMENT_TO_WALLET.charAt(0),
+				AmigoWalletConstants.TRANSACTION_INFO_MONEY_WALLET_TO_WALLET_CREDIT + senderEmail,
+				0, AmigoWalletConstants.REWARD_POINTS_REDEEMED_NO.charAt(0));
+
+		BigDecimal senderBalance = senderDebit.newBalance();
+
+		/*
+		 * Cashback: only on genuine transfers (never self — guarded above) of at
+		 * least CASHBACK_MIN, credited to the SENDER as a promo credit, 2% of the
+		 * amount, deterministically rounded and capped.
+		 */
+		if (safeAmount.compareTo(CASHBACK_MIN) >= 0) {
+			BigDecimal cashback = safeAmount.multiply(CASHBACK_RATE).setScale(MoneyUtil.SCALE, RoundingMode.HALF_UP);
+			if (cashback.compareTo(CASHBACK_CAP) > 0) {
+				cashback = CASHBACK_CAP;
+			}
+			if (cashback.compareTo(BigDecimal.ZERO) > 0) {
+				WalletLedgerDAO.LedgerEntry cashbackEntry = walletLedger.credit(
+						senderUserId, cashback,
+						AmigoWalletConstants.PAYMENT_FROM_WALLET.charAt(0),
+						AmigoWalletConstants.PAYMENT_TO_WALLET.charAt(0),
+						AmigoWalletConstants.TRANSACTION_INFO_MONEY_CASHBACK_TO_WALLET_CREDIT,
+						0, AmigoWalletConstants.REWARD_POINTS_REDEEMED_NO.charAt(0));
+				senderBalance = cashbackEntry.newBalance();
+			}
 		}
-		return 1;
+
+		return MoneyTransactionResponse.withPoints(null, safeAmount, senderBalance, points);
 	}
-	/**
-	 * This method is used to Debit money for given user transaction with userID passed as parameter.
-	 * 
-	 * @param userTransaction,userID
-	 * 
-	 * @return Integer 
-	 */
-	public Integer walletDebit(UserTransaction userTransaction, Integer userId) {
-		
-		UserEntity userEntity = entityManager.find(UserEntity.class, userId);
-		
-		if(userEntity==null){
-			return 0;
-		}
-		List<UserTransactionEntity> transactionEntities = userEntity.getUserTransactionEntities();
-		
-		UserTransactionEntity transactionEntity = new UserTransactionEntity();
-		transactionEntity.setAmount(userTransaction.getAmount());
-		transactionEntity.setIsRedeemed(userTransaction.getIsRedeemed());
-		transactionEntity.setInfo(userTransaction.getInfo());
-	
-		
-		/*
-		 * The following code is to set the paymentTypeEntity to transactionEntity
-		 */
-
-		Query query = entityManager.createQuery(
-				"from PaymentTypeEntity where paymentFrom = :paymentFrom and paymentTo = :paymentTo and paymentType = :paymentType");
-		query.setParameter("paymentFrom", AmigoWalletConstants.PAYMENT_FROM_WALLET.charAt(0));
-		query.setParameter("paymentTo", AmigoWalletConstants.PAYMENT_TO_WALLET.charAt(0));
-		query.setParameter("paymentType", AmigoWalletConstants.PAYMENT_TYPE_DEBIT.charAt(0));
-		PaymentTypeEntity paymentTypeEntity = (PaymentTypeEntity) query.getSingleResult();
-		
-		transactionEntity.setPaymentTypeEntity(paymentTypeEntity);
-		transactionEntity.setPointsEarned(userTransaction.getPointsEarned());
-		transactionEntity.setRemarks(userTransaction.getRemarks());
-		
-		/*
-		 * The following code is to set the StatusEntity to transactionEntity
-		 */
-
-		transactionEntity.setTransactionStatus(TransactionStatus.SUCCESS);
-
-		transactionEntities.add(transactionEntity);
-		entityManager.persist(transactionEntity);
-		userEntity.setUserTransactionEntities(transactionEntities);
-		
-		/*
-		 * The userEntity is saved to the database
-		 */
-		entityManager.persist(userEntity);
-		userTransaction.setUserTransactionId(transactionEntity.getUserTransactionId());
-		
-		/*
-		 * The following code is to set the paymenType model object to transaction model object
-		 */
-		if (paymentTypeEntity != null) {
-			
-			PaymentType paymentType = new PaymentType();
-			paymentType.setPaymentFrom(paymentTypeEntity.getPaymentFrom());
-			paymentType.setPaymentTo(paymentTypeEntity.getPaymentTo());
-			paymentType.setPaymentType(paymentTypeEntity.getPaymentType());
-			paymentType.setPaymentTypeId(paymentTypeEntity.getPaymentTypeId());
-
-			userTransaction.setPaymentType(paymentType);
-		}
-		
-		userTransaction.setTransactionStatus(transactionEntity.getTransactionStatus());
-		return 1;
-	}
-	/**
-	 * This method is used to Credit money for given user transaction with userID passed as parameter.
-	 * 
-	 * @param userTransaction,userID
-	 * 
-	 * @return Integer 
-	 */
-public Integer walletCredit(UserTransaction userTransaction, Integer userId) {
-		
-		UserEntity userEntity = entityManager.find(UserEntity.class, userId);
-		if(userEntity==null){
-			return 0;
-		}
-		List<UserTransactionEntity> transactionEntities = userEntity.getUserTransactionEntities();
-		
-		UserTransactionEntity transactionEntity = new UserTransactionEntity();
-		transactionEntity.setAmount(userTransaction.getAmount());
-		transactionEntity.setIsRedeemed(userTransaction.getIsRedeemed());
-		transactionEntity.setInfo(userTransaction.getInfo());	
-		
-		/*
-		 * The following code is to set the paymentTypeEntity to transactionEntity
-		 */
-
-		Query query = entityManager.createQuery(
-				"from PaymentTypeEntity where paymentFrom = :paymentFrom and paymentTo = :paymentTo and paymentType = :paymentType");
-		query.setParameter("paymentFrom", AmigoWalletConstants.PAYMENT_FROM_WALLET.charAt(0));
-		query.setParameter("paymentTo", AmigoWalletConstants.PAYMENT_TO_WALLET.charAt(0));
-		query.setParameter("paymentType", AmigoWalletConstants.PAYMENT_TYPE_CREDIT.charAt(0));
-		PaymentTypeEntity paymentTypeEntity = (PaymentTypeEntity) query.getSingleResult();
-		
-		transactionEntity.setPaymentTypeEntity(paymentTypeEntity);
-		transactionEntity.setPointsEarned(userTransaction.getPointsEarned());
-		transactionEntity.setRemarks(userTransaction.getRemarks());
-		
-		/*
-		 * The following code is to set the StatusEntity to transactionEntity
-		 */
-
-		transactionEntity.setTransactionStatus(TransactionStatus.SUCCESS);
-
-		transactionEntities.add(transactionEntity);
-		entityManager.persist(transactionEntity);
-		userEntity.setUserTransactionEntities(transactionEntities);
-		
-		/*
-		 * The userEntity is saved to the database
-		 */
-		entityManager.persist(userEntity);
-		userTransaction.setUserTransactionId(transactionEntity.getUserTransactionId());
-		
-		/*
-		 * The following code is to set the paymenType model object to transaction model object
-		 */
-		if (paymentTypeEntity != null) {
-			
-			PaymentType paymentType = new PaymentType();
-			paymentType.setPaymentFrom(paymentTypeEntity.getPaymentFrom());
-			paymentType.setPaymentTo(paymentTypeEntity.getPaymentTo());
-			paymentType.setPaymentType(paymentTypeEntity.getPaymentType());
-			paymentType.setPaymentTypeId(paymentTypeEntity.getPaymentTypeId());
-
-			userTransaction.setPaymentType(paymentType);
-		}
-		
-		userTransaction.setTransactionStatus(transactionEntity.getTransactionStatus());
-		return 1;
-	}
-
-	
-
 }

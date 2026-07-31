@@ -1,5 +1,6 @@
 package com.amigowallet.dto;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public record UserProfileResponse(
 		String emailId,
 		String mobileNumber,
 		UserStatus userStatus,
-		Double balance,
+		BigDecimal balance,
 		Integer rewardPoints,
 		List<CardSummary> cards) {
 

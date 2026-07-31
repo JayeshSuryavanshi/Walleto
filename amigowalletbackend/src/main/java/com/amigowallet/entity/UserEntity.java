@@ -1,5 +1,6 @@
 package com.amigowallet.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -37,6 +39,19 @@ public class UserEntity {
 	private String name;
 	@Column(name = "PASSWORD")
 	private String password;
+
+	/**
+	 * Authoritative wallet balance (Phase 4). Updated in the same transaction as
+	 * each ledger posting, under a pessimistic row lock. The USER_TRANSACTION
+	 * ledger is retained only as the append-only audit trail.
+	 */
+	@Column(name = "BALANCE", nullable = false)
+	private BigDecimal balance = BigDecimal.ZERO;
+
+	/** Optimistic-lock version, complementing the pessimistic write lock. */
+	@Version
+	@Column(name = "VERSION", nullable = false)
+	private long version;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "USER_STATUS")
@@ -91,6 +106,22 @@ public class UserEntity {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	public BigDecimal getBalance() {
+		return balance;
+	}
+
+	public void setBalance(BigDecimal balance) {
+		this.balance = balance;
+	}
+
+	public long getVersion() {
+		return version;
+	}
+
+	public void setVersion(long version) {
+		this.version = version;
 	}
 
 	public String getEmailId() {

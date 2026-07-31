@@ -1,5 +1,6 @@
 package com.amigowallet.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.CascadeType;
@@ -27,7 +28,7 @@ public class UserTransactionEntity {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long userTransactionId;
 	@Column(name = "AMOUNT")
-	private Double amount;
+	private BigDecimal amount;
 	@CreationTimestamp
 	@Column(name="TRANSACTION_DATE_TIME")
 	private LocalDateTime transactionDateTime;
@@ -56,11 +57,11 @@ public class UserTransactionEntity {
 		this.userTransactionId = userTransactionId;
 	}
 
-	public Double getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 

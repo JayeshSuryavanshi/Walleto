@@ -68,13 +68,16 @@ public class DebitCardDAOImpl implements DebitCardDAO {
 		 * for the user entity is fetched and populated to a list
 		 */
 		UserEntity userEntity = entityManager.find(UserEntity.class, userId);
+		List<Card> cards = new ArrayList<>();
+		if (userEntity == null || userEntity.getCardEntities() == null) {
+			return cards;
+		}
 		List<CardEntity> cardList = userEntity.getCardEntities();
-		
+
 		/*
 		 * For each cardEntity in the list,the details are populated to a
 		 * card bean and added to another list
 		 */
-		List<Card> cards = new ArrayList<>();
 		for (CardEntity cardEntity : cardList) {
 			
 			Card card1 = new Card();
@@ -115,13 +118,16 @@ public class DebitCardDAOImpl implements DebitCardDAO {
 		 * for the user entity is fetched and populated to a list
 		 */
 		UserEntity userEntity = entityManager.find(UserEntity.class, userId);
-		List<CardEntity> cardList = userEntity.getCardEntities();	
-		
+		List<CardEntity> cardList = userEntity.getCardEntities();
+		if (cardList == null) {
+			cardList = new ArrayList<>();
+		}
+
 		/*
 		 * A new cardEntity is populated using the properties of the card
 		 * to be added.
 		 */
-		
+
 		CardEntity cardEntity = new CardEntity();
 		cardEntity.setCardNumber(card.getCardNumber());
 		cardEntity.setExpiryDate(card.getExpiryDate());

@@ -4,8 +4,10 @@ import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
 
 import org.springframework.core.env.Environment;
+import org.springframework.dao.ConcurrencyFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,6 +50,19 @@ public class GlobalExceptionHandler {
 			fieldErrors = "Request validation failed";
 		}
 		return build(HttpStatus.BAD_REQUEST, fieldErrors, request);
+	}
+
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<ApiError> handleUnreadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
+		// Malformed JSON or an unparseable field (e.g. a non-ISO date). Never leak parser internals.
+		return build(HttpStatus.BAD_REQUEST, "Malformed or unreadable request body.", request);
+	}
+
+	@ExceptionHandler(ConcurrencyFailureException.class)
+	public ResponseEntity<ApiError> handleConcurrency(ConcurrencyFailureException ex, HttpServletRequest request) {
+		// Optimistic/pessimistic lock contention on a concurrent money mutation. Spring translates
+		// Hibernate's StaleObjectStateException into ObjectOptimisticLockingFailureException, etc.
+		return build(HttpStatus.CONFLICT, "The account was modified concurrently. Please retry.", request);
 	}
 
 	@ExceptionHandler(ResponseStatusException.class)

@@ -70,6 +70,8 @@ public class UserLoginDAOImpl implements UserLoginDAO {
 			userFromDb.setPassword(userEntity.getPassword());
 			userFromDb.setUserId(userEntity.getUserId());
 			userFromDb.setUserStatus(userEntity.getUserStatus());
+			/* Phase 4: balance is read from the authoritative WALLET_USER.BALANCE column. */
+			userFromDb.setBalance(userEntity.getBalance());
 			
 			/*
 			 * The below lines of code fetches the card details of the user.
@@ -170,6 +172,8 @@ public class UserLoginDAOImpl implements UserLoginDAO {
 			userFromDb.setPassword(userEntity.getPassword());
 			userFromDb.setUserId(userEntity.getUserId());
 			userFromDb.setUserStatus(userEntity.getUserStatus());
+			/* Phase 4: balance is read from the authoritative WALLET_USER.BALANCE column. */
+			userFromDb.setBalance(userEntity.getBalance());
 			
 			/*
 			 * The below lines of code fetches the card details of the user.

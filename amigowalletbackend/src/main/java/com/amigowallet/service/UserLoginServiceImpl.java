@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.amigowallet.dao.UserLoginDAO;
 import com.amigowallet.model.Card;
 import com.amigowallet.model.CardStatus;
+import com.amigowallet.model.TransactionStatus;
 import com.amigowallet.model.User;
 import com.amigowallet.model.UserStatus;
 import com.amigowallet.model.UserTransaction;
@@ -72,7 +73,7 @@ public class UserLoginServiceImpl implements UserLoginService {
 		userFromDao.setPassword(null);
 
 		filterInactiveCards(userFromDao);
-		foldBalanceAndPoints(userFromDao);
+		computeRewardPoints(userFromDao);
 
 		return userFromDao;
 	}
@@ -111,7 +112,7 @@ public class UserLoginServiceImpl implements UserLoginService {
 		userFromDao.setPassword(null);
 
 		filterInactiveCards(userFromDao);
-		foldBalanceAndPoints(userFromDao);
+		computeRewardPoints(userFromDao);
 
 		return userFromDao;
 	}
@@ -134,31 +135,27 @@ public class UserLoginServiceImpl implements UserLoginService {
 	}
 
 	/**
-	 * Derives balance and non-redeemed reward points from the transaction ledger
-	 * (unchanged behaviour; the event-sourced money model is replaced in Phase 4).
+	 * Phase 4: the balance is now the authoritative {@code WALLET_USER.BALANCE}
+	 * column (set by the DAO) — no longer folded from the ledger on every read.
+	 * Only the non-redeemed reward-point total is still derived, and only over
+	 * SUCCESS rows.
 	 */
-	private void foldBalanceAndPoints(User user) {
+	private void computeRewardPoints(User user) {
 		List<UserTransaction> transactions = user.getUserTransactions();
-		Double balance = 0.0;
-		Integer nonRedeemedPoints = 0;
+		int nonRedeemedPoints = 0;
 
 		if (transactions != null) {
 			for (UserTransaction userTransaction : transactions) {
-				if (AmigoWalletConstants.PAYMENT_TYPE_DEBIT
-						.equals(userTransaction.getPaymentType().getPaymentType().toString())) {
-					balance -= userTransaction.getAmount();
-				} else {
-					balance += userTransaction.getAmount();
-				}
-
-				if (AmigoWalletConstants.REWARD_POINTS_REDEEMED_NO
-						.equals(userTransaction.getIsRedeemed().toString())) {
+				boolean success = TransactionStatus.SUCCESS.equals(userTransaction.getTransactionStatus());
+				boolean notRedeemed = userTransaction.getIsRedeemed() != null
+						&& AmigoWalletConstants.REWARD_POINTS_REDEEMED_NO
+								.equals(userTransaction.getIsRedeemed().toString());
+				if (success && notRedeemed && userTransaction.getPointsEarned() != null) {
 					nonRedeemedPoints += userTransaction.getPointsEarned();
 				}
 			}
 		}
 
-		user.setBalance(balance);
 		user.setRewardPoints(nonRedeemedPoints);
 	}
 }

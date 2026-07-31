@@ -56,6 +56,11 @@ app:
     reset-ttl-seconds: ${APP_JWT_RESET_TTL:600}
   cors:
     allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:4200}
+  bank:
+    # Server-to-server bank-api (edubank) base URL + shared service key. The browser
+    # no longer calls the bank directly; wallet-api owns all bank interaction.
+    base-url: ${BANK_API_BASE_URL:http://localhost:3331/EDUBank}
+    api-key: ${BANK_SERVICE_API_KEY:dev-bank-service-key-change-me}
 
 logging:
   level:

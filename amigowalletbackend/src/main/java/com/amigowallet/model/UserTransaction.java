@@ -1,5 +1,6 @@
 package com.amigowallet.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -8,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class UserTransaction {
 
 	private Long userTransactionId;
-	private Double amount;
+	private BigDecimal amount;
 	@JsonFormat(pattern="yyyy-MMM-dd hh:mm:ss a")
 	private LocalDateTime transactionDateTime;
 	private String remarks;
@@ -51,11 +52,11 @@ public class UserTransaction {
 		this.userTransactionId = userTransactionId;
 	}
 
-	public Double getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 

@@ -1,23 +1,21 @@
 package com.amigowallet.service;
 
+import com.amigowallet.dto.MoneyTransactionResponse;
+
 /**
- * This is a service interface having method which contains business logic
- * related to redeeming reward points.
- * 
- * @author ETA_JAVA
+ * Reward-points redemption.
  *
+ * @author ETA_JAVA
  */
 public interface RewardPointsService {
 
 	/**
-	 * this method receives the userId as argument
-	 * which redeem the unredeemed reward points so that
-	 * we can convert the points to wallet money.
-	 * 
-	 * @param userId
-	 * 
-	 * @throws Exception
+	 * Redeems all of the authenticated user's non-redeemed (SUCCESS) reward points
+	 * to wallet money, in one locked, atomic transaction (prevents concurrent
+	 * double-redeem).
+	 *
+	 * @param userId the acting user (from the JWT)
+	 * @return message + amount credited + new balance
 	 */
-	public void redeemRewardPoints(Integer userId)
-			throws Exception;
+	MoneyTransactionResponse redeemRewardPoints(Integer userId);
 }
