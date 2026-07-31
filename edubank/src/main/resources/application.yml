@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: bank-api
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/edubank_db}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        # Honor explicit @Table/@Column names verbatim (uppercase) — the default
+        # CamelCaseToUnderscoresNamingStrategy lowercases them, which breaks on
+        # case-sensitive MySQL where Flyway created UPPERCASE tables.
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: ${SERVER_PORT:3331}
+  servlet:
+    context-path: ${SERVER_SERVLET_CONTEXT_PATH:/EDUBank}
+  error:
+    whitelabel:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+# Service-to-service shared key required on all /api/** endpoints via X-Service-Auth.
+bank:
+  service:
+    api-key: ${BANK_SERVICE_API_KEY:dev-bank-service-key-change-me}
+
+logging:
+  level:
+    root: INFO
