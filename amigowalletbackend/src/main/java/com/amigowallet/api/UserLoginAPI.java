@@ -1,134 +1,113 @@
 package com.amigowallet.api;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.amigowallet.dto.AuthResponse;
+import com.amigowallet.dto.ChangePasswordRequest;
+import com.amigowallet.dto.LoginRequest;
+import com.amigowallet.dto.MessageResponse;
+import com.amigowallet.dto.UserProfileResponse;
+import com.amigowallet.exception.ApiException;
 import com.amigowallet.model.User;
+import com.amigowallet.security.AuthUtil;
+import com.amigowallet.security.JwtService;
 import com.amigowallet.service.UserLoginService;
 
+import jakarta.validation.Valid;
+
 /**
- * This class has methods to handle login and change password requests.
- * 
- *  @author ETA_JAVA
- * 
+ * Login, profile refresh, and change-password endpoints.
+ * Identity for the authenticated endpoints is derived from the JWT, never from
+ * the request body.
+ *
+ * @author ETA_JAVA
  */
-@CrossOrigin
 @RestController
 @RequestMapping("UserLoginAPI")
-public class UserLoginAPI 
-{
-	/**
-	 * This attribute is used for getting property values from
-	 * <b>configuration.properties</b> file
-	 */
-	@Autowired
-	private Environment environment;
-	
-	@Autowired
-	UserLoginService loginService;
-	
-	static Logger logger = LogManager.getLogger(UserLoginAPI.class.getName());
-	
-	/**
-	 * This method receives the user model in POST request and calls
-	 * UserLoginService method to authenticate the user details. <br>
-	 * If authentication is success then it sends the user bean
-	 * populated with all the required properties like 
-	 * cards,transactions,balance,redeem points etc<br>
-	 * If verification fails then it sends failure message to the client.
-	 * 
-	 * @param user
-	 * 
-	 * @return ResponseEntity<User> 
-	 * It is populated with an error message,if any error occurs
-	 */
-	@RequestMapping(value = "authenticate", method = RequestMethod.POST)
-	public ResponseEntity<User> authenticate(@RequestBody User user) throws Exception {
-		try {
-			logger.info("USER TRYING TO LOGIN, VALIDATING CREDENTIALS. USER EMAIL : "+user.getEmailId());
-			
-			user = loginService.authenticate(user);
-			
-			logger.info("USER LOGIN SUCCESS, USER EMAIL : "+user.getEmailId());
-			
-			return new ResponseEntity<User>(user, HttpStatus.OK);
-		} 
-		catch (Exception e) {
+public class UserLoginAPI {
 
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, environment.getProperty(e.getMessage()));
+	private static final Logger logger = LoggerFactory.getLogger(UserLoginAPI.class);
+
+	private final UserLoginService loginService;
+	private final JwtService jwtService;
+
+	public UserLoginAPI(UserLoginService loginService, JwtService jwtService) {
+		this.loginService = loginService;
+		this.jwtService = jwtService;
+	}
+
+	/**
+	 * Public login. Returns an access JWT plus a safe profile projection.
+	 * All failures collapse to a generic 401 so the response never reveals which
+	 * field was wrong (no user enumeration).
+	 */
+	@PostMapping("authenticate")
+	public AuthResponse authenticate(@Valid @RequestBody LoginRequest request) {
+		logger.info("Authentication attempt received");
+
+		User user = new User();
+		user.setEmailId(request.emailId());
+		user.setPassword(request.password());
+
+		User authenticated;
+		try {
+			authenticated = loginService.authenticate(user);
+		} catch (Exception e) {
+			throw new ApiException(HttpStatus.UNAUTHORIZED, "LoginService.INVALID_CREDENTIALS");
+		}
+
+		String accessToken = jwtService.createAccessToken(
+				authenticated.getUserId(), authenticated.getEmailId(), authenticated.getName());
+
+		logger.info("Authentication successful for userId {}", authenticated.getUserId());
+
+		return new AuthResponse(accessToken, jwtService.getAccessTtlSeconds(),
+				UserProfileResponse.from(authenticated));
+	}
+
+	/**
+	 * Authenticated profile refresh. Any body is ignored; the userId comes from
+	 * the JWT.
+	 */
+	@PostMapping("getUser")
+	public UserProfileResponse getUser() {
+		Integer userId = AuthUtil.currentUserId();
+		try {
+			return UserProfileResponse.from(loginService.getUserbyUserId(userId));
+		} catch (Exception e) {
+			throw new ApiException(HttpStatus.BAD_REQUEST, "LoginService.INVALID_CREDENTIALS");
 		}
 	}
 
 	/**
-	 * This method receives the user model having the userId in POST request 
-	 * and calls UserLoginService method to retrieve the user details. <br>
-	 * If a matching user is found it sends the user bean
-	 * populated with all the required properties like 
-	 * cards,transactions,balance,redeem points etc<br>
-	 * If any error occurs it sends a failure message to the client.
-	 * 
-	 * @param user
-	 * 
-	 * @return ResponseEntity<User> 
-	 * 				
-	 * It is populated with errorMessage,if any error occurs
+	 * Authenticated change-password. userId comes from the JWT; the old password
+	 * is verified and the new one stored as BCrypt.
 	 */
-	@RequestMapping(value = "getUser", method = RequestMethod.POST)
-	public ResponseEntity<User> getUser(@RequestBody User user) 
-	{
-		try {
-			User user1 = loginService.getUserbyUserId(user.getUserId());
-			
-			return new ResponseEntity<User>(user1, HttpStatus.OK);
-		} 
-		catch (Exception e) {
-			
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, environment.getProperty(e.getMessage()));
-		}
-	}
+	@PostMapping("customerChangePassword")
+	public MessageResponse customerChangePassword(@Valid @RequestBody ChangePasswordRequest request) {
+		Integer userId = AuthUtil.currentUserId();
 
-	/**
-	 * This method is used to change the password of logged in customer, if
-	 * takes password, new password and confirm new password from the form and,
-	 * fetches the customerId are proper then it sets the customerId from the
-	 * httpSession. If the entered data is valid, it updates the password,
-	 * clears the httpSession data, and redirects to login page. Note: It can
-	 * accept only post request
-	 * 
-	 * @param user
-	 * 
-	 * @return success or failure message as a ResponseEntity along with HTTP
-	 *         Status code
-	 * 
-	 */
-	@RequestMapping(value = { "/customerChangePassword" }, method = RequestMethod.POST)
-	public ResponseEntity<String> customerChangePassword(@RequestBody User user) {
-		String message = null;
+		User user = new User();
+		user.setUserId(userId);
+		user.setPassword(request.password());
+		user.setNewPassword(request.newPassword());
+		user.setConfirmNewPassword(request.confirmNewPassword());
+
 		try {
-			logger.info("USER TRYING TO CHANGE PASSWORD, USER ID : "+user.getUserId());
 			loginService.changeUserPassword(user);
-			
-			logger.info("PASSWORD CHANGED SUCCESSFULLY FOR, USER ID : "+user.getUserId());
-			
-			/*
-			 * The following code populates a string with a success message
-			 */
-			message = environment.getProperty("UserLoginAPI.PASSWORD_CHANGE_SUCCESS");						
-			return new ResponseEntity<String>(message, HttpStatus.OK);
-		} 
-		catch (Exception e) {
-		
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, environment.getProperty(e.getMessage()));
+		} catch (ApiException ae) {
+			throw ae;
+		} catch (Exception e) {
+			throw new ApiException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
+
+		logger.info("Password changed for userId {}", userId);
+		return new MessageResponse("Password Successfully changed");
 	}
 }

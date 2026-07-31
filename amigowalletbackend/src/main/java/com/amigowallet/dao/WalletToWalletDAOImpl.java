@@ -3,9 +3,9 @@ package com.amigowallet.dao;
 import java.util.List;
 import java.util.Random;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 
 
 

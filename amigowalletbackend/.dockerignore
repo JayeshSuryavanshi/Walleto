@@ -1,0 +1,14 @@
+target/
+*.iml
+.idea/
+.settings/
+.classpath
+.project
+.pmd
+*.log
+logs/
+test-output/
+.DS_Store
+._*
+Dockerfile
+.dockerignore
