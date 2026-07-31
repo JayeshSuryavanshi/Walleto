@@ -57,13 +57,13 @@ class JwtServiceTest {
 
 	@Test
 	void accessToken_isValidatedByAccessDecoder_withSubjectAndPurpose() {
-		String token = jwtService.createAccessToken(USER_ID, "james@infy.com", "James Butt");
+		String token = jwtService.createAccessToken(USER_ID, "james@example.com", "James Butt");
 
 		Jwt decoded = accessDecoder.decode(token);
 
 		assertThat(decoded.getSubject()).isEqualTo("12121");
 		assertThat(decoded.getClaimAsString("purpose")).isEqualTo("access");
-		assertThat(decoded.getClaimAsString("email")).isEqualTo("james@infy.com");
+		assertThat(decoded.getClaimAsString("email")).isEqualTo("james@example.com");
 	}
 
 	@Test
@@ -80,7 +80,7 @@ class JwtServiceTest {
 
 	@Test
 	void accessToken_isRejectedByResetDecoder() {
-		String accessToken = jwtService.createAccessToken(USER_ID, "james@infy.com", "James Butt");
+		String accessToken = jwtService.createAccessToken(USER_ID, "james@example.com", "James Butt");
 		assertThatThrownBy(() -> jwtService.parseResetToken(accessToken))
 				.isInstanceOf(ApiException.class)
 				.satisfies(e -> assertThat(((ApiException) e).getStatus()).isEqualTo(HttpStatus.FORBIDDEN));

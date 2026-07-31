@@ -37,13 +37,13 @@ The stack comes up health-gated (MySQL → APIs → web) and seeds demo data aut
 
 | Use | Value |
 |---|---|
-| **Wallet login** | `james@infy.com` / `James#123` |
+| **Wallet login** | `james@example.com` / `James#123` |
 | Load money — net banking | login `martin` / `Martin!123` |
 | Load money — debit card | number `6642110005012149`, PIN `1234`, expiry `2030-12-31` |
 | Transfer to bank | account `443328602688019`, IFSC `EDUB0000501`, holder `Martin Luther` |
-| Send money to another wallet | recipient `josephine@infy.com` |
+| Send money to another wallet | recipient `josephine@example.com` |
 
-> Demo users follow the pattern `<firstname>@infy.com` / `<Firstname>#123` (passwords must be ≥ 8 chars).
+> Demo users follow the pattern `<firstname>@example.com` / `<Firstname>#123` (passwords must be ≥ 8 chars).
 > All seed passwords are hashed; on first login a legacy hash is transparently upgraded to BCrypt.
 
 API docs (Swagger UI): **http://localhost:3322/AmigoWallet/swagger-ui.html**

@@ -63,21 +63,21 @@ class WalletSecuritySliceTest {
 	private WalletToWalletService walletToWalletService;
 
 	private String accessToken() {
-		return jwtService.createAccessToken(42, "james@infy.com", "James Butt");
+		return jwtService.createAccessToken(42, "james@example.com", "James Butt");
 	}
 
 	@Test
 	void publicAuthenticate_isReachableWithoutToken() throws Exception {
 		User authenticated = new User();
 		authenticated.setUserId(42);
-		authenticated.setEmailId("james@infy.com");
+		authenticated.setEmailId("james@example.com");
 		authenticated.setName("James Butt");
 		authenticated.setUserStatus(UserStatus.ACTIVE);
 		when(userLoginService.authenticate(any())).thenReturn(authenticated);
 
 		mvc.perform(post("/UserLoginAPI/authenticate")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content("{\"emailId\":\"james@infy.com\",\"password\":\"James#123\"}"))
+				.content("{\"emailId\":\"james@example.com\",\"password\":\"James#123\"}"))
 				.andExpect(status().isOk());
 	}
 
@@ -112,7 +112,7 @@ class WalletSecuritySliceTest {
 		mvc.perform(post("/WalletToWalletAPI/transfertowallet")
 				.header("Authorization", "Bearer " + accessToken())
 				.contentType(MediaType.APPLICATION_JSON)
-				.content("{\"recipientEmailId\":\"receiver@infy.com\",\"amount\":100.00}"))
+				.content("{\"recipientEmailId\":\"receiver@example.com\",\"amount\":100.00}"))
 				.andExpect(status().isConflict());
 	}
 }
