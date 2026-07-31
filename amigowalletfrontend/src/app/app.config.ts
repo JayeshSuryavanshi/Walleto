@@ -8,8 +8,12 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
 import { authInterceptor } from './shared/auth.interceptor';
 
+// Version-tag the translation URL so a new build busts any previously cached
+// copy (translations are not content-hashed). Bump on translation changes.
+const I18N_VERSION = '2';
+
 export function httpTranslateLoaderFactory(http: HttpClient): TranslateHttpLoader {
-  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, 'assets/i18n/', `.json?v=${I18N_VERSION}`);
 }
 
 export const appConfig: ApplicationConfig = {
