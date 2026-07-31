@@ -80,6 +80,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -87,26 +92,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<!--
-			  The legacy 2021 unit/integration tests are still written against JUnit 4
-			  (org.junit.*), which is not on the Spring Boot 3.3 (JUnit 5) test classpath,
-			  so they do not compile after the Boot 2.1 -> 3.3 migration. They are excluded
-			  from compilation here (files retained in the tree) until a dedicated
-			  JUnit 4 -> JUnit 5 test-migration task rewrites them. New tests placed outside
-			  these legacy packages compile normally.
-			-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<testExcludes>
-						<testExclude>**/dao/test/**</testExclude>
-						<testExclude>**/service/test/**</testExclude>
-						<testExclude>**/validator/test/**</testExclude>
-						<testExclude>**/testsuite/**</testExclude>
-					</testExcludes>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

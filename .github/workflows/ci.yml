@@ -20,8 +20,7 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
-      # TODO(Phase 8): switch to `mvn verify` once the JUnit 4 -> 5 test migration lands.
-      - run: mvn -B -ntp -Dmaven.test.skip=true clean package
+      - run: mvn -B -ntp clean verify
 
   bank-api:
     name: bank-api (build)
@@ -36,7 +35,7 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
-      - run: mvn -B -ntp -Dmaven.test.skip=true clean package
+      - run: mvn -B -ntp clean verify
 
   frontend:
     name: frontend (build)
