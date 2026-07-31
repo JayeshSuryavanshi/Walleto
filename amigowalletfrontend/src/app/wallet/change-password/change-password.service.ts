@@ -1,41 +1,26 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
-import { UriService } from '../../shared/uri.service';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
+import { MessageResponse } from '../../shared/model/api';
+
+export interface ChangePasswordRequest {
+  password: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
 /**
- * This is a service class used from ChangePassword component
- * 
- * this communicats with the server side application and does requied work
- *
- * @Injectable A marker metadata which specifies any class which can be 
- * injected can be injected to this class
+ * Change the logged-in user's password (identity from the JWT, no userId).
+ *   POST /UserLoginAPI/customerChangePassword  body { password, newPassword, confirmNewPassword }
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ChangePasswordService {
+  private readonly http = inject(HttpClient);
+  private readonly api = environment.apiBaseUrl;
 
-  /** required url */
-  amigoWalletUrl: string;
-
-  /** constructor will be executed on creation of object creation 
-   * 
-   * the objects specified as parameters will be injected while execution 
-   * and these are used as instance variables 
-   *
-   * urls are initialized
-   */
-  constructor(private http: HttpClient, private uriService: UriService) {
-    this.amigoWalletUrl = this.uriService.buildAmigoWalletUri();
-  }
-
-  /**
-   * This method calls the customerChangePassword method
-   * in UserLoginAPI of eWallet
-   * using an http post request 
-   * which returns a ResponseEntity<String>
-   */
-  changePassword(data: any): Observable<any> {
-    return this.http.post(this.amigoWalletUrl + '/UserLoginAPI/customerChangePassword', data, {responseType: 'text'})
+  changePassword(request: ChangePasswordRequest): Observable<MessageResponse> {
+    return this.http.post<MessageResponse>(`${this.api}/UserLoginAPI/customerChangePassword`, request);
   }
 }

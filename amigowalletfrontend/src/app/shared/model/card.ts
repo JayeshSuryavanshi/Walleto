@@ -1,16 +1,11 @@
-import { Bank } from './bank';
 /**
- * This is a model class which has the attributes to keep Card properties
+ * A saved card as returned inside the authenticated user profile.
+ * The wallet-api never exposes the full PAN any more - only a masked number.
  */
-export class Card {
-    public cardId: number;
-    public cardNumber: string;
-    public expiryDate: Date;
-    public status: string;
-    public successMessage: string;
-    public errorMessage: string;
-    public userName: string;
-    public cvv: string;
-    public bank: Bank;
-    public pin: string;
+export interface CardInfo {
+  cardId: number;
+  maskedCardNumber: string;
+  bankName: string;
+  expiryDate: string;
+  cardStatus: string;
 }

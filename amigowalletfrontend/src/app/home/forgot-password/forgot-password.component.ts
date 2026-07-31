@@ -1,163 +1,137 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { LoggerService } from '../../shared/logger.service';
-import { TranslateService } from '@ngx-translate/core';
-import { ForgotPasswordService } from './forgot-password.service';
-import { User } from '../../shared/model/user';
 import { PasswordValidator } from '../../shared/password.validator';
-import { Router } from '@angular/router';
+import { ForgotPasswordService } from './forgot-password.service';
 
-// This component gives the takes the email and sends the reset password link
-
-/** Annotation which specifes this as a component 
- * 
- * templateUrl: This is the relative path for the html related to this component
- * styleUrls: This is the relative path for the css related to this component
- * providers: specifies the service class which communicates with the Serverside application
- *            specifing here makes it available only in this class
-*/
 @Component({
+  selector: 'app-forgot-password',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule],
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.css'],
-  providers: [ForgotPasswordService]
 })
 export class ForgotPasswordComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly forgotPasswordService = inject(ForgotPasswordService);
+  private readonly logger = inject(LoggerService);
+  private readonly translate = inject(TranslateService);
+  private readonly router = inject(Router);
 
-  /** class instance variales */
-  user: User;
-  message: string;
-  error: any;
-  emailId: string;
-  redirectMessage: any;
-  successMessage: string;
+  message: string | null = null;
+  successMessage: string | null = null;
+  redirectMessage: string | null = null;
   submitted = false;
-  step: number;
+  step = 0;
 
-  /**
-   * form group for getting emailId
-   * 
-   * Validation of emailId      - Email id should follow a valid format
-   */
+  /** Recovery context carried between steps (in memory only). */
+  question = '';
+  private emailId = '';
+  private resetToken = '';
+
   form = this.fb.group({
-    emailId: ["", [Validators.required, Validators.pattern("[^@]+[@][^@]+[.][^@]+")]],
+    emailId: ['', [Validators.required, Validators.pattern('[^@]+[@][^@]+[.][^@]+')]],
   });
 
-
-  /**
-   * form group for getting the answer for the security question
-   * 
-   * Validation of emailId      - Email id should follow a valid format
-   */
   securityForm = this.fb.group({
-    securityAnswer: ["", [Validators.required]],
+    securityAnswer: ['', [Validators.required]],
   });
 
   resetForm = this.fb.group({
     newPassword: [
-      "", [Validators.required, PasswordValidator.minLength, PasswordValidator.maxLength,
-      PasswordValidator.requiredALowerCase, PasswordValidator.requiredANumber,
-      PasswordValidator.requiredASpecialChar, PasswordValidator.requiredAUpperCase]],
-    confirmNewPassword: [
-      "", Validators.required]
+      '',
+      [
+        Validators.required,
+        PasswordValidator.minLength,
+        PasswordValidator.maxLength,
+        PasswordValidator.requiredALowerCase,
+        PasswordValidator.requiredANumber,
+        PasswordValidator.requiredASpecialChar,
+        PasswordValidator.requiredAUpperCase,
+      ],
+    ],
+    confirmNewPassword: ['', Validators.required],
   });
 
+  ngOnInit(): void {
+    this.step = 0;
+  }
 
-  /** constructor will be executed on creation of object creation 
-     * 
-     * the objects specified as parameters will be injected while execution 
-     * and these are used as instance variables 
-     */
-  constructor(public fb: FormBuilder, private forgotPasswordService: ForgotPasswordService,
-    private logger: LoggerService, private translateService: TranslateService, private router: Router) { }
-
-  /**
-   * Life cycle method on init (overided from OnInit)
-   */
-  ngOnInit() { this.step = 0; }
-
-
-  /**
-   * This method validates emailId
-   * If valid it calls forgotPassword method of ForgotPasswordService
-   *    which returns a message as a string                     
-   * If not valid it displays an appropriate error message
-   */
-  authenticate() {
+  authenticate(): void {
     this.submitted = true;
     this.successMessage = null;
     this.message = null;
-    this.forgotPasswordService.forgotPassword(this.form.controls["emailId"].value).subscribe(
-      (responseData: User) => {
-        this.user = responseData;
+    this.emailId = this.form.controls.emailId.value ?? '';
+
+    this.forgotPasswordService.forgotPassword(this.emailId).subscribe({
+      next: (response) => {
+        this.question = response?.question ?? '';
         this.submitted = false;
         this.step = 1;
       },
-      error => {
-        console.log(error);
-        if (error.error.message == null) {
-          this.translateService.get("ERROR_MESSAGES.SERVER_DOWN").subscribe(value => this.message = value);
-        } else {
-          this.message = error.error.message;
-        }
-        this.logger.error(this.message, error);
+      error: (error) => {
+        this.setError(error);
         this.submitted = false;
-      });
+      },
+    });
   }
 
-  checkAnswer() {
+  checkAnswer(): void {
     this.submitted = true;
     this.successMessage = null;
     this.message = null;
-    this.user.securityAnswer = this.securityForm.controls["securityAnswer"].value;
-    this.forgotPasswordService.checkAnswer(this.user).subscribe(
-      (responseData: string) => {
-        this.successMessage = responseData;
-        this.submitted = false;
-        this.step = 2;
-      },
-      error => {
-        if (error.error.message == null) {
-          this.translateService.get("ERROR_MESSAGES.SERVER_DOWN").subscribe(value => this.message = value);
-        } else {
-          this.message = error.error.message;
-        }
-        this.logger.error(this.message, error);
-        this.submitted = false;
+
+    this.forgotPasswordService
+      .validateAnswer(this.emailId, this.securityForm.controls.securityAnswer.value ?? '')
+      .subscribe({
+        next: (response) => {
+          this.resetToken = response?.resetToken ?? '';
+          this.submitted = false;
+          this.step = 2;
+        },
+        error: (error) => {
+          this.setError(error);
+          this.submitted = false;
+        },
       });
   }
 
-  /**
- * If valid it calls resetPasswordPost method of ResetPasswordService
- *    which returns a message as a string and redirects to the login page                      
- * If not valid it displays an appropriate error message
- */
-  resetPasswordSubmit() {
+  resetPasswordSubmit(): void {
     this.submitted = true;
     this.successMessage = null;
     this.message = null;
-    this.user.password = this.resetForm.controls['newPassword'].value;
-    this.forgotPasswordService.resetPasswordPost(this.user).subscribe(
-      (responseData: any) => {
-        let msg: string = responseData;
-        this.successMessage = msg;
-        this.translateService.get("OTHER.REDIRECT2").subscribe(value => this.redirectMessage = value);
-        this.form.reset();
-        this.logger.info(msg);
-        setTimeout(() => {
-          this.router.navigate(['login'])
-        }, 3000);
-      },
-      error => {
-        if (!error.error.message) {
-          this.translateService.get("ERROR_MESSAGES.SERVER_DOWN").subscribe(value => this.message = value);
-        } else {
-          this.message = error.error.message;
-        }
-        this.logger.error(this.message);
-        this.submitted = false;
+
+    this.forgotPasswordService
+      .resetPassword(
+        this.resetForm.controls.newPassword.value ?? '',
+        this.resetForm.controls.confirmNewPassword.value ?? '',
+        this.resetToken,
+      )
+      .subscribe({
+        next: (response) => {
+          this.successMessage = response?.message ?? '';
+          this.translate.get('OTHER.REDIRECT2').subscribe((value) => (this.redirectMessage = value));
+          this.resetForm.reset();
+          this.logger.info('Password reset');
+          setTimeout(() => this.router.navigate(['login']), 3000);
+        },
+        error: (error) => {
+          this.setError(error);
+          this.submitted = false;
+        },
       });
   }
 
-
+  private setError(error: { error?: { message?: string } }): void {
+    if (!error?.error?.message) {
+      this.translate.get('ERROR_MESSAGES.SERVER_DOWN').subscribe((value) => (this.message = value));
+    } else {
+      this.message = error.error.message;
+    }
+    this.logger.error(this.message ?? 'Recovery failed', error);
+  }
 }

@@ -1,25 +1,18 @@
-import {Card} from './card';
-import {UserTransaction} from './user-transaction';
-import { SecurityQuestion } from './security-question';
+import { CardInfo } from './card';
 
 /**
- * This is a model class which has the attributes to keep User properties
+ * The authenticated user profile returned by `/UserLoginAPI/authenticate`
+ * (inside `user`) and by `/UserLoginAPI/getUser`.
+ *
+ * NOTE: unlike the legacy app, this NEVER carries a password or security answer.
  */
-export class User {
-    
-    public userId: number;
-	public emailId: string;
-	public mobileNumber: string;
-	public name: string;
-	public password: string;
-	public message: string;
-	public balance: number;
-	public userTransactions: UserTransaction[];
-	public cards: Card[];
-	public rewardPoints: number;
-    public otp: string;
-	public successMessage: string;
-	public errorMessage: string;
-	public securityQuestion: SecurityQuestion;
-	public securityAnswer: string;
+export interface UserProfile {
+  userId: number;
+  name: string;
+  emailId: string;
+  mobileNumber: string;
+  userStatus: string;
+  balance: number;
+  rewardPoints: number;
+  cards: CardInfo[];
 }

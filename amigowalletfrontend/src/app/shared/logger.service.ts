@@ -1,42 +1,23 @@
-import { Injectable } from '@angular/core';
-import { Log } from 'ng2-logger/browser';
+import { Injectable, isDevMode } from '@angular/core';
 
-const LOG_CONFIG: any = {
-    error: 'red',
-    warn: 'yellow',
-    info: 'blue',
-};
-
-const log = Log.create("Amigo Wallet");
-
-/*
- * @Injectable A marker metadata which specifies any class which can be 
- * injected can be injected to this class
- * 
- * Even those service that don't have dependencies do not technically
- * require it. But it good to use it because:
- *      Future proofing: No need to remember @Injectable() when you add a 
- *          dependency later.
- *      Consistency: All services follow the same rules, and you don't have
- *          to wonder why a decorator is missing.
-*/
-
-@Injectable()
+/**
+ * Tiny console-backed logger that replaces the abandoned `ng2-logger` dependency.
+ * Info logs are suppressed outside of dev mode; warnings and errors always print.
+ */
+@Injectable({ providedIn: 'root' })
 export class LoggerService {
+  info(message: string, obj?: unknown): void {
+    if (!isDevMode()) {
+      return;
+    }
+    obj !== undefined ? console.info('[AmigoWallet]', message, obj) : console.info('[AmigoWallet]', message);
+  }
 
-   error(message: string, obj?: any) {
-        log.color = LOG_CONFIG.error;
-        (obj) ? log.error(message, obj) : log.error(message);
-   }
+  warn(message: string, obj?: unknown): void {
+    obj !== undefined ? console.warn('[AmigoWallet]', message, obj) : console.warn('[AmigoWallet]', message);
+  }
 
-   warn(message: string, obj?: any) {
-        log.color = LOG_CONFIG.warn;
-        (obj) ? log.warn(message, obj) : log.warn(message);
-   }
-
-   info(message: string, obj?: any) {
-        log.color = LOG_CONFIG.info;
-        (obj) ? log.info(message, obj) : log.info(message);
-   }
-
+  error(message: string, obj?: unknown): void {
+    obj !== undefined ? console.error('[AmigoWallet]', message, obj) : console.error('[AmigoWallet]', message);
+  }
 }

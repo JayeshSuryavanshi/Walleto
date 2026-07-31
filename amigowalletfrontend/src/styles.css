@@ -436,3 +436,20 @@ i.fa-spinner {
 .accordian-collapse {
     transition: height 10s;
 }
+
+/* --------------------------------------------------------------------------
+   Bootstrap 4 -> 5 compatibility shims.
+   The templates were authored against Bootstrap 4 utility class names that were
+   renamed/removed in Bootstrap 5. These small shims preserve the original
+   layout without editing every template.
+   -------------------------------------------------------------------------- */
+.pull-right { float: right !important; }
+.pull-left { float: left !important; }
+.text-right { text-align: right !important; }
+.text-left { text-align: left !important; }
+.form-inline { display: flex; flex-flow: row wrap; align-items: center; }
+.form-inline .form-group { margin-right: 1rem; }
+.no-gutters { margin-right: 0; margin-left: 0; }
+.no-gutters > .col,
+.no-gutters > [class*="col-"] { padding-right: 0; padding-left: 0; }
+.thead-dark th { color: #fff; background-color: #212529; border-color: #32383e; }

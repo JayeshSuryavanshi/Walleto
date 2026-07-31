@@ -1,8 +1,8 @@
-.my-pagination /deep/ .ngx-pagination .current {
+.my-pagination ::ng-deep .pagination .active .page-link {
     background: #212529;
+    border-color: #212529;
 }
 
 .paginationplace {
-    margin-left: -80px;
     margin-bottom: -10px;
 }

@@ -1,58 +1,39 @@
-import { Injectable } from '@angular/core';
-
-import { UriService } from '../../shared/uri.service';
-import { User } from '../../shared/model/user';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-/**
- * This is a service class used from ForgotPassword component
- * 
- * this communicats with the server side application and does requied work
- *
- * @Injectable A marker metadata which specifies any class which can be 
- * injected can be injected to this class
- */
-@Injectable()
+import { environment } from '../../../environments/environment';
+import { ForgotPasswordResponse, MessageResponse, ResetTokenResponse } from '../../shared/model/api';
+
+/** Account-recovery chain (all public endpoints on the wallet-api). */
+@Injectable({ providedIn: 'root' })
 export class ForgotPasswordService {
+  private readonly http = inject(HttpClient);
+  private readonly api = environment.apiBaseUrl;
 
-  /** required url */
-  amigoWalletUrl: string;
-
-  /** constructor will be executed on creation of object creation 
-   * 
-   * the objects specified as parameters will be injected while execution 
-   * and these are used as instance variables 
-   *
-   * urls are initialized
-   */
-  constructor(private http: HttpClient, private uriService: UriService) {
-    this.amigoWalletUrl = this.uriService.buildAmigoWalletUri();
-  }
-  /**
-   * This method calls the forgotPasswordSendMail method
-   * in ForgotPasswordAPI of eWallet
-   * using an http post request 
-   * which returns a ResponseEntity<String>
-   */
-  forgotPassword(data: any): Observable<User> {
-
-    return this.http.post<User>(this.amigoWalletUrl + '/ForgotPasswordAPI/forgotPassword', data)
-
+  /** Step 1: returns the account's security question (never the account itself). */
+  forgotPassword(emailId: string): Observable<ForgotPasswordResponse> {
+    return this.http.post<ForgotPasswordResponse>(`${this.api}/ForgotPasswordAPI/forgotPassword`, { emailId });
   }
 
-
-  checkAnswer(user: User): Observable<string> {
-    return this.http.post(this.amigoWalletUrl + '/ForgotPasswordAPI/validateAnswer', user, {responseType: "text"})
+  /** Step 2: validate the answer, receiving a single-use short-lived reset token. */
+  validateAnswer(emailId: string, securityAnswer: string): Observable<ResetTokenResponse> {
+    return this.http.post<ResetTokenResponse>(`${this.api}/ForgotPasswordAPI/validateAnswer`, {
+      emailId,
+      securityAnswer,
+    });
   }
 
   /**
- * This method calls the resetPassword method
- * in ForgotPasswordAPI of eWallet
- * using an http post request 
- * which returns a ResponseEntity<String>
- */
-  resetPasswordPost(data: any): Observable<string> {
-    return this.http.post(this.amigoWalletUrl + '/ForgotPasswordAPI/resetPassword/', data, {responseType: "text"})
+   * Step 3: reset the password. The reset token is sent as a Bearer header; the
+   * interceptor leaves a request that already carries Authorization untouched.
+   */
+  resetPassword(newPassword: string, confirmNewPassword: string, resetToken: string): Observable<MessageResponse> {
+    const headers = new HttpHeaders({ Authorization: `Bearer ${resetToken}` });
+    return this.http.post<MessageResponse>(
+      `${this.api}/ForgotPasswordAPI/resetPassword`,
+      { newPassword, confirmNewPassword },
+      { headers },
+    );
   }
 }

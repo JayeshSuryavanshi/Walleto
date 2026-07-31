@@ -5,15 +5,15 @@
         Your Transaction History
       </div>
       Sort By:
-      <select [(ngModel)]="sortoption">
-          <option value="userTransactionId">Transaction Id</option>
-          <option value="userTransactionIdRev">Transaction Id Desc.</option>
-          <option value="transactionDateTime">Transaction Time</option>
-          <option value="transactionDateTimeRev">Transaction Time Desc.</option>
+      <select [(ngModel)]="sortoption" (ngModelChange)="onOptionChange()">
+        <option value="userTransactionId">Transaction Id</option>
+        <option value="userTransactionIdRev">Transaction Id Desc.</option>
+        <option value="transactionDateTime">Transaction Time</option>
+        <option value="transactionDateTimeRev">Transaction Time Desc.</option>
       </select>
       <span class="text-right pull-right">
         Filter By:
-        <select [(ngModel)]="filteroption">
+        <select [(ngModel)]="filteroption" (ngModelChange)="onOptionChange()">
           <option value="">Both</option>
           <option value="C">Credit Transactions Only</option>
           <option value="D">Debit Transactions Only</option>
@@ -22,7 +22,7 @@
     </div>
   </div>
   <div class="card-body text-center">
-    <div class="table-responsive" *ngIf="errorMessage==null">
+    <div class="table-responsive" *ngIf="errorMessage == null">
       <table class="table table-hover">
         <thead class="thead-dark">
           <tr>
@@ -35,7 +35,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let userTransaction of userTransactions | filter:filteroption | sort:sortoption | paginate: {itemsPerPage: 5, currentPage:page }">
+          <tr *ngFor="let userTransaction of pagedTransactions">
             <td>{{ userTransaction.userTransactionId }}</td>
             <td>{{ userTransaction.transactionDateTime }}</td>
             <td>{{ userTransaction.info }}</td>
@@ -46,11 +46,23 @@
         </tbody>
       </table>
     </div>
-    <span class="text-info" *ngIf="errorMessage!=null">{{ errorMessage }}</span>
+    <span class="text-info" *ngIf="errorMessage != null">{{ errorMessage }}</span>
   </div>
   <div class="card-footer text-center">
     <div class="paginationplace">
-      <pagination-controls class="my-pagination" (pageChange)="onPageChange($event)" responsive="true"></pagination-controls>
+      <nav *ngIf="userTransactions.length > 0">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="page === 1">
+            <a class="page-link cursor-pointer" (click)="goToPage(page - 1)">&laquo;</a>
+          </li>
+          <li class="page-item" *ngFor="let p of pages" [class.active]="p === page">
+            <a class="page-link cursor-pointer" (click)="goToPage(p)">{{ p }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="page === totalPages">
+            <a class="page-link cursor-pointer" (click)="goToPage(page + 1)">&raquo;</a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
 </div>

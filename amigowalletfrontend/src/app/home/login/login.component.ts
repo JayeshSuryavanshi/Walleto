@@ -1,105 +1,73 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
-import { Router } from "@angular/router";
-import { TranslateService } from '@ngx-translate/core';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
-import { Card } from '../../shared/model/card';
-import { User } from '../../shared/model/user';
-
+import { AuthService } from '../../shared/auth.service';
 import { LoggerService } from '../../shared/logger.service';
 import { PasswordValidator } from '../../shared/password.validator';
 
-import { LoginService } from './login.service';
-import { UserTransaction } from "../../shared/model/user-transaction";
-
 @Component({
-  selector: 'aw-login',
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  providers: [LoginService]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
+  private readonly fb = inject(FormBuilder);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly logger = inject(LoggerService);
+  private readonly translate = inject(TranslateService);
 
-  /** class instance variales */
-  user: User;
-  cards: Card[];
-  userTransactions: UserTransaction[];
-  message: string;
-  error: any;
+  message: string | null = null;
   submitted = false;
 
-
-  /**
-   * Validation of password - Password should be within 8-20 characters with at least 
-   *                          one uppercase, one lowercase, one digit and 
-	 *                          special character in (!,#,$,%,^,&,*,(,))
-   *               emailId  - Email id should follow a valid format
-   */
   form = this.fb.group({
-    emailId: ["", [Validators.required, Validators.pattern("[^@]+[@][^@]+[.][^@]+")]],
-    password: ["", Validators.required]
+    emailId: ['', [Validators.required, Validators.pattern('[^@]+[@][^@]+[.][^@]+')]],
+    password: ['', Validators.required],
   });
 
-  /** constructor will be executed on creation of object creation 
-   * 
-   * the objects specified as parameters will be injected while execution 
-   * and these are used as instance variables 
-   */
-  constructor(public fb: FormBuilder, private loginService: LoginService, private router: Router,
-    private logger: LoggerService, private translateService: TranslateService) { }
-
-
-  /**
-   * Life cycle method on init (overided from OnInit)
-   */
-  ngOnInit() {
-  }
-
-
-  /**
-   * This method calls doLogin method of LoginService
-   * which returns a user model populated with appropriate
-   * message.
-   * userId and user are stored in sessionStorage
-   * In case of success it navigates to home page
-   * In case of failure it displays an error message
-   */
-  authenticate() {
+  authenticate(): void {
     this.submitted = true;
     this.message = null;
-    let passwordControl: AbstractControl = this.form.get("password");
 
-    if (!PasswordValidator.minLength(passwordControl) &&
+    const passwordControl = this.form.controls.password;
+    const passwordLooksValid =
+      !PasswordValidator.minLength(passwordControl) &&
       !PasswordValidator.requiredALowerCase(passwordControl) &&
       !PasswordValidator.requiredANumber(passwordControl) &&
       !PasswordValidator.requiredASpecialChar(passwordControl) &&
-      !PasswordValidator.requiredAUpperCase(passwordControl)) {
+      !PasswordValidator.requiredAUpperCase(passwordControl);
 
-      this.loginService.doLogin(this.form.value).subscribe(
-        (responseData: any) => {
-          let user: User = responseData;
-          this.user = user;
-          sessionStorage.setItem("userId", this.user.userId.toString());
-          sessionStorage.setItem("user", JSON.stringify(this.user));
+    if (!passwordLooksValid) {
+      this.logger.warn('Password format error');
+      this.translate.get('ERROR_MESSAGES.INVALID_CREDENTIALS').subscribe((value) => (this.message = value));
+      this.submitted = false;
+      return;
+    }
+
+    this.auth
+      .login({
+        emailId: this.form.controls.emailId.value ?? '',
+        password: this.form.controls.password.value ?? '',
+      })
+      .subscribe({
+        next: () => {
           this.router.navigate(['/home']);
-          this.logger.info("Successfull login");
+          this.logger.info('Successful login');
         },
-        error => {
-          if (error.error != null) {
+        error: (error) => {
+          if (error?.error?.message != null) {
             this.message = error.error.message;
           } else {
-            this.translateService.get("ERROR_MESSAGES.SERVER_DOWN").subscribe(value => this.message = value)
-              ;
+            this.translate.get('ERROR_MESSAGES.SERVER_DOWN').subscribe((value) => (this.message = value));
           }
-          this.logger.error(this.message, error);
+          this.logger.error(this.message ?? 'Login failed', error);
           this.submitted = false;
-        });
-
-    } else {
-      this.logger.warn("Password format error");
-      this.translateService.get("ERROR_MESSAGES.INVALID_CREDENTIALS").subscribe(value => this.message = value);
-      this.submitted = false;
-    }
+        },
+      });
   }
-
 }

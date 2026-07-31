@@ -1,0 +1,12 @@
+/* To learn more about Angular's TypeScript configuration, see:
+ * https://angular.dev/reference/configs/tsconfig
+ */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc/app",
+    "types": []
+  },
+  "files": ["src/main.ts"],
+  "include": ["src/**/*.d.ts"]
+}

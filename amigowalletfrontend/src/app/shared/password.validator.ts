@@ -1,48 +1,53 @@
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
-/** custom validator method for checking the amount is greater than 0 */
-
+/**
+ * Password policy validators. Each returns an error object when the rule fails,
+ * or null when it passes. Also used imperatively (e.g. in login) to pre-check.
+ */
 export class PasswordValidator {
+  static requiredAUpperCase(control: AbstractControl): ValidationErrors | null {
+    const containUpperCase = /^.*[A-Z].*$/;
+    if (control.value == null || control.value === '' || !containUpperCase.test(control.value)) {
+      return { uppercase: true };
+    }
+    return null;
+  }
 
-    static requiredAUpperCase(control: AbstractControl): any {
-        let containUpperCase: RegExp = /^.*[A-Z].*$/;
-        if ((control.value == '' || control.value == null) || !(containUpperCase.test(control.value))) {
-            return { "uppercase": true };
-        }
-        return null;
+  static requiredALowerCase(control: AbstractControl): ValidationErrors | null {
+    const containLowerCase = /^.*[a-z].*$/;
+    if (control.value == null || control.value === '' || !containLowerCase.test(control.value)) {
+      return { lowercase: true };
     }
-    static requiredALowerCase(control: AbstractControl): any {
-        let containLowerCase: RegExp = /^.*[a-z].*$/;
-        if ((control.value == '' || control.value == null) || !(containLowerCase.test(control.value))) {
-            return { "lowercase": true };
-        }
-        return null;
-    }
-    static requiredANumber(control: AbstractControl): any {
-        let containNumber: RegExp = /^.*[0-9].*$/;
-        if ((control.value == '' || control.value == null) || !(containNumber.test(control.value)) ) {
-            return { "number": true };
-        }
-        return null;
-    }
-    static minLength(control: AbstractControl): any {
-        if ((control.value == '' || control.value == null) || control.value.length < 8 ) {
-            return { "minlength": true };
-        }
-        return null;
-    }
-    static maxLength(control: AbstractControl): any {
-        if ((control.value == '' || control.value == null) || control.value.length > 20 ) {
-            return { "maxlength": true };
-        }
-        return null;
-    }
-    static requiredASpecialChar(control: AbstractControl): any {
-        let containSpecialChar: RegExp = /^.*[!#$%^&*()].*$/;
-        if ((control.value == '' || control.value == null) || !(containSpecialChar.test(control.value))) {
-            return { "special": true };
-        }
-        return null;
-    }
+    return null;
+  }
 
+  static requiredANumber(control: AbstractControl): ValidationErrors | null {
+    const containNumber = /^.*[0-9].*$/;
+    if (control.value == null || control.value === '' || !containNumber.test(control.value)) {
+      return { number: true };
+    }
+    return null;
+  }
+
+  static minLength(control: AbstractControl): ValidationErrors | null {
+    if (control.value == null || control.value === '' || control.value.length < 8) {
+      return { minlength: true };
+    }
+    return null;
+  }
+
+  static maxLength(control: AbstractControl): ValidationErrors | null {
+    if (control.value == null || control.value === '' || control.value.length > 20) {
+      return { maxlength: true };
+    }
+    return null;
+  }
+
+  static requiredASpecialChar(control: AbstractControl): ValidationErrors | null {
+    const containSpecialChar = /^.*[!#$%^&*()].*$/;
+    if (control.value == null || control.value === '' || !containSpecialChar.test(control.value)) {
+      return { special: true };
+    }
+    return null;
+  }
 }

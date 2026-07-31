@@ -138,7 +138,7 @@
           </form>
 
           <p class="alert alert-danger" *ngIf="errorMessage">
-            {{ errorMessage | translate:{'value': profileService.getBalance() | currency:'USD' } }}
+            {{ errorMessage | translate:{'value': auth.balance() | currency:'USD' } }}
           </p>
           <p class="alert alert-success" *ngIf="successMessage">
             {{ successMessage | translate }} {{ transactionId }}

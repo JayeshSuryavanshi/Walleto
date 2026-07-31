@@ -1,7 +1,5 @@
-/**
- * This is a model class which has the attributes to keep Bank properties
- */
-export class Bank {
-    public bankId: number;
-    public bankName: string;
+/** A bank offered by the wallet-api (for adding a card). */
+export interface Bank {
+  bankId: number;
+  bankName: string;
 }

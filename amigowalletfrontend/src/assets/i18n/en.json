@@ -52,6 +52,8 @@
         "SAVE_LOAD_BUTTON": "Save and Load money",
         "LOAD_BY_NEW_BUTTON": "Load with new Card",
         "PROCEED_TO_GATEWAY": "Proceed to Gateway",
+        "NET_BANKING_LOGIN": "Net banking login name *",
+        "NET_BANKING_PASSWORD": "Net banking password *",
         "CVV_FORMATT_ERROR": "Should be 3 digits",
         "PIN_FORMATT_ERROR": "Should be 4 digits",
         "AMOUNT": {
