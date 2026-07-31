@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
+import { MoneyTransactionResponse } from '../../shared/model/money-transaction-response';
 
 /**
  * Wallet-to-wallet transfer. Sender identity is derived from the JWT server-side;
@@ -15,11 +16,10 @@ export class WalletToWalletTransferService {
   private readonly http = inject(HttpClient);
   private readonly api = environment.apiBaseUrl;
 
-  transfer(recipientEmailId: string, amount: number): Observable<string> {
-    return this.http.post(
+  transfer(recipientEmailId: string, amount: number): Observable<MoneyTransactionResponse> {
+    return this.http.post<MoneyTransactionResponse>(
       `${this.api}/WalletToWalletAPI/transfertowallet`,
       { recipientEmailId, amount },
-      { responseType: 'text' },
     );
   }
 }

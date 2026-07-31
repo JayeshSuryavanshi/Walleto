@@ -50,8 +50,8 @@
             </form>
 
             <div class="row center-message" *ngIf="(successMessage || message) ">
-                <div class="text-success " *ngIf="successMessage">{{successMessage}}</div> <br>
-                <div class="text-danger" *ngIf="message">{{message}}</div>
+                <div class="alert alert-success" role="alert" *ngIf="successMessage">{{successMessage}}</div>
+                <div class="alert alert-danger" role="alert" *ngIf="message">{{message}}</div>
             </div>
         </div>
     </div>

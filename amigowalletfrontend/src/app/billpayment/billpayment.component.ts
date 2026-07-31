@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../shared/auth.service';
 import { LoggerService } from '../shared/logger.service';
+import { extractApiError, friendlyMoneyResult } from '../shared/money-format';
 import { BillpaymentserviceService } from './billpaymentservice.service';
 
 @Component({
@@ -96,17 +97,18 @@ export class BillpaymentComponent implements OnInit {
     this.successMessage = null;
     this.payBillService.payBill(this.amount, this.selectedMerchant).subscribe({
       next: (response) => {
-        this.successMessage = response?.message ?? 'Transaction successful';
-        this.auth.refreshProfile().subscribe({ error: () => undefined });
+        this.successMessage = friendlyMoneyResult(response, { title: 'Bill paid', verb: 'paid' });
+        this.auth.applyMoneyResult(response);
         this.form1.controls.servicetype.setValue('');
         this.form1.controls.merchantname.setValue('');
+        this.num1 = 0;
         this.amount = 0;
         this.submitted = false;
         this.logger.info('Successful payment');
       },
       error: (error) => {
         this.submitted = false;
-        this.message = error?.error?.message ?? error?.error ?? 'Payment failed';
+        this.message = extractApiError(error, 'Payment failed. Please try again.');
         this.logger.error('Bill payment error', error);
       },
     });

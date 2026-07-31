@@ -6,6 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../shared/auth.service';
 import { AmountValidator } from '../../shared/amount.validator';
 import { LoggerService } from '../../shared/logger.service';
+import { extractApiError, friendlyMoneyResult } from '../../shared/money-format';
 import { WalletToWalletTransferService } from './wallet-to-wallet-transfer.service';
 
 @Component({
@@ -59,33 +60,17 @@ export class WalletToWalletTransferComponent implements OnInit {
     this.submitted = true;
     this.service.transfer(recipientEmailId, amount).subscribe({
       next: (response) => {
-        this.successMessage = response;
+        this.successMessage = friendlyMoneyResult(response, { title: 'Transfer successful', verb: 'sent' });
         this.submitted = false;
         this.logger.info('Transaction success');
         this.tranfertowallet.reset();
-        this.auth.refreshProfile().subscribe({ error: () => undefined });
+        this.auth.applyMoneyResult(response);
       },
       error: (error) => {
         this.submitted = false;
-        this.errorMessage = this.extractMessage(error);
+        this.errorMessage = extractApiError(error, 'Transfer failed. Please try again.');
         this.logger.error(this.errorMessage ?? 'Transfer failed', error);
       },
     });
-  }
-
-  private extractMessage(error: { error?: unknown }): string {
-    const body = error?.error;
-    if (typeof body === 'string') {
-      try {
-        const parsed = JSON.parse(body) as { message?: string };
-        return parsed.message ?? body;
-      } catch {
-        return body;
-      }
-    }
-    if (body && typeof body === 'object' && 'message' in body) {
-      return (body as { message?: string }).message ?? 'Transfer failed';
-    }
-    return 'Transfer failed';
   }
 }

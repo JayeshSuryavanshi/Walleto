@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../../shared/auth.service';
 import { LoggerService } from '../../shared/logger.service';
+import { extractApiError, friendlyMoneyResult } from '../../shared/money-format';
 import { PointsService } from './points.service';
 
 @Component({
@@ -26,7 +27,6 @@ import { PointsService } from './points.service';
 })
 export class PointsComponent {
   private readonly pointService = inject(PointsService);
-  private readonly translate = inject(TranslateService);
   private readonly auth = inject(AuthService);
   private readonly logger = inject(LoggerService);
 
@@ -41,17 +41,13 @@ export class PointsComponent {
     this.errorMessage = null;
     this.pointService.redeem().subscribe({
       next: (response) => {
-        this.successMessage = response?.successMessage ?? response?.message ?? 'Reward points redeemed';
-        this.auth.refreshProfile().subscribe({ error: () => undefined });
+        this.successMessage = friendlyMoneyResult(response, { title: 'Points redeemed', verb: 'added' });
+        this.auth.applyMoneyResult(response);
         this.submitted = false;
         this.logger.info(this.successMessage);
       },
       error: (error) => {
-        if (error?.error?.message != null) {
-          this.errorMessage = error.error.message;
-        } else {
-          this.translate.get('ERROR_MESSAGES.SERVER_DOWN').subscribe((value) => (this.errorMessage = value));
-        }
+        this.errorMessage = extractApiError(error, 'Could not redeem points. Please try again.');
         this.submitted = false;
         this.logger.error(this.errorMessage ?? 'Redeem failed', error);
       },

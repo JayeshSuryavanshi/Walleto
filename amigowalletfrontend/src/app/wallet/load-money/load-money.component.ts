@@ -6,15 +6,19 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../shared/auth.service';
 import { AmountValidator } from '../../shared/amount.validator';
 import { LoggerService } from '../../shared/logger.service';
+import { extractApiError, friendlyMoneyResult } from '../../shared/money-format';
 import { Bank } from '../../shared/model/bank';
 import { CardInfo } from '../../shared/model/card';
+import { MoneyTransactionResponse } from '../../shared/model/money-transaction-response';
 import { LoadMoneyService } from './load-money.service';
 
 /**
- * Loads money into the wallet via a saved card, a new card, or net banking.
- * All three flows are single authenticated POSTs to the wallet-api (the bank
- * leg happens server-side) - the legacy nested browser->bank orchestration and
- * the net-banking window.location redirect are gone.
+ * Loads money into the wallet via a debit card or net banking.
+ *
+ * Card loads always go through the new-card entry form: the wallet-api only ever
+ * exposes a MASKED card number, so a saved card can never be used to pull funds.
+ * Saved cards are therefore shown for reference / removal only - to load money
+ * the user types the full card number + PIN + expiry the bank will debit.
  */
 @Component({
   selector: 'app-load-money',
@@ -31,24 +35,15 @@ export class LoadMoneyComponent implements OnInit {
   private readonly translate = inject(TranslateService);
 
   paymentType: 'debit' | 'net' = 'debit';
-  addCardFlag = false;
   cards: CardInfo[] = [];
   cardPageIndex = 0;
-  selectedCardId: number | null = null;
   cardToDelete: number | null = null;
-  removeFlag = false;
   message: string | null = null;
   successMessage: string | null = null;
   submitted = false;
   month: number[] = [];
   year: number[] = [];
   banks: Bank[] = [];
-
-  form = this.fb.group({
-    cvv: ['', [Validators.required, Validators.pattern('[0-9]{3}')]],
-    pin: ['', [Validators.required, Validators.pattern('[0-9]{4}')]],
-    amount: ['', [Validators.required, Validators.pattern('[-]?[0-9]+[.]?[0-9]{0,2}'), AmountValidator.min]],
-  });
 
   netForm = this.fb.group({
     loginName: ['', [Validators.required]],
@@ -105,77 +100,26 @@ export class LoadMoneyComponent implements OnInit {
   changeType(type: 'debit' | 'net'): void {
     this.submitted = false;
     this.paymentType = type;
-    this.removeFlag = false;
     this.clearMessages();
   }
 
   prevCard(): void {
     if (this.cardPageIndex > 0) {
       this.cardPageIndex--;
-      this.resetSelection();
+      this.clearMessages();
     }
   }
 
   nextCard(): void {
     if (this.cardPageIndex < this.cards.length - 1) {
       this.cardPageIndex++;
-      this.resetSelection();
+      this.clearMessages();
     }
   }
 
-  private resetSelection(): void {
-    this.selectedCardId = null;
-    this.clearMessages();
-    this.form.reset();
-  }
-
-  addNewCardClick(): void {
-    this.submitted = false;
-    this.addCardFlag = true;
-    this.removeFlag = false;
-    this.clearMessages();
-  }
-
-  cancelAddCard(): void {
-    this.addCardFlag = false;
-    this.clearMessages();
-  }
-
-  selectSavedCard(cardId: number): void {
-    this.submitted = false;
-    this.selectedCardId = cardId;
-    this.addCardFlag = false;
-    this.removeFlag = false;
-    this.clearMessages();
-    this.form.reset();
-  }
-
-  /** Load money from the currently expanded saved card. */
-  addMoney(card: CardInfo): void {
-    this.submitted = true;
-    this.removeFlag = false;
-    this.clearMessages();
-
-    this.loadMoneyService
-      .loadMoneyDebitCard({
-        amount: Number(this.form.controls.amount.value),
-        // For a saved card the frontend only holds the masked number; the
-        // wallet-api resolves the real card by owner + cardId server-side.
-        cardNumber: card.maskedCardNumber,
-        pin: this.form.controls.pin.value ?? '',
-        expiry: card.expiryDate,
-        cardHolderName: 'SAVED_CARD_PAYMENT',
-      })
-      .subscribe({
-        next: () => this.onLoadSuccess('SUCCESS_MESSAGES.ADD_MONEY_SUCCESS'),
-        error: (error) => this.onError(error),
-      });
-  }
-
-  /** Add a brand-new card then load money from it. */
+  /** Enter a brand-new card, save it, then load money from it. */
   loadMoneyByNewCard(): void {
     this.submitted = true;
-    this.removeFlag = false;
     this.clearMessages();
 
     const month = Number(this.newCardForm.controls.validMonth.value);
@@ -183,6 +127,7 @@ export class LoadMoneyComponent implements OnInit {
     const expiry = new Date(year, month - 1, 15).toISOString().substring(0, 10);
     const cardNumber = this.newCardForm.controls.debitCardNumber.value ?? '';
     const pin = this.newCardForm.controls.pin.value ?? '';
+    const amount = Number(this.newCardForm.controls.amount.value);
 
     this.loadMoneyService
       .addCard({ cardNumber, expiryDate: expiry, pin, bank: Number(this.newCardForm.controls.bank.value) })
@@ -190,17 +135,16 @@ export class LoadMoneyComponent implements OnInit {
         next: () => {
           this.loadMoneyService
             .loadMoneyDebitCard({
-              amount: Number(this.newCardForm.controls.amount.value),
+              amount,
               cardNumber,
               pin,
               expiry,
               cardHolderName: this.newCardForm.controls.cardHolderName.value ?? '',
             })
             .subscribe({
-              next: () => {
+              next: (res) => {
                 this.newCardForm.reset();
-                this.addCardFlag = false;
-                this.onLoadSuccess('SUCCESS_MESSAGES.LOAD_CARD_SUCCESS');
+                this.onLoadSuccess(res, 'Money loaded');
               },
               error: (error) => this.onError(error),
             });
@@ -224,7 +168,6 @@ export class LoadMoneyComponent implements OnInit {
     if (cardId == null) {
       return;
     }
-    this.removeFlag = true;
     this.clearMessages();
     this.loadMoneyService.deleteCard(cardId).subscribe({
       next: () => {
@@ -238,7 +181,6 @@ export class LoadMoneyComponent implements OnInit {
 
   netBanking(): void {
     this.submitted = true;
-    this.removeFlag = false;
     this.clearMessages();
 
     this.loadMoneyService
@@ -248,28 +190,26 @@ export class LoadMoneyComponent implements OnInit {
         password: this.netForm.controls.password.value ?? '',
       })
       .subscribe({
-        next: () => {
+        next: (res) => {
           this.netForm.reset();
-          this.onLoadSuccess('SUCCESS_MESSAGES.NET_BANKING_SUCCESS');
+          this.onLoadSuccess(res, 'Money loaded via net banking');
         },
         error: (error) => this.onError(error),
       });
   }
 
-  private onLoadSuccess(messageKey: string): void {
+  private onLoadSuccess(res: MoneyTransactionResponse, title: string): void {
+    this.successMessage = friendlyMoneyResult(res, { title, verb: 'loaded' });
+    // Instantly reflect the authoritative balance, then reconcile the full
+    // profile (points total + saved cards) so this screen's list stays in sync.
+    this.auth.setBalance(res.newBalance);
     this.auth.refreshProfile().subscribe({ next: () => this.syncCards(), error: () => undefined });
-    this.form.reset();
-    this.translate.get(messageKey).subscribe((value) => (this.successMessage = value));
     this.submitted = false;
-    this.logger.info(this.successMessage ?? 'Load success');
+    this.logger.info(this.successMessage);
   }
 
-  private onError(error: { error?: { message?: string } }): void {
-    if (error?.error?.message != null) {
-      this.message = error.error.message;
-    } else {
-      this.translate.get('ERROR_MESSAGES.SERVER_DOWN').subscribe((value) => (this.message = value));
-    }
+  private onError(error: unknown): void {
+    this.message = extractApiError(error, 'Could not complete the load. Please try again.');
     this.submitted = false;
     this.logger.error(this.message ?? 'Load failed', error);
   }

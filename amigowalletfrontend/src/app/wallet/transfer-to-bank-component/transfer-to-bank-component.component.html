@@ -137,11 +137,11 @@
             </div>
           </form>
 
-          <p class="alert alert-danger" *ngIf="errorMessage">
+          <p class="alert alert-danger" role="alert" *ngIf="errorMessage">
             {{ errorMessage | translate:{'value': auth.balance() | currency:'USD' } }}
           </p>
-          <p class="alert alert-success" *ngIf="successMessage">
-            {{ successMessage | translate }} {{ transactionId }}
+          <p class="alert alert-success" role="alert" *ngIf="successMessage">
+            {{ successMessage }}
           </p>
 
     </div>

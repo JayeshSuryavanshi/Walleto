@@ -62,8 +62,8 @@
                         *ngIf="submitted" class="fa fa-spinner fa-pulse fa-lg fa-fw"> </i></button>
             </div>
             <div class="row center-message" *ngIf="(successMessage!=null || errorMessage!=null) ">
-                <div class="text-success ">{{successMessage}}</div> <br>
-                <div class="text-danger">{{errorMessage}}</div>
+                <div class="alert alert-success" role="alert" *ngIf="successMessage">{{successMessage}}</div>
+                <div class="alert alert-danger" role="alert" *ngIf="errorMessage">{{errorMessage}}</div>
             </div>
         </form>
     </div>

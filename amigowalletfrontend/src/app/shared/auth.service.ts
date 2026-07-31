@@ -53,6 +53,28 @@ export class AuthService {
     this.user.set(res.user);
   }
 
+  /**
+   * Optimistically apply the authoritative post-transaction wallet balance to
+   * the profile signal so the header/dashboard update instantly.
+   */
+  setBalance(newBalance: number | null | undefined): void {
+    const current = this.user();
+    if (current != null && typeof newBalance === 'number' && Number.isFinite(newBalance)) {
+      this.user.set({ ...current, balance: newBalance });
+    }
+  }
+
+  /**
+   * Reflect a completed money operation in the session: instantly show the new
+   * balance from the response, then reconcile the full profile (reward-points
+   * total, saved cards, status) from the server. Fire-and-forget - callers that
+   * need to react to the reconcile should use `setBalance` + `refreshProfile`.
+   */
+  applyMoneyResult(res: { newBalance?: number } | null | undefined): void {
+    this.setBalance(res?.newBalance);
+    this.refreshProfile().subscribe({ error: () => undefined });
+  }
+
   clearSession(): void {
     localStorage.removeItem(TOKEN_KEY);
     this.user.set(null);

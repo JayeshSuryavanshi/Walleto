@@ -6,8 +6,8 @@
                     <span *ngIf="!submitted">{{ "REDEEM_POINTS.REDEEM_POINTS_BUTTON" | translate }}</span>
                     <i *ngIf="submitted" class="fa fa-spinner fa-pulse fa-lg fa-fw"> </i>
                 </button>
-                <div class="text-success">{{ successMessage }}</div>
-                <div class="text-danger">{{ errorMessage }}</div>
+                <div class="alert alert-success mt-3" role="alert" *ngIf="successMessage">{{ successMessage }}</div>
+                <div class="alert alert-danger mt-3" role="alert" *ngIf="errorMessage">{{ errorMessage }}</div>
             </div>
         </div>
     </div>

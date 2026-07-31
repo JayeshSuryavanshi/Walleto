@@ -65,7 +65,8 @@
         "INVALID_NAME_FORMAT": "Name can contain only alphabets and spaces",
         "INVALID_CARD_NUMBER_FORMAT": "should be 16 digits",
         "REQUIRED_FIELD": "Cannot be empty",
-        "SELECT_BANK_PLACEHOLDER": "Select the bank *"
+        "SELECT_BANK_PLACEHOLDER": "Select the bank *",
+        "SAVED_CARDS_NOTE": "Saved cards are shown for reference only. For your security, enter your full card details below to load money."
     },
     "RESET_PASSWORD": {
         "PASSWORD": {

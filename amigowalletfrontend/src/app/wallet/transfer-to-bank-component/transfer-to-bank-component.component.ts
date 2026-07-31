@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { AuthService } from '../../shared/auth.service';
 import { LoggerService } from '../../shared/logger.service';
+import { extractApiError, friendlyMoneyResult } from '../../shared/money-format';
 import { TransferToBankService } from './transfer-to-bank.service';
 
 @Component({
@@ -23,7 +24,6 @@ export class TransferToBankComponent implements OnInit {
   bankAccountForm!: FormGroup;
   errorMessage: string | null = null;
   successMessage: string | null = null;
-  transactionId: string | null = null;
 
   ngOnInit(): void {
     this.bankAccountForm = this.formBuilder.group({
@@ -37,7 +37,6 @@ export class TransferToBankComponent implements OnInit {
   onSubmit(): void {
     this.errorMessage = null;
     this.successMessage = null;
-    this.transactionId = null;
 
     const amount = Number(this.bankAccountForm.controls['amount'].value);
 
@@ -55,13 +54,15 @@ export class TransferToBankComponent implements OnInit {
       })
       .subscribe({
         next: (response) => {
-          this.successMessage = 'SUCCESS_MESSAGES.TRANSFER_TO_BANK_SUCCESS';
-          this.transactionId = response?.message ?? '';
+          this.successMessage = friendlyMoneyResult(response, {
+            title: 'Sent to bank',
+            verb: 'transferred',
+          });
           this.bankAccountForm.reset();
-          this.auth.refreshProfile().subscribe({ error: () => undefined });
+          this.auth.applyMoneyResult(response);
         },
         error: (error) => {
-          this.errorMessage = error?.error?.message ?? 'ERROR_MESSAGES.SERVER_DOWN';
+          this.errorMessage = extractApiError(error, 'Transfer to bank failed. Please try again.');
           this.logger.error(this.errorMessage ?? 'Transfer to bank failed', error);
         },
       });

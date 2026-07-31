@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { MessageResponse } from '../shared/model/api';
+import { MoneyTransactionResponse } from '../shared/model/money-transaction-response';
 
 /**
  * Wallet -> merchant bill payment. Payer identity comes from the JWT.
@@ -24,7 +24,10 @@ export class BillpaymentserviceService {
     return this.http.post<string[]>(`${this.api}/WalletToMerchantTransferAPI/merchantType`, { serviceType });
   }
 
-  payBill(amount: number, merchantName: string): Observable<MessageResponse> {
-    return this.http.post<MessageResponse>(`${this.api}/WalletToMerchantTransferAPI/payBill`, { amount, merchantName });
+  payBill(amount: number, merchantName: string): Observable<MoneyTransactionResponse> {
+    return this.http.post<MoneyTransactionResponse>(`${this.api}/WalletToMerchantTransferAPI/payBill`, {
+      amount,
+      merchantName,
+    });
   }
 }

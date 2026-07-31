@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { MessageResponse } from '../../shared/model/api';
+import { MoneyTransactionResponse } from '../../shared/model/money-transaction-response';
 
 export interface BankTransferRequest {
   amount: number;
@@ -24,7 +24,7 @@ export class TransferToBankService {
   private readonly http = inject(HttpClient);
   private readonly api = environment.apiBaseUrl;
 
-  sendMoneyBankAccount(request: BankTransferRequest): Observable<MessageResponse> {
-    return this.http.post<MessageResponse>(`${this.api}/BankTrasnferAPI/sendMoneyBankAccount`, request);
+  sendMoneyBankAccount(request: BankTransferRequest): Observable<MoneyTransactionResponse> {
+    return this.http.post<MoneyTransactionResponse>(`${this.api}/BankTrasnferAPI/sendMoneyBankAccount`, request);
   }
 }

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Bank } from '../../shared/model/bank';
 import { CardInfo } from '../../shared/model/card';
-import { UserTransaction } from '../../shared/model/user-transaction';
+import { MoneyTransactionResponse } from '../../shared/model/money-transaction-response';
 
 /**
  * Load-money service. Talks ONLY to the wallet-api - the browser no longer
@@ -45,8 +45,8 @@ export class LoadMoneyService {
   private readonly http = inject(HttpClient);
   private readonly api = environment.apiBaseUrl;
 
-  loadMoneyDebitCard(request: LoadMoneyDebitCardRequest): Observable<UserTransaction> {
-    return this.http.post<UserTransaction>(`${this.api}/DebitCardAPI/loadMoneyDebitCard`, request);
+  loadMoneyDebitCard(request: LoadMoneyDebitCardRequest): Observable<MoneyTransactionResponse> {
+    return this.http.post<MoneyTransactionResponse>(`${this.api}/DebitCardAPI/loadMoneyDebitCard`, request);
   }
 
   addCard(request: AddCardRequest): Observable<CardInfo> {
@@ -61,7 +61,7 @@ export class LoadMoneyService {
     return this.http.get<Bank[]>(`${this.api}/DebitCardAPI/fetchBankDetails`);
   }
 
-  loadMoneyNetBanking(request: NetBankingRequest): Observable<UserTransaction> {
-    return this.http.post<UserTransaction>(`${this.api}/NetBankingAPI/loadMoneyNetBanking`, request);
+  loadMoneyNetBanking(request: NetBankingRequest): Observable<MoneyTransactionResponse> {
+    return this.http.post<MoneyTransactionResponse>(`${this.api}/NetBankingAPI/loadMoneyNetBanking`, request);
   }
 }

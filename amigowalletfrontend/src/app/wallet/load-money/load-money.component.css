@@ -172,3 +172,10 @@ span[title="Expiry date"] {
 .margin-bottom-5 {
   margin-bottom: 5% !important;
 }
+
+.saved-card-note {
+  color: gray;
+  font-size: small;
+  text-align: center;
+  margin: 8px 0 0 0;
+}
