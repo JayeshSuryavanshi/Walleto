@@ -27,7 +27,7 @@ import { PointsService } from './points.service';
 })
 export class PointsComponent {
   private readonly pointService = inject(PointsService);
-  private readonly auth = inject(AuthService);
+  readonly auth = inject(AuthService);
   private readonly logger = inject(LoggerService);
 
   state = 'active';

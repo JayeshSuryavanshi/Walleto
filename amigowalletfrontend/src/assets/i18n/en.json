@@ -53,34 +53,46 @@
     },
 
     "LOAD_MONEY": {
-        "LOAD_BY_CARD": "Load money by card",
-        "LOAD_BY_NET_BANKING": "Load by Net banking",
-        "REMOVE_CARD": "remove",
-        "NAME_ON_CARD": "Name on card *",
+        "TITLE": "Add money",
+        "SUBTITLE": "Load your wallet from a card or net banking.",
+        "TAB_CARD": "Card",
+        "TAB_NET": "Net banking",
+        "LOAD_BY_CARD": "Load by card",
+        "LOAD_BY_NET_BANKING": "Load by net banking",
+        "SAVED_CARDS": "Saved cards",
+        "CARD_COUNT": "Card {{ index }} of {{ total }}",
+        "PREV_CARD": "Previous",
+        "NEXT_CARD": "Next",
+        "REMOVE_CARD": "Remove",
+        "REMOVE_CONFIRM": "Remove this card?",
+        "CONFIRM_REMOVE": "Remove card",
+        "CANCEL": "Cancel",
+        "EXPIRES_LABEL": "Expires",
+        "NAME_ON_CARD": "Name on card",
         "SELECT_BANK": "--Select the bank--",
-        "CARD_NUMBER": "Give me card number *",
-        "EXPIRY_MONTH": "Valid till month *",
-        "EXPIRY_YEAR": "Valid till year *",
-        "CARD_CVV": "CVV *",
-        "CARD_PIN": "Pin *",
-        "LOAD_AMOUNT": "How much to load? *",
-        "SAVE_LOAD_BUTTON": "Save and Load money",
-        "LOAD_BY_NEW_BUTTON": "Load with new Card",
-        "PROCEED_TO_GATEWAY": "Proceed to Gateway",
-        "NET_BANKING_LOGIN": "Net banking login name *",
-        "NET_BANKING_PASSWORD": "Net banking password *",
+        "CARD_NUMBER": "Card number",
+        "EXPIRY_MONTH": "Expiry month",
+        "EXPIRY_YEAR": "Expiry year",
+        "CARD_CVV": "CVV",
+        "CARD_PIN": "PIN",
+        "LOAD_AMOUNT": "Amount to load",
+        "SAVE_LOAD_BUTTON": "Save card and load",
+        "LOAD_BY_NEW_BUTTON": "Load with new card",
+        "PROCEED_TO_GATEWAY": "Proceed to gateway",
+        "NET_BANKING_LOGIN": "Net banking login",
+        "NET_BANKING_PASSWORD": "Net banking password",
         "CVV_FORMATT_ERROR": "Should be 3 digits",
         "PIN_FORMATT_ERROR": "Should be 4 digits",
         "AMOUNT": {
-            "DECIMAL_PLACE_INVALID": "can have maximum 2 decimal points",
-            "VALUE_ERROR": "should be greater than 0"
+            "DECIMAL_PLACE_INVALID": "Use at most 2 decimal places",
+            "VALUE_ERROR": "Enter an amount greater than 0"
         },
-        "LOAD_MONEY_BUTTON": "Load Money",
+        "LOAD_MONEY_BUTTON": "Load money",
         "NEW_CARD_DETAILS": "New card details",
-        "INVALID_NAME_FORMAT": "Name can contain only alphabets and spaces",
-        "INVALID_CARD_NUMBER_FORMAT": "should be 16 digits",
+        "INVALID_NAME_FORMAT": "Use letters and spaces only",
+        "INVALID_CARD_NUMBER_FORMAT": "Should be 16 digits",
         "REQUIRED_FIELD": "Cannot be empty",
-        "SELECT_BANK_PLACEHOLDER": "Select the bank *",
+        "SELECT_BANK_PLACEHOLDER": "Bank",
         "SAVED_CARDS_NOTE": "Saved cards are shown for reference only. For your security, enter your full card details below to load money."
     },
     "RESET_PASSWORD": {
@@ -110,19 +122,21 @@
         "SECURITY_ANSWER_BUTTON" : "Check answer"
     },
     "CHANGE_PASSWORD": {
-        "CURRENT_PASSWORD_PLACEHOLDER": "Enter the password by which you just logged in *",
+        "TITLE": "Change password",
+        "SUBTITLE": "You'll be signed out once your password changes.",
+        "CURRENT_PASSWORD_PLACEHOLDER": "Current password",
         "REQUIRED_FIELD": "Cannot be empty",
-        "NEW_PASSWORD_PLACEHOLDER": "Enter new more powerfull password *",
+        "NEW_PASSWORD_PLACEHOLDER": "New password",
         "PASSWORD": {
-            "MIN_LENGTH_ERROR": "Length should be minimum 8",
-            "UPPERCASE_ERROR": "Should contain one uppercase",
-            "LOWERCASE_ERROR": "Should contain one lowercase",
-            "NUMBER_ERROR": "Should contain one number",
-            "SPECIAL_CHARECTER_ERROR": "Should contain one of !#$%^&amp;*()"
+            "MIN_LENGTH_ERROR": "Minimum 8 characters",
+            "UPPERCASE_ERROR": "One uppercase",
+            "LOWERCASE_ERROR": "One lowercase",
+            "NUMBER_ERROR": "One number",
+            "SPECIAL_CHARECTER_ERROR": "One of !#$%^&amp;*()"
         },
-        "CONFIRM_PASSWORD_PLACEHOLDER": "Remember and enter the new password *",
-        "CONFIRM_PASSWORD_ERROR": "Should be same as above password",
-        "CHANGE_PASSWORD_BUTTON": "Change the password",
+        "CONFIRM_PASSWORD_PLACEHOLDER": "Confirm new password",
+        "CONFIRM_PASSWORD_ERROR": "Passwords do not match",
+        "CHANGE_PASSWORD_BUTTON": "Change password",
         "CANCEL": "Cancel"
     },
     "HOME": {
@@ -158,14 +172,25 @@
         "FEATURE_3": "  Easy and hassle free transfer"
     },
     "PAY_BILL": {
+        "TITLE": "Pay a bill",
+        "SUBTITLE": "Choose a service and merchant to pay.",
         "MERCHANT_SELECT_OPTION_DEFAULT": "--Select a merchant--",
         "MERCHANT_PLACEHOLDER": "Select the Merchant *",
         "SERVICE_SELECT_OPTION_DEFAULT": "--Select the service--",
         "SERVICE_PLACEHOLDER": "Select the Merchant Service *",
-        "PAY_BILL_BUTTON": "Pay Bill"
+        "SERVICE_LABEL": "Service",
+        "MERCHANT_LABEL": "Merchant",
+        "SERVICE_OPTION_DEFAULT": "Select a service",
+        "MERCHANT_OPTION_DEFAULT": "Select a merchant",
+        "BILL_AMOUNT_LABEL": "Bill amount",
+        "PAY_BILL_BUTTON": "Pay bill"
     },
     "REDEEM_POINTS": {
-        "REDEEM_POINTS_BUTTON": "Redeem Points"
+        "TITLE": "Redeem points",
+        "SUBTITLE": "Convert your reward points into wallet balance.",
+        "POINTS_LABEL": "Points available",
+        "NO_POINTS": "You have no points to redeem yet.",
+        "REDEEM_POINTS_BUTTON": "Redeem points"
     },
     "PROFILE_SERVICE": {
         "CHANGE_PASSWORD": " change password",
@@ -174,6 +199,19 @@
         "REWARDS": "Rewards"
     },
     "VIEW_TRANSACTIONS": {
+        "TITLE": "Transactions",
+        "SUBTITLE": "Your full wallet activity.",
+        "SORT_LABEL": "Sort",
+        "FILTER_LABEL": "Show",
+        "SORT_NEWEST": "Newest first",
+        "SORT_OLDEST": "Oldest first",
+        "SORT_ID_DESC": "ID, high to low",
+        "SORT_ID_ASC": "ID, low to high",
+        "FILTER_ALL": "All",
+        "FILTER_CREDIT": "Money in",
+        "FILTER_DEBIT": "Money out",
+        "EMPTY": "No transactions found.",
+        "REF": "Ref {{ id }}",
         "TRANSACTION_ID": "Transaction Id",
         "TRANSACTION_TIME": "Transaction time",
         "STATUS": "Status",
@@ -182,27 +220,45 @@
         "TRANSACTION_TYPE": "Credit/Debit"
     },
     "TRANSFER_TO_BANK": {
-        "ACCOUNT_NUMBER_PLACEHOLDER": "Enter Account Number *",
-        "INVALID_ACCOUNT_NUMBER": "Should be 15 digit number",
-        "IFSC_PLACEHOLDER": "Enter IFSC code *",
-        "INVALID_IFSC": "IFSC should start with 4 alphabets followed by 7 digits",
-        "ACCOUNT_HOLDER_NAME_PLACEHOLDER": "Account holder name *",
-        "INVALID_ACCOUNT_HOLDER_NAME": "Name can contain only alphabets and space",
-        "AMOUNT_PLACEHOLDER": "How much to transfer? *",
+        "TITLE": "Transfer to a bank",
+        "SUBTITLE": "Send money to any bank account.",
+        "ACCOUNT_NUMBER_PLACEHOLDER": "Account number",
+        "INVALID_ACCOUNT_NUMBER": "Should be a 15-digit number",
+        "IFSC_PLACEHOLDER": "IFSC code",
+        "INVALID_IFSC": "4 letters followed by 7 digits",
+        "ACCOUNT_HOLDER_NAME_PLACEHOLDER": "Account holder name",
+        "INVALID_ACCOUNT_HOLDER_NAME": "Use letters and spaces only",
+        "AMOUNT_PLACEHOLDER": "Amount to transfer",
         "AMOUNT": {
-            "DECIMAL_PLACE_INVALID": "can have maximum 2 decimal points",
-            "VALUE_ERROR": "should be greater than 0"
+            "DECIMAL_PLACE_INVALID": "Use at most 2 decimal places",
+            "VALUE_ERROR": "Enter an amount greater than 0"
         },
         "TRANSFER_BUTTON": "Transfer"
     },
     "WALLET_TRANSFER": {
-        "EMAIL_ID_PLACEHOLDER": "Enter email Id*",
-        "INVALID_EMAIL": "Email should be in the pattern abc@pqr.xyz",
+        "TITLE": "Send to a wallet",
+        "SUBTITLE": "Send money to another Walleto user by email.",
+        "EMAIL_ID_PLACEHOLDER": "Recipient email",
+        "AMOUNT_PLACEHOLDER": "Amount to send",
+        "INVALID_EMAIL": "Enter a valid email, like name@example.com",
         "AMOUNT": {
-            "DECIMAL_PLACE_INVALID": "can have maximum 2 decimal points",
-            "VALUE_ERROR": "should be greater than 0"
+            "DECIMAL_PLACE_INVALID": "Use at most 2 decimal places",
+            "VALUE_ERROR": "Enter an amount greater than 0"
         },
-        "TRANSFER_BUTTON": "Transfer"
+        "TRANSFER_BUTTON": "Send money"
+    },
+    "EXPENSE_TRACKING": {
+        "TITLE": "Expenses",
+        "SUBTITLE": "A quick look at your spending.",
+        "SPENT_THIS_MONTH": "Spent this month",
+        "PROJECTED": "Projected this month",
+        "AVERAGE": "Average per month",
+        "NO_DATA": "No spending data yet."
+    },
+    "ERROR_PAGE": {
+        "TITLE": "Session expired",
+        "MESSAGE": "You're not signed in, or your session has ended. Please sign in again.",
+        "BACK_TO_LOGIN": "Back to sign in"
     },
     "NET_BANKING_SUCCESS" : {
         "LOADING" : "Loading please wait....",
@@ -214,7 +270,7 @@
         "SERVER_DOWN" : "Server Down",
         "TRANSACTION_CANCELED" : "Transaction Canceled",
         "NO_TRANSACTION" : "No transactions Found",
-        "TRANSFER_BANK_LOW_BALANCE" : "Your wallet balance Rs. {{ value }} is less than the amount entered",
+        "TRANSFER_BANK_LOW_BALANCE" : "Your wallet balance {{ value }} is less than that amount.",
         "TRANSFER_BANK_INVALID_DETAILS" : "Invalid Bank Account Details",
         "SELF_WALLET_TRANSFER_ERROR" : "You cannot send money to your self",
         "BANKS_FETCH_FAILED" : "Failed to fetch the banks",

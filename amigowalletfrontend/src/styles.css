@@ -564,6 +564,107 @@ a.pill:hover {
 }
 
 /* -----------------------------------------------------------------------------
+   Sub-screen scaffolding (feature screens rendered inside the wallet shell)
+   -------------------------------------------------------------------------- */
+.screen {
+  padding-bottom: var(--s-8);
+}
+
+.screen-head {
+  margin-bottom: var(--s-6);
+}
+
+.screen-head .h1 + .caption {
+  display: block;
+  margin-top: var(--s-1);
+}
+
+/* Two fields side by side (e.g. expiry month / year, CVV / PIN). */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-3);
+}
+
+/* Full-width submit button with breathing room above. */
+.form-actions {
+  margin-top: var(--s-6);
+}
+
+/* Stacked messages/alerts. */
+.messages {
+  margin-top: var(--s-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+/* -----------------------------------------------------------------------------
+   Amount input — leading currency symbol + tabular numerals (money-as-hero)
+   -------------------------------------------------------------------------- */
+.amount-input {
+  position: relative;
+}
+
+.amount-input .input {
+  padding-left: 30px;
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+.amount-cur {
+  position: absolute;
+  left: var(--s-4);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+/* -----------------------------------------------------------------------------
+   Segmented control (tabbed choices, e.g. card vs net banking)
+   -------------------------------------------------------------------------- */
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--s-1);
+  padding: var(--s-1);
+  background: var(--surface-2);
+  border-radius: var(--r-pill);
+  margin-bottom: var(--s-6);
+}
+
+.segmented button {
+  min-height: 40px;
+  padding: 0 var(--s-3);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color .18s ease, color .18s ease;
+}
+
+.segmented button[aria-selected='true'] {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+
+/* -----------------------------------------------------------------------------
+   Standalone-route header (screens that are NOT inside the wallet shell)
+   -------------------------------------------------------------------------- */
+.page-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--s-3) 0;
+}
+
+/* -----------------------------------------------------------------------------
    Reduced motion
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {

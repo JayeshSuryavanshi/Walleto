@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { UserTransaction } from '../../shared/model/user-transaction';
 import { TransactionHistoryService } from '../transaction-history/transaction-history.service';
@@ -13,7 +14,7 @@ interface SpendingAccumulator {
 @Component({
   selector: 'app-expense-tracking',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './expense-tracking.component.html',
   styleUrls: ['./expense-tracking.component.css'],
 })

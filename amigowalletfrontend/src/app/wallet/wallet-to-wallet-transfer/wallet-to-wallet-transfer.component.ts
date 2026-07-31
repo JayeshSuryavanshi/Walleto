@@ -6,7 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../shared/auth.service';
 import { AmountValidator } from '../../shared/amount.validator';
 import { LoggerService } from '../../shared/logger.service';
-import { extractApiError, friendlyMoneyResult } from '../../shared/money-format';
+import { extractApiError, formatUsd, friendlyMoneyResult } from '../../shared/money-format';
 import { WalletToWalletTransferService } from './wallet-to-wallet-transfer.service';
 
 @Component({
@@ -50,7 +50,7 @@ export class WalletToWalletTransferComponent implements OnInit {
     }
 
     if (this.auth.balance() < amount) {
-      const num = (Math.round(this.auth.balance() * 100) / 100).toFixed(2);
+      const num = formatUsd(this.auth.balance());
       this.translate
         .get('ERROR_MESSAGES.TRANSFER_BANK_LOW_BALANCE', { value: num })
         .subscribe((value) => (this.errorMessage = value));

@@ -1,5 +1,17 @@
-<div class="text-danger error">
-    You are not authorized please login again
-    <br />
-    <a [routerLink]="['/login']">Back to Login</a>
+<div class="shell error-shell">
+  <header class="page-top">
+    <app-wordmark></app-wordmark>
+    <app-theme-toggle></app-theme-toggle>
+  </header>
+
+  <main class="error-main">
+    <span class="error-glyph" aria-hidden="true">
+      <app-icon name="settings" [size]="28"></app-icon>
+    </span>
+    <h1 class="h1 error-title">{{ 'ERROR_PAGE.TITLE' | translate }}</h1>
+    <p class="muted error-text">{{ 'ERROR_PAGE.MESSAGE' | translate }}</p>
+    <a class="btn btn-primary error-action" [routerLink]="['/login']">
+      {{ 'ERROR_PAGE.BACK_TO_LOGIN' | translate }}
+    </a>
+  </main>
 </div>

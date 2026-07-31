@@ -1,15 +1,17 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 
 import { UserTransaction } from '../../shared/model/user-transaction';
+import { IconComponent } from '../../shared/ui/icon.component';
 import { TransactionHistoryService } from './transaction-history.service';
 
 @Component({
   selector: 'app-transaction-history',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule, IconComponent],
   templateUrl: './transaction-history.component.html',
   styleUrls: ['./transaction-history.component.css'],
   animations: [
@@ -44,6 +46,10 @@ export class TransactionHistoryComponent implements OnInit {
 
   onOptionChange(): void {
     this.page = 1;
+  }
+
+  isCredit(txn: UserTransaction): boolean {
+    return txn.paymentType?.paymentType === 'C';
   }
 
   private get processed(): UserTransaction[] {

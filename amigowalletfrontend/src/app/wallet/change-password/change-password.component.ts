@@ -1,18 +1,29 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '../../shared/auth.service';
 import { LoggerService } from '../../shared/logger.service';
 import { PasswordValidator } from '../../shared/password.validator';
+import { IconComponent } from '../../shared/ui/icon.component';
+import { WordmarkComponent } from '../../shared/ui/wordmark.component';
+import { ThemeToggleComponent } from '../../shared/ui/theme-toggle.component';
 import { ChangePasswordService } from './change-password.service';
 
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    TranslateModule,
+    IconComponent,
+    WordmarkComponent,
+    ThemeToggleComponent,
+  ],
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.css'],
 })
