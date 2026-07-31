@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Legacy SHA-256 verification. The known hash is the seed value for user
- * {@code james@example.com} (plaintext {@code James#123}) from V3__demo_seed.sql —
+ * {@code james@walleto.app} (plaintext {@code James#123}) from V3__demo_seed.sql —
  * a bare, unsalted, single-round SHA-256 hex digest.
  */
 class Sha256PasswordEncoderTest {

@@ -57,7 +57,7 @@ class UserLoginServiceImplTest {
 	private User storedUser(String storedHash) {
 		User u = new User();
 		u.setUserId(12121);
-		u.setEmailId("james@example.com");
+		u.setEmailId("james@walleto.app");
 		u.setName("James Butt");
 		u.setPassword(storedHash);
 		u.setUserStatus(UserStatus.ACTIVE);
@@ -66,14 +66,14 @@ class UserLoginServiceImplTest {
 
 	private User loginAttempt() {
 		User u = new User();
-		u.setEmailId("james@example.com");
+		u.setEmailId("james@walleto.app");
 		u.setPassword("James#123");
 		return u;
 	}
 
 	@Test
 	void authenticate_withLegacyHash_reEncodesToBcrypt() throws Exception {
-		when(userLoginDAO.getUserByEmailId("james@example.com")).thenReturn(storedUser(LEGACY_SHA256));
+		when(userLoginDAO.getUserByEmailId("james@walleto.app")).thenReturn(storedUser(LEGACY_SHA256));
 
 		User result = service.authenticate(loginAttempt());
 
@@ -90,7 +90,7 @@ class UserLoginServiceImplTest {
 	@Test
 	void authenticate_withBcryptHash_doesNotReEncode() throws Exception {
 		String bcrypt = passwordEncoder.encode("James#123"); // "{bcrypt}$2a$12$..."
-		when(userLoginDAO.getUserByEmailId("james@example.com")).thenReturn(storedUser(bcrypt));
+		when(userLoginDAO.getUserByEmailId("james@walleto.app")).thenReturn(storedUser(bcrypt));
 
 		User result = service.authenticate(loginAttempt());
 
@@ -100,10 +100,10 @@ class UserLoginServiceImplTest {
 
 	@Test
 	void authenticate_withWrongPassword_isRejected() throws Exception {
-		when(userLoginDAO.getUserByEmailId("james@example.com")).thenReturn(storedUser(LEGACY_SHA256));
+		when(userLoginDAO.getUserByEmailId("james@walleto.app")).thenReturn(storedUser(LEGACY_SHA256));
 
 		User attempt = new User();
-		attempt.setEmailId("james@example.com");
+		attempt.setEmailId("james@walleto.app");
 		attempt.setPassword("Wrong#999");
 
 		assertThatThrownBy(() -> service.authenticate(attempt)).isInstanceOf(Exception.class);
