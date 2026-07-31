@@ -1,0 +1,72 @@
+# Walleto — full stack. `cp .env.example .env` then `docker compose up --build`.
+# NOTE: the `web` (nginx + Angular) service is added in the frontend phase; API health
+# checks are finalized alongside it. mysql is health-gated so the APIs wait for it.
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: walleto-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./ops/db/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "3306:3306"   # host access for debugging; safe to remove
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks: [walleto]
+
+  wallet-api:
+    build: ./amigowalletbackend
+    image: walleto/wallet-api:latest
+    container_name: walleto-wallet-api
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/amigowallet_db
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      APP_JWT_SECRET: ${APP_JWT_SECRET}
+      APP_JWT_ACCESS_TTL: ${APP_JWT_ACCESS_TTL}
+      APP_JWT_RESET_TTL: ${APP_JWT_RESET_TTL}
+      APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS}
+      BANK_API_BASE_URL: ${BANK_API_BASE_URL}
+      BANK_SERVICE_API_KEY: ${BANK_SERVICE_API_KEY}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "3322:3322"
+    networks: [walleto]
+
+  bank-api:
+    build: ./edubank
+    image: walleto/bank-api:latest
+    container_name: walleto-bank-api
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/edubank_db
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      BANK_SERVICE_API_KEY: ${BANK_SERVICE_API_KEY}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "3331:3331"
+    networks: [walleto]
+
+  # web:  (Angular build served by nginx, reverse-proxying /AmigoWallet and /EDUBank)
+  #   added in the frontend phase.
+
+volumes:
+  mysql-data:
+
+networks:
+  walleto:
+    driver: bridge
