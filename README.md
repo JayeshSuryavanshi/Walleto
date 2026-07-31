@@ -98,7 +98,7 @@ graph TD
 - **Bank integration** — load money from a linked bank via debit card or net banking, and withdraw to a bank account. Every bank leg is orchestrated server-side.
 - **History** — full, filterable transaction history.
 
-![Wallet-to-wallet transfer with instant balance update, cashback, and reward points](docs/screenshots/transfer.jpg)
+![Walleto dashboard in dark theme](docs/screenshots/dashboard-dark.jpg)
 
 ---
 
