@@ -1,455 +1,578 @@
-/* You can add global styles to this file, and also import other style files */
-/* You can add global styles to this file, and also import other style files */
+/* =============================================================================
+   Walleto — design system foundation
+   "Quiet Confident": a minimal, trustworthy modern-bank look where the user's
+   money is the hero. Light + dark. Space Grotesk (display + money numerals),
+   Inter (body/UI). All fonts self-hosted via @fontsource (no external requests).
+   ============================================================================= */
+
+/* Self-hosted fonts (woff2, font-display: swap set by @fontsource). ---------- */
+@import '@fontsource/space-grotesk/500.css';
+@import '@fontsource/space-grotesk/700.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+
+/* -----------------------------------------------------------------------------
+   Design tokens
+   Default = light. Dark via BOTH prefers-color-scheme AND [data-theme="dark"].
+   data-theme always wins (the toggle stamps it); data-theme="light" forces light
+   even when the OS is dark.
+   -------------------------------------------------------------------------- */
+:root {
+  --bg: #F6F7F5;
+  --surface: #FFFFFF;
+  --surface-2: #F0F2EF;
+  --ink: #16191C;
+  --muted: #5B6670;
+  --line: #E4E7E3;
+  --accent: #0C6B4F;
+  --accent-ink: #FFFFFF;
+  --accent-weak: #E6F1EC;
+  --credit: #0C6B4F;
+  --debit: #A6432B;
+  --focus: #0C6B4F;
+
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* spacing scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+  --s-16: 64px;
+
+  --r: 12px;
+  --r-lg: 18px;
+  --r-pill: 999px;
+
+  --shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 1px 3px rgba(16, 24, 40, .08);
+
+  --shell-max: 480px;
+}
+
+/* Dark tokens applied when the OS prefers dark AND the user has not forced light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0D1013;
+    --surface: #151A1E;
+    --surface-2: #1C2227;
+    --ink: #E8ECEA;
+    --muted: #93A0A6;
+    --line: #262D31;
+    --accent: #2FB98A;
+    --accent-ink: #06231A;
+    --accent-weak: rgba(47, 185, 138, .12);
+    --credit: #2FB98A;
+    --debit: #E0876A;
+    --focus: #2FB98A;
+    /* dark leans on the 1px --line border rather than shadow */
+    --shadow: none;
+  }
+}
+
+/* Explicit toggle to dark always wins. */
+:root[data-theme='dark'] {
+  --bg: #0D1013;
+  --surface: #151A1E;
+  --surface-2: #1C2227;
+  --ink: #E8ECEA;
+  --muted: #93A0A6;
+  --line: #262D31;
+  --accent: #2FB98A;
+  --accent-ink: #06231A;
+  --accent-weak: rgba(47, 185, 138, .12);
+  --credit: #2FB98A;
+  --debit: #E0876A;
+  --focus: #2FB98A;
+  --shadow: none;
+}
+
+/* -----------------------------------------------------------------------------
+   Reset / base
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light dark;
+}
+
 html,
 body {
-    width: 100%;
-    height: 100%;
-    font-size: 14px !important;
-    background-color: #eeeeee;
+  height: 100%;
 }
 
-.blue {
-    color:#0d7646;
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-@media only screen and (min-width : 768px) {
-.background {
-    z-index: -1 !important;
-    position: absolute;
-    top: 0%;
-    left: 0%;
-    width: 30% !important;
-    height: 15% !important; 
-}
-}
-@media only screen and (max-width : 768px) {
-.background {
-    z-index: -1 !important;
-    position: absolute;
-
-    top: 0%;
-    left: 0%;
-    width: 50% !important;
-    height: 50% !important; 
-}
+img,
+svg {
+  display: block;
+  max-width: 100%;
 }
 
-.foreground {
-    z-index: 0 !important;
-    position: absolute;
-
-    top: 10%;
-    left: 0%;
-    width: 100%;
-
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
 }
 
-a:link {
- color:#0d7646;
- text-decoration:underline;
- font-size:11px;
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
 
-}
-a:visited {
-    color: #0d7646;
-    text-decoration: underline;
-}
 a:hover {
-    color: #045e35;
-}
-body {  
-    padding: 50px 0;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    overflow-y: scroll;
+  text-decoration: underline;
 }
 
-.PrimaryText {
-    font-family: 'Franklin Gothic Book';
-    font-size: 18px;
-    font-weight: 500;
-    color: #808080
-}
-.my-btn {
-    display: block;
-    margin: 0px auto;
-    background-color: #0d7646;
-    color: white;
-}
-.Panel {
-    z-index: 1;
-    position: relative;
-    background: #FFF;
-    border-radius: 6px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    margin: 0 auto;
-    overflow: hidden;
-    margin-bottom: 30px;
-    padding-top: 10px;
-    padding-bottom:5px;
+/* Visible keyboard focus everywhere. */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--s-1);
 }
 
-.body {
-    
-    padding-top: 20px;
-    z-index: 1;
-    position: relative;
-    background: #FFF;
-    width: 800px;
-    height: 300px;
-    border-radius: 6px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    margin: 0 auto;
-    overflow: hidden;
+/* Boot placeholder shown before Angular hydrates. */
+.app-boot {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: .875rem;
 }
 
-hr {
-   border-width:2px;
-    border-color: #f15925;
-}
-
-
-
-.logos {
-    max-height: 40px;
-    max-width: 40px;
-   
-}
-.pad 
-{
-    font-size-adjust: unset;
-    height:10%;
-    width:10%;
-    vertical-align:middle;
-}
-
-
-.logo {
-    margin: 0px auto;
-    display: block;
-}
-
-.SecondaryText {
-    font-family: 'Franklin Gothic Book';
-    font-size: 10px;
-    font-weight: 500;
-    color: #808080
-}
-
-.TertiaryText {
-    font-family: 'Franklin Gothic Book';
-    font-size: 8px;
-    font-weight: 500;
-    color: #808080
-}
-
-
-textarea:focus, input:focus {
-    outline: none;
-}
-
-input, textarea {
-    border: 0px !important;
-    border-bottom: 1px solid #808080 !important; 
-}
-
-input[type=text], input[type=email], textarea {
-    border: 0px;
-    border-bottom: 3px solid #999;  
-}
-
-.Sliding {
-    color: orangered;
-    border-bottom: 3px solid orangered;
-    transition:  0.5s ease-in-out;
-}
-
-.feature-button:hover {
-    color: orangered;
-}
-
-label
-{
-  color:grey;
-  font-family:'Franklin Gothic Book';
-}
-.blur {
-    -webkit-filter: grayscale(10%);
-    filter: grayscale(60%);
-}
-::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-    color: grey;
-    font-family:'Franklin Gothic Book';
-    font-size:15px;
-}
-
-.aw-input-group {
-    position: relative !important;
-    width: 100% !important;
-    margin-bottom: 10px !important;
-    margin-top: 10px !important;
-}
-
-.aw-input-group .error-icon {
-    position: absolute !important;
-    top: 15%;
-    right: 5%;
-    z-index: 10;
-}
-
-.aw-input-group .error-message-bottom {
-    visibility: hidden;
-    background-color: #FFF8DC;
-    text-align: justify;
-    border-radius: 6px;
-    padding: 5px 5px;
-    font-size: 10px;
-
-    /* Position the tooltip */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    position: absolute;
-    z-index: 10;
-
-    width: 100%;
-    top: 110%;
-    left: 50%; 
-    margin-left: -50%;
-}
-
-.aw-input-group input:focus ~ .error-message-bottom {
-     visibility: visible;
-}
-
-.aw-input-group input:focus ~ .error-message-bottom::after {
-    content: " ";
-    position: absolute;
-    bottom: 100%;  /* At the top of the tooltip */
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #FAF0E6 transparent;
-}
-
-.aw-input-group .error-message-top {
-    visibility: hidden;
-    background-color: #FFF8DC;
-    text-align: justify;
-    border-radius: 6px;
-    padding: 5px 5px;
-    font-size: 10px;
-
-    /* Position the tooltip */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    position: absolute;
-    z-index: 10;
-
-    width: 100%;
-    bottom: 110%;
-    left: 50%; 
-    margin-left: -50%;
-}
-
-.aw-input-group input:focus ~ .error-message-top {
-     visibility: visible;
-}
-
-.aw-input-group input:focus ~ .error-message-top::after {
-    content: " ";
-    position: absolute;
-    bottom: 100%;  /* At the top of the tooltip */
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #FAF0E6 transparent;
-}
-
-
-.aw-input-group .error-message-right {
-    visibility: hidden;
-    background-color: #FFF8DC;
-    text-align: justify;
-    padding: 5px 5px;
-    border-radius: 6px;
-    font-size: 10px;
- 
-    /* Position the tooltip text - see examples below! */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    position: absolute;
-    z-index: 10;
-
-    width: max-content;
-    top: -5px;
-    left: 100%;
-}
-
-
-.aw-input-group input:focus ~ .error-message-right {
-     visibility: visible;
-}
-
-.aw-input-group input:focus ~ .error-message-right::after {
-    content: " ";
-    position: absolute;
-    top: 50%;
-    right: 100%; /* To the left of the tooltip */
-    margin-top: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent #FAF0E6 transparent transparent;
-}
-
-.aw-input-group .error-message-left {
-    visibility: hidden;
-    background-color: #FFF8DC;
-    text-align: justify;
-    padding: 5px 5px;
-    border-radius: 6px;
-    font-size: 10px;
- 
-    /* Position the tooltip text - see examples below! */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    position: absolute;
-    z-index: 10;
-
-    width: max-content;
-    top: -5px;
-    right: 105%;
-}
-
-.aw-input-group input:focus ~ .error-message-left {
-     visibility: visible;
-}
-
-.aw-input-group input:focus ~ .error-message-left::after {
-   content: " ";
-    position: absolute;
-    top: 50%;
-    left: 100%; /* To the right of the tooltip */
-    margin-top: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent transparent #FAF0E6;
-}
-
-.aw-input-group .placeholder {
-    position: absolute;
-    top: 25%;
-    left: 5%;
-    color: darkgrey;
-    z-index: 5;
-    overflow: hidden;
-    white-space: nowrap;
-    user-select: none;
-    -webkit-transition: top .35s ease-in-out, color .35s ease-in-out, font-size .35s ease-in-out;
-    transition: top .35s ease-in-out, color .35s ease-in-out, font-size .35s ease-in-out;
-    font-weight: normal !important;
-    font-size: medium;
-}
-
-.aw-input-group input:focus ~ .placeholder {
-    position: absolute;
-    top: -50%;
-    color: #0d7646;
-    font-size: smaller;
-}
-
-.aw-input-group input:not([value=""]) ~ .placeholder {
-    position: absolute;
-    top: -50%;
-    color: #0d7646;
-    font-size: smaller;
-}
-
-.aw-input-group select ~ .placeholder {
-    position: absolute;
-    top: 25%;
-    left: 5%;
-    color: darkgrey;
-    z-index: 5;
-    overflow: hidden;
-    white-space: nowrap;
-    user-select: none;
-    -webkit-transition: top .35s ease-in-out, color .35s ease-in-out, font-size .35s ease-in-out;
-    transition: top .35s ease-in-out, color .35s ease-in-out, font-size .35s ease-in-out;
-    font-weight: normal !important;
-    font-size: medium;
-
-}
-
-.aw-input-group select:focus ~ .placeholder {
-    position: absolute;
-    top: -50%;
-    color: #0d7646;
-    font-size: smaller;
-}
-
-.aw-input-group select:not([value=""]) ~ .placeholder {
-    position: absolute;
-    top: -50%;
-    color: #0d7646;
-    font-size: smaller;
-}
-
-.valid {
- color:green;
-}
-
-.invalid {
- color:red;
-}
-
-i.fa-spinner {
-    color : white;
-}
-
-.cursor-pointer {
-    cursor: pointer;
-}
-
-.center {
-    text-align: center;
-    margin: 0 auto;
-}
-
-.center-message {
-    display: block;
-    margin: 0px auto;
-    text-align: center;
-    width: 90%;
-}
-
-.absolute-position {
-    position: absolute;
-}
-
-.modal-backdrop {
-    /* bug fix - no overlay */    
-    display: none;    
-}
-
-.noBorderLink:focus {
-    outline: 0;
-}
-
-.accordian-collapse {
-    transition: height 10s;
-}
-
-/* --------------------------------------------------------------------------
-   Bootstrap 4 -> 5 compatibility shims.
-   The templates were authored against Bootstrap 4 utility class names that were
-   renamed/removed in Bootstrap 5. These small shims preserve the original
-   layout without editing every template.
+/* -----------------------------------------------------------------------------
+   Layout — mobile-first single centered column
    -------------------------------------------------------------------------- */
-.pull-right { float: right !important; }
-.pull-left { float: left !important; }
-.text-right { text-align: right !important; }
-.text-left { text-align: left !important; }
-.form-inline { display: flex; flex-flow: row wrap; align-items: center; }
-.form-inline .form-group { margin-right: 1rem; }
-.no-gutters { margin-right: 0; margin-left: 0; }
-.no-gutters > .col,
-.no-gutters > [class*="col-"] { padding-right: 0; padding-left: 0; }
-.thead-dark th { color: #fff; background-color: #212529; border-color: #32383e; }
+.app-viewport {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.shell {
+  width: 100%;
+  max-width: var(--shell-max);
+  margin: 0 auto;
+  padding: 0 var(--s-4) calc(var(--s-16) + env(safe-area-inset-bottom));
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Sticky slim top bar. */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-3) 0;
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid transparent;
+}
+
+.topbar--edge {
+  border-bottom-color: var(--line);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+}
+
+/* Sub-screen header with back chevron to /home. */
+.subhead {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) 0 var(--s-4);
+}
+
+/* -----------------------------------------------------------------------------
+   Typography helpers
+   -------------------------------------------------------------------------- */
+.eyebrow {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.h1 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+
+.h2 {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.caption {
+  font-size: .75rem;
+  color: var(--muted);
+}
+
+.small {
+  font-size: .875rem;
+}
+
+/* Money numerals — the signature treatment. */
+.tabular {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: -.01em;
+}
+
+/* -----------------------------------------------------------------------------
+   Surfaces
+   -------------------------------------------------------------------------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+}
+
+.card-pad {
+  padding: var(--s-6);
+}
+
+.divider {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+  margin: 0;
+}
+
+/* -----------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 44px;
+  padding: 0 var(--s-6);
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color .18s ease, border-color .18s ease, transform .06s ease, opacity .18s ease;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent) 88%, black);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.btn-block {
+  display: flex;
+  width: 100%;
+}
+
+/* Icon-only button (theme toggle, logout, back). Tap target >= 44px. */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color .18s ease;
+}
+
+.icon-btn:hover {
+  background: var(--surface-2);
+}
+
+/* Text link that is really a <button>. */
+.link {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* -----------------------------------------------------------------------------
+   Forms
+   -------------------------------------------------------------------------- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  margin-bottom: var(--s-4);
+}
+
+.field-label {
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.input,
+.select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 var(--s-4);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.select {
+  padding-right: var(--s-8);
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 21px, calc(100% - 12px) 21px;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.input::placeholder {
+  color: var(--muted);
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--focus);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--focus) 30%, transparent);
+}
+
+/* Angular validity classes drive the error affordance. */
+.input.ng-touched.ng-invalid,
+.select.ng-touched.ng-invalid {
+  border-color: var(--debit);
+}
+
+.field-error {
+  font-size: .8125rem;
+  color: var(--debit);
+}
+
+.field-hint {
+  font-size: .8125rem;
+  color: var(--muted);
+}
+
+/* Password requirement checklist. */
+.rules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-3);
+  margin-top: var(--s-1);
+}
+
+.rule {
+  font-size: .75rem;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rule::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: .5;
+}
+
+.rule.ok {
+  color: var(--credit);
+}
+
+.rule.ok::before {
+  opacity: 1;
+}
+
+/* Input with a trailing action (e.g. show/hide password). */
+.input-wrap {
+  position: relative;
+}
+
+.input-wrap .input {
+  padding-right: 48px;
+}
+
+.input-affix {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: var(--r-pill);
+}
+
+.input-affix:hover {
+  color: var(--ink);
+}
+
+/* -----------------------------------------------------------------------------
+   Alerts / inline messages
+   -------------------------------------------------------------------------- */
+.alert {
+  border-radius: var(--r);
+  padding: var(--s-3) var(--s-4);
+  font-size: .875rem;
+  border: 1px solid var(--line);
+}
+
+.alert-error {
+  color: var(--debit);
+  background: color-mix(in srgb, var(--debit) 8%, var(--surface));
+  border-color: color-mix(in srgb, var(--debit) 30%, var(--line));
+}
+
+.alert-success {
+  color: var(--accent);
+  background: var(--accent-weak);
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+}
+
+.alert-info {
+  color: var(--muted);
+  background: var(--surface-2);
+}
+
+/* Spinner used inside buttons. */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: walleto-spin .7s linear infinite;
+}
+
+@keyframes walleto-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Pills
+   -------------------------------------------------------------------------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px var(--s-3);
+  border-radius: var(--r-pill);
+  background: var(--accent-weak);
+  color: var(--accent);
+  font-size: .8125rem;
+  font-weight: 600;
+}
+
+a.pill:hover {
+  text-decoration: none;
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+}
+
+/* -----------------------------------------------------------------------------
+   Reduced motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
