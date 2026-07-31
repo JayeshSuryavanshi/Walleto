@@ -61,8 +61,18 @@ services:
       - "3331:3331"
     networks: [walleto]
 
-  # web:  (Angular build served by nginx, reverse-proxying /AmigoWallet and /EDUBank)
-  #   added in the frontend phase.
+  web:
+    build: ./amigowalletfrontend
+    image: walleto/web:latest
+    container_name: walleto-web
+    depends_on:
+      wallet-api:
+        condition: service_healthy
+      bank-api:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    networks: [walleto]
 
 volumes:
   mysql-data:
