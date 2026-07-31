@@ -8,12 +8,14 @@ import { LoggerService } from '../../shared/logger.service';
 import { SecurityQuestion } from '../../shared/model/security-question';
 import { RegisterRequest } from '../../shared/model/api';
 import { RegistrationStateService } from '../register/registration-state.service';
+import { WordmarkComponent } from '../../shared/ui/wordmark.component';
+import { ThemeToggleComponent } from '../../shared/ui/theme-toggle.component';
 import { SecurityQuestionService } from './security-question.service';
 
 @Component({
   selector: 'app-security-question',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule, WordmarkComponent, ThemeToggleComponent],
   templateUrl: './security-question.component.html',
   styleUrls: ['./security-question.component.css'],
 })

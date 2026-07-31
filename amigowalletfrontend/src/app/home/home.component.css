@@ -1,0 +1,38 @@
+.auth {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-top {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--s-3) 0;
+}
+
+.auth-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--s-8);
+}
+
+.auth-wordmark {
+  align-self: flex-start;
+}
+
+.auth-tagline {
+  margin-top: var(--s-3);
+  margin-bottom: var(--s-6);
+  font-size: 1.0625rem;
+  max-width: 30ch;
+}
+
+.auth-switch {
+  margin-top: var(--s-6);
+  text-align: center;
+  font-size: .9375rem;
+}
+
+.auth-switch .link {
+  margin-left: 6px;
+}

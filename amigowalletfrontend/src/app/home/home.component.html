@@ -1,28 +1,34 @@
-<div class="row">
-    <div class="col-md-4 offset-md-2 col-sm-4 offset-sm-1 col-8 offset-xs-3">
-        <img src="assets/resources/images/AmigoLogo.png" class="img-responsive" /> 
-    </div>
-    <div class="col-md-5 col-sm-6 col-12">
-         <app-login></app-login>
-    </div>
-</div>
-<br><br>
-<div class="row ">
-    <div class="col-md-4 offset-md-1 col-sm-6 offset-sm-0 col-12">
-        <span class="PrimaryText"><img src="assets/resources/images/WalletBlack.PNG" class=" pad " />{{ 'WELCOME.FEATURE_1' | translate }}</span>
-        <br />
+<div class="shell auth">
+  <header class="auth-top">
+    <app-theme-toggle></app-theme-toggle>
+  </header>
 
-        <span class="PrimaryText"><img src="assets/resources/images/RewardGreen.PNG" class="pad" />{{ "WELCOME.FEATURE_2" | translate }}</span>
-        <br />
+  <main class="auth-main">
+    <app-wordmark size="lg" class="auth-wordmark"></app-wordmark>
+    <p class="auth-tagline muted">
+      {{ (mode() === 'signin' ? 'AUTH.TAGLINE_SIGNIN' : 'AUTH.TAGLINE_CREATE') | translate }}
+    </p>
 
-        <span class="PrimaryText"><img src="assets/resources/images/OrangeTriangle.PNG" class=" pad " />{{ "WELCOME.FEATURE_3" | translate }}</span>
-        <br />
-        <br />
-        <br />
+    <div class="card card-pad auth-card">
+      @if (mode() === 'signin') {
+        <app-login></app-login>
+      } @else {
+        <app-register></app-register>
+      }
     </div>
-    <div class="col-md-3 offset-md-2 col-sm-5 offset-sm-0 col-12">
-         <app-register></app-register>
-    </div>
-    <br />
-    <br />
+
+    <p class="auth-switch">
+      @if (mode() === 'signin') {
+        <span class="muted">{{ 'AUTH.NO_ACCOUNT' | translate }}</span>
+        <button type="button" class="link" (click)="mode.set('create')">
+          {{ 'AUTH.CREATE_ACCOUNT' | translate }}
+        </button>
+      } @else {
+        <span class="muted">{{ 'AUTH.HAVE_ACCOUNT' | translate }}</span>
+        <button type="button" class="link" (click)="mode.set('signin')">
+          {{ 'AUTH.SIGN_IN' | translate }}
+        </button>
+      }
+    </p>
+  </main>
 </div>

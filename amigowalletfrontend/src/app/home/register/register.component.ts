@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LoggerService } from '../../shared/logger.service';
 import { PasswordValidator } from '../../shared/password.validator';
 import { RegisterRequest } from '../../shared/model/api';
+import { IconComponent } from '../../shared/ui/icon.component';
 
 import { RegisterService } from './register.service';
 import { CaptchaService } from './captcha.service';
@@ -15,7 +16,7 @@ import { RegistrationStateService } from './registration-state.service';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, IconComponent],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
   providers: [CaptchaService],
@@ -32,6 +33,8 @@ export class RegisterComponent implements OnInit {
   successMessage: string | null = null;
   message: string | null = null;
   submitted = false;
+  readonly showPassword = signal(false);
+  readonly showConfirm = signal(false);
 
   form1 = this.fb.group({
     name: ['', [Validators.required, Validators.pattern('[A-Za-z]+([ ][A-Za-z]+)*')]],

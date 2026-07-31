@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -6,16 +6,29 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { LoggerService } from '../../shared/logger.service';
 import { PasswordValidator } from '../../shared/password.validator';
+import { IconComponent } from '../../shared/ui/icon.component';
+import { WordmarkComponent } from '../../shared/ui/wordmark.component';
+import { ThemeToggleComponent } from '../../shared/ui/theme-toggle.component';
 import { ForgotPasswordService } from './forgot-password.service';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    TranslateModule,
+    IconComponent,
+    WordmarkComponent,
+    ThemeToggleComponent,
+  ],
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.css'],
 })
 export class ForgotPasswordComponent implements OnInit {
+  readonly showPassword = signal(false);
+  readonly showConfirm = signal(false);
   private readonly fb = inject(FormBuilder);
   private readonly forgotPasswordService = inject(ForgotPasswordService);
   private readonly logger = inject(LoggerService);
