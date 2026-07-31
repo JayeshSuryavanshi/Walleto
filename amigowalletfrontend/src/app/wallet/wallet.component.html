@@ -1,43 +1,86 @@
-<div class="row">
-  <div class="col-md-4 offset-md-2 col-12">
-    <img src="assets/resources/images/AmigoLogo.png" class="img-responsive" />
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-6 offset-md-3 col-sm-12">
-    <!-- selecter of user defined component -->
-    <app-profile></app-profile>
-  </div>
-</div>
+<div class="shell">
+  <header class="topbar topbar--edge">
+    <a [routerLink]="['/home']" aria-label="Walleto home">
+      <app-wordmark></app-wordmark>
+    </a>
+    <div class="topbar-actions">
+      <app-theme-toggle></app-theme-toggle>
+      <button type="button" class="icon-btn" (click)="logOut()" [attr.aria-label]="'DASHBOARD.LOG_OUT' | translate">
+        <app-icon name="log-out"></app-icon>
+      </button>
+    </div>
+  </header>
 
-<!-- <div class="row">
-  <div class="col-md-6 offset-md-3 col-sm-12" *ngIf="selectedOption">
-    <router-outlet></router-outlet>
-  </div>
-</div> -->
+  <!-- Dashboard (hidden while a child feature screen is active) -->
+  <main class="dashboard" [hidden]="childActive()">
+    <section class="balance">
+      <p class="greeting muted">{{ 'DASHBOARD.GREETING' | translate }}{{ auth.user()?.name ? ', ' : '' }}{{ auth.user()?.name }}</p>
+      <p class="eyebrow">{{ 'DASHBOARD.BALANCE' | translate }}</p>
+      <p class="balance-figure tabular">
+        <span class="balance-cur">$</span><span class="balance-amount">{{ formattedBalance() }}</span>
+      </p>
+      <a class="pill points-pill" [routerLink]="['/home', 'redeem']">
+        <app-icon name="gift" [size]="14"></app-icon>
+        {{ 'DASHBOARD.POINTS' | translate: { count: auth.points() } }}
+      </a>
+    </section>
 
-<div *ngFor="let feature of featureButtons; let i = index">
-  <div class="row">
-    <div  class="col-md-6 offset-md-3 col-sm-12 noBorderLink feature-button" (click)="selectedOption=i" routerLink="{{ feature.routerLink }}">
-      <div class="card">
-        <div class="row no-gutters">
-          <div class="col-1 col-md-2">
-            <img [src]="feature.logoURL" class="card-img align-middle" alt="...">
-          </div>
-          <div class="col-11 col-md-10">
-            <div class="card-body">
-              <h3 class="card-header align-top" [class.Sliding]="selectedOption==i">
-                {{ feature.featureName | translate }}
-              </h3>
-            </div>
-          </div>
-        </div>
+    <nav class="quick-actions" aria-label="Quick actions">
+      @for (action of quickActions; track action.link) {
+        <a class="qa" [routerLink]="['/home', action.link]">
+          <span class="qa-icon"><app-icon [name]="action.icon" [size]="20"></app-icon></span>
+          <span class="qa-label">{{ action.labelKey | translate }}</span>
+        </a>
+      }
+    </nav>
+
+    <section class="recent">
+      <div class="recent-head">
+        <h2 class="h2">{{ 'DASHBOARD.RECENT' | translate }}</h2>
+        <a class="link small" [routerLink]="['/home', 'viewtxn']">{{ 'DASHBOARD.VIEW_ALL' | translate }}</a>
       </div>
+
+      @if (recent().length) {
+        <ul class="txn-list">
+          @for (t of recent(); track t.userTransactionId) {
+            <li class="txn">
+              <span class="txn-glyph" [class.credit]="isCredit(t)" [class.debit]="!isCredit(t)">
+                <app-icon [name]="isCredit(t) ? 'arrow-down-left' : 'arrow-up-right'" [size]="18"></app-icon>
+              </span>
+              <span class="txn-main">
+                <span class="txn-label">{{
+                  t.info || t.remarks || ((isCredit(t) ? 'DASHBOARD.MONEY_IN' : 'DASHBOARD.MONEY_OUT') | translate)
+                }}</span>
+                <span class="txn-time caption">{{ t.transactionDateTime | date: 'MMM d, h:mm a' }}</span>
+              </span>
+              <span class="txn-amt tabular" [class.credit]="isCredit(t)" [class.debit]="!isCredit(t)">
+                {{ isCredit(t) ? '+' : '−' }}{{ t.amount | currency: 'USD' }}
+              </span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="muted recent-empty">{{ 'DASHBOARD.NO_TRANSACTIONS' | translate }}</p>
+      }
+
+      <div class="more-links">
+        <a class="link small" [routerLink]="['/home', 'redeem']">{{ 'DASHBOARD.REDEEM_POINTS' | translate }}</a>
+        <a class="link small" [routerLink]="['/home', 'expenseTracking']">{{ 'DASHBOARD.TRACK_EXPENSES' | translate }}</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Sub-screen header (shown only when a child feature is active) -->
+  @if (childActive()) {
+    <div class="subhead">
+      <a class="icon-btn" [routerLink]="['/home']" [attr.aria-label]="'DASHBOARD.BACK' | translate">
+        <app-icon name="chevron-left"></app-icon>
+      </a>
     </div>
+  }
+
+  <!-- Child feature screens render here (kept in the DOM so activate/deactivate fire). -->
+  <div class="child-outlet">
+    <router-outlet (activate)="onActivate()" (deactivate)="onDeactivate()"></router-outlet>
   </div>
-  <div [@expandCollapse]="true" class="row" *ngIf="i == selectedOption">
-    <div class="col-md-6 offset-md-3 col-sm-12">
-      <router-outlet></router-outlet>
-    </div>
-  </div>
-</div> 
+</div>
