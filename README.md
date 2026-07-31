@@ -2,7 +2,7 @@
 
 **A full-stack digital wallet** — send money, load funds from a linked bank, pay bills, earn rewards, and view your transaction history. Angular single-page app backed by two Spring Boot services and MySQL, shipped as a health-gated Docker Compose stack.
 
-[![CI](https://github.com/JayeshSuryavanshi/Walleto/actions/workflows/ci.yml/badge.svg?branch=modernize-2026)](https://github.com/JayeshSuryavanshi/Walleto/actions/workflows/ci.yml)
+[![CI](https://github.com/JayeshSuryavanshi/Walleto/actions/workflows/ci.yml/badge.svg)](https://github.com/JayeshSuryavanshi/Walleto/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Java 21](https://img.shields.io/badge/Java-21-orange)
 ![Spring Boot 3.3](https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F)
