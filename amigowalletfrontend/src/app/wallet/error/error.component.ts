@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -11,6 +11,7 @@ import { ThemeToggleComponent } from '../../shared/ui/theme-toggle.component';
   standalone: true,
   imports: [RouterLink, TranslateModule, IconComponent, WordmarkComponent, ThemeToggleComponent],
   templateUrl: './error.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./error.component.css'],
 })
 export class ErrorComponent {}

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 import { TranslateModule } from '@ngx-translate/core';
@@ -14,6 +14,7 @@ import { PointsService } from './points.service';
   imports: [TranslateModule],
   templateUrl: './points.component.html',
   styleUrls: ['./points.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   animations: [
     trigger('loadAnimation', [
       transition('void => *', [

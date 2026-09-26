@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -17,6 +17,7 @@ import { SecurityQuestionService } from './security-question.service';
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink, TranslateModule, WordmarkComponent, ThemeToggleComponent],
   templateUrl: './security-question.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./security-question.component.css'],
 })
 export class SecurityQuestionComponent implements OnInit {

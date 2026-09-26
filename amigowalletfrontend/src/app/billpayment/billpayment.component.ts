@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { trigger, transition, keyframes, style, animate } from '@angular/animations';
@@ -15,6 +15,7 @@ import { BillpaymentserviceService } from './billpaymentservice.service';
   imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './billpayment.component.html',
   styleUrls: ['./billpayment.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   animations: [
     trigger('loadAnimation', [
       transition('void => *', [

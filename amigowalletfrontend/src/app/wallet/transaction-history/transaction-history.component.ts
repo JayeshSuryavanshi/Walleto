@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -14,6 +14,7 @@ import { TransactionHistoryService } from './transaction-history.service';
   imports: [CommonModule, FormsModule, TranslateModule, IconComponent],
   templateUrl: './transaction-history.component.html',
   styleUrls: ['./transaction-history.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   animations: [
     trigger('loadAnimation', [
       transition('void => *', [

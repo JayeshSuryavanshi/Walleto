@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -13,6 +13,7 @@ import { TransferToBankService } from './transfer-to-bank.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './transfer-to-bank-component.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./transfer-to-bank-component.component.css'],
 })
 export class TransferToBankComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -24,6 +24,7 @@ import { ChangePasswordService } from './change-password.service';
     ThemeToggleComponent
 ],
   templateUrl: './change-password.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./change-password.component.css'],
 })
 export class ChangePasswordComponent {

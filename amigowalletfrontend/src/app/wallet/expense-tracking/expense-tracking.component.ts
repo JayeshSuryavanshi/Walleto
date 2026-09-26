@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -16,6 +16,7 @@ interface SpendingAccumulator {
   standalone: true,
   imports: [CommonModule, TranslateModule],
   templateUrl: './expense-tracking.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./expense-tracking.component.css'],
 })
 export class ExpenseTrackingComponent implements OnInit {

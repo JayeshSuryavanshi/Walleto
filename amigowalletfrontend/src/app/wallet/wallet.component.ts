@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, computed, effect, inject, signal, untracked } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, effect, inject, signal, untracked, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -37,6 +37,7 @@ interface QuickAction {
     ThemeToggleComponent,
   ],
   templateUrl: 'wallet.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['wallet.component.css'],
 })
 export class WalletComponent implements OnInit, OnDestroy {

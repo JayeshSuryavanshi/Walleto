@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -14,6 +14,7 @@ import { WalletToWalletTransferService } from './wallet-to-wallet-transfer.servi
   standalone: true,
   imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './wallet-to-wallet-transfer.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./wallet-to-wallet-transfer.component.css'],
 })
 export class WalletToWalletTransferComponent implements OnInit {

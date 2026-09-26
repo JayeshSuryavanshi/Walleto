@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { LoginComponent } from './login/login.component';
@@ -17,6 +17,7 @@ type AuthMode = 'signin' | 'create';
   standalone: true,
   imports: [TranslateModule, LoginComponent, RegisterComponent, WordmarkComponent, ThemeToggleComponent],
   templateUrl: './home.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent {

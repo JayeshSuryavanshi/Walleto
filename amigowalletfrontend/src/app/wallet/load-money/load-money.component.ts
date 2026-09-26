@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -25,6 +25,7 @@ import { LoadMoneyService } from './load-money.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './load-money.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./load-money.component.css'],
 })
 export class LoadMoneyComponent implements OnInit {
