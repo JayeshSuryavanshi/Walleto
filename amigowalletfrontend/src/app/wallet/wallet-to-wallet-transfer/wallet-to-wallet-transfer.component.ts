@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
-
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 

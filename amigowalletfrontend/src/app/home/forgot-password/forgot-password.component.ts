@@ -1,5 +1,4 @@
 import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -20,8 +19,8 @@ import { ForgotPasswordService } from './forgot-password.service';
     TranslatePipe,
     IconComponent,
     WordmarkComponent,
-    ThemeToggleComponent
-],
+    ThemeToggleComponent,
+  ],
   templateUrl: './forgot-password.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./forgot-password.component.css'],

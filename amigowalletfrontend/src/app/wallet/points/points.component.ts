@@ -1,5 +1,4 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 import { TranslatePipe } from '@ngx-translate/core';
 
