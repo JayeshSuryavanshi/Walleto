@@ -1,7 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 
 import { UserTransaction } from '../../shared/model/user-transaction';
@@ -11,9 +11,10 @@ import { TransactionHistoryService } from './transaction-history.service';
 @Component({
   selector: 'app-transaction-history',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, IconComponent],
+  imports: [CommonModule, FormsModule, TranslatePipe, IconComponent],
   templateUrl: './transaction-history.component.html',
   styleUrls: ['./transaction-history.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   animations: [
     trigger('loadAnimation', [
       transition('void => *', [

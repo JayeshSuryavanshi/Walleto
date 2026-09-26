@@ -1,7 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '../../shared/auth.service';
 import { AmountValidator } from '../../shared/amount.validator';
@@ -23,8 +23,9 @@ import { LoadMoneyService } from './load-money.service';
 @Component({
   selector: 'app-load-money',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './load-money.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./load-money.component.css'],
 })
 export class LoadMoneyComponent implements OnInit {

@@ -1,5 +1,5 @@
 # ---------- Stage 1: build the Angular app ----------
-FROM node:20 AS build
+FROM node:22 AS build
 WORKDIR /app
 
 # Install dependencies first (better layer caching). .npmrc carries the

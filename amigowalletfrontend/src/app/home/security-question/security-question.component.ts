@@ -1,8 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { LoggerService } from '../../shared/logger.service';
 import { SecurityQuestion } from '../../shared/model/security-question';
@@ -15,8 +14,9 @@ import { SecurityQuestionService } from './security-question.service';
 @Component({
   selector: 'app-security-question',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule, WordmarkComponent, ThemeToggleComponent],
+  imports: [ReactiveFormsModule, RouterLink, TranslatePipe, WordmarkComponent, ThemeToggleComponent],
   templateUrl: './security-question.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./security-question.component.css'],
 })
 export class SecurityQuestionComponent implements OnInit {

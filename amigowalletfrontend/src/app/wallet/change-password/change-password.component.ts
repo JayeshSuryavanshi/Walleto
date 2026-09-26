@@ -1,8 +1,7 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '../../shared/auth.service';
 import { LoggerService } from '../../shared/logger.service';
@@ -16,15 +15,15 @@ import { ChangePasswordService } from './change-password.service';
   selector: 'app-change-password',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     RouterLink,
-    TranslateModule,
+    TranslatePipe,
     IconComponent,
     WordmarkComponent,
     ThemeToggleComponent,
   ],
   templateUrl: './change-password.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./change-password.component.css'],
 })
 export class ChangePasswordComponent {

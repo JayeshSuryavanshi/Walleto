@@ -6,11 +6,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Java 21](https://img.shields.io/badge/Java-21-orange)
 ![Spring Boot 3.3](https://img.shields.io/badge/Spring%20Boot-3.3-6DB33F)
-![Angular 19](https://img.shields.io/badge/Angular-19-DD0031)
+![Angular 22](https://img.shields.io/badge/Angular-22-DD0031)
 
 > **Originally built in 2021** as a training-era full-stack project (Angular 7 · Spring Boot 2.1 · JSP).
 > **Modernized in 2026** to a production-grade, containerized application: Spring Boot 3.3 / Java 21,
-> Angular 19, real JWT authentication, atomic money movement, a consolidated bank service, and a
+> Angular 22, real JWT authentication, atomic money movement, a consolidated bank service, and a
 > one-command Docker Compose deployment. The 2021 history is preserved; the modernization is honest,
 > present-dated work — see the commit log.
 
@@ -59,7 +59,7 @@ inside a transaction — the browser never touches the bank directly.
 ```mermaid
 graph TD
     subgraph client[Browser]
-      SPA["Angular 19 SPA<br/>(JWT in memory / localStorage)"]
+      SPA["Angular 22 SPA<br/>(JWT in memory / localStorage)"]
     end
 
     subgraph edge["web · nginx :8080"]
@@ -84,7 +84,7 @@ graph TD
 
 | Component | Directory | Stack | Port · Context |
 |---|---|---|---|
-| **web** | `amigowalletfrontend/` | Angular 19 (standalone) · nginx | `8080` |
+| **web** | `amigowalletfrontend/` | Angular 22 (standalone) · nginx | `8080` |
 | **wallet-api** | `amigowalletbackend/` | Spring Boot 3.3.5 · Java 21 · Spring Security · JPA · Flyway | `3322` · `/AmigoWallet` |
 | **bank-api** | `edubank/` | Spring Boot 3.3.5 · Java 21 · Spring Security · JPA · Flyway | `3331` · `/EDUBank` |
 | **mysql** | — | MySQL 8.0 | `3306` |
@@ -117,7 +117,7 @@ This is a money app, so the modernization focused on getting the fundamentals ri
 
 ## Development
 
-Each service is independently buildable. Docker is the supported path (hermetic, matches CI); you can also run natively with JDK 21 / Node 20 against your own MySQL.
+Each service is independently buildable. Docker is the supported path (hermetic, matches CI); you can also run natively with JDK 21 / Node 22.22.3+ (or 24.15+) against your own MySQL.
 
 ```bash
 # backends (from amigowalletbackend/ or edubank/) — needs MySQL + env, or just use compose
@@ -142,7 +142,7 @@ GitHub Actions (`.github/workflows/ci.yml`) builds and tests both services, buil
 
 ```
 Walleto/
-├── amigowalletfrontend/   # Angular 19 SPA (standalone) + nginx Dockerfile
+├── amigowalletfrontend/   # Angular 22 SPA (standalone) + nginx Dockerfile
 ├── amigowalletbackend/    # wallet-api — Spring Boot 3.3 / Java 21
 ├── edubank/               # bank-api — Spring Boot 3.3 / Java 21 (REST only)
 ├── ops/db/init/           # MySQL bootstrap (creates both databases)
