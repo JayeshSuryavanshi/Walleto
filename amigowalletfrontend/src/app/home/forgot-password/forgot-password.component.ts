@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@ang
 
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { LoggerService } from '../../shared/logger.service';
 import { PasswordValidator } from '../../shared/password.validator';
@@ -17,7 +17,7 @@ import { ForgotPasswordService } from './forgot-password.service';
   imports: [
     ReactiveFormsModule,
     RouterLink,
-    TranslateModule,
+    TranslatePipe,
     IconComponent,
     WordmarkComponent,
     ThemeToggleComponent

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { AuthService } from '../../shared/auth.service';
 import { LoggerService } from '../../shared/logger.service';
@@ -11,7 +11,7 @@ import { TransferToBankService } from './transfer-to-bank.service';
 @Component({
   selector: 'app-transfer-to-bank',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './transfer-to-bank-component.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./transfer-to-bank-component.component.css'],

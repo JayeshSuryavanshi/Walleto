@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { UserTransaction } from '../../shared/model/user-transaction';
 import { TransactionHistoryService } from '../transaction-history/transaction-history.service';
@@ -14,7 +14,7 @@ interface SpendingAccumulator {
 @Component({
   selector: 'app-expense-tracking',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './expense-tracking.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./expense-tracking.component.css'],

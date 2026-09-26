@@ -19,8 +19,8 @@
     "@angular/router": "^22.2.0",
     "@fontsource/inter": "^5.1.0",
     "@fontsource/space-grotesk": "^5.1.0",
-    "@ngx-translate/core": "^16.0.4",
-    "@ngx-translate/http-loader": "^16.0.1",
+    "@ngx-translate/core": "^18.0.0",
+    "@ngx-translate/http-loader": "^18.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@ang
 
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { LoggerService } from '../../shared/logger.service';
 import { PasswordValidator } from '../../shared/password.validator';
@@ -16,7 +16,7 @@ import { RegistrationStateService } from './registration-state.service';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslateModule, IconComponent],
+  imports: [ReactiveFormsModule, TranslatePipe, IconComponent],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
   changeDetection: ChangeDetectionStrategy.Eager,

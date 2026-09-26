@@ -2,7 +2,7 @@ import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { trigger, transition, keyframes, style, animate } from '@angular/animations';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { AuthService } from '../shared/auth.service';
 import { LoggerService } from '../shared/logger.service';
@@ -12,7 +12,7 @@ import { BillpaymentserviceService } from './billpaymentservice.service';
 @Component({
   selector: 'app-billpayment',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './billpayment.component.html',
   styleUrls: ['./billpayment.component.css'],
   changeDetection: ChangeDetectionStrategy.Eager,

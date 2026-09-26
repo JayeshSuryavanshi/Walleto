@@ -1,5 +1,5 @@
 import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
@@ -15,7 +15,7 @@ type AuthMode = 'signin' | 'create';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [TranslateModule, LoginComponent, RegisterComponent, WordmarkComponent, ThemeToggleComponent],
+  imports: [TranslatePipe, LoginComponent, RegisterComponent, WordmarkComponent, ThemeToggleComponent],
   templateUrl: './home.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./home.component.css'],

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, computed, effect, inject, signal, untracked, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { AuthService } from '../shared/auth.service';
 import { UserTransaction } from '../shared/model/user-transaction';
@@ -31,7 +31,7 @@ interface QuickAction {
     CommonModule,
     RouterOutlet,
     RouterLink,
-    TranslateModule,
+    TranslatePipe,
     IconComponent,
     WordmarkComponent,
     ThemeToggleComponent,

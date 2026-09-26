@@ -1,7 +1,7 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { AuthService } from '../../shared/auth.service';
 import { LoggerService } from '../../shared/logger.service';
@@ -11,7 +11,7 @@ import { PointsService } from './points.service';
 @Component({
   selector: 'app-points',
   standalone: true,
-  imports: [TranslateModule],
+  imports: [TranslatePipe],
   templateUrl: './points.component.html',
   styleUrls: ['./points.component.css'],
   changeDetection: ChangeDetectionStrategy.Eager,
