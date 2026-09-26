@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -12,7 +12,7 @@ import { WalletToWalletTransferService } from './wallet-to-wallet-transfer.servi
 @Component({
   selector: 'app-wallet-to-wallet-transfer',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './wallet-to-wallet-transfer.component.html',
   styleUrls: ['./wallet-to-wallet-transfer.component.css'],
 })

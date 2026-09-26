@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -12,7 +12,7 @@ import { IconComponent } from '../../shared/ui/icon.component';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule, IconComponent],
+  imports: [ReactiveFormsModule, RouterLink, TranslateModule, IconComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })

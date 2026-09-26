@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -15,7 +15,7 @@ import { SecurityQuestionService } from './security-question.service';
 @Component({
   selector: 'app-security-question',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslateModule, WordmarkComponent, ThemeToggleComponent],
+  imports: [ReactiveFormsModule, RouterLink, TranslateModule, WordmarkComponent, ThemeToggleComponent],
   templateUrl: './security-question.component.html',
   styleUrls: ['./security-question.component.css'],
 })

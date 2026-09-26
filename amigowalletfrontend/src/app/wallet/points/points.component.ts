@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -11,7 +11,7 @@ import { PointsService } from './points.service';
 @Component({
   selector: 'app-points',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [TranslateModule],
   templateUrl: './points.component.html',
   styleUrls: ['./points.component.css'],
   animations: [

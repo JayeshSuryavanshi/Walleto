@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -16,7 +16,7 @@ import { RegistrationStateService } from './registration-state.service';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, IconComponent],
+  imports: [ReactiveFormsModule, TranslateModule, IconComponent],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
   providers: [CaptchaService],
