@@ -1,7 +1,7 @@
 {
   "name": "amigo-wallet-ui",
   "version": "2.0.0",
-  "description": "Walleto e-wallet SPA - Angular 19 standalone frontend",
+  "description": "Walleto e-wallet SPA - Angular 22 standalone frontend",
   "private": true,
   "scripts": {
     "ng": "ng",
